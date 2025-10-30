@@ -3,47 +3,60 @@ import axios, { AxiosResponse } from "axios";
 
 import { LOGIN_API, LOGOUT_API, USER_DETAILS_API } from "@/utils/constants/api";
 import axiosInstance from "@/lib/axiosInstance";
+import Cookies from "js-cookie"; // install with `npm i js-cookie`
 
-// ✅ Define a reusable type for the API response shape (customize as needed)
-interface ApiResponse<T> {
-  success: boolean;
-  message?: string;
-  data?: T;
-}
 
-// ✅ Define login payload and user types
+// Define payload & response types
 interface LoginPayload {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  user: UserDetails;
-  token: string;
-}
-
-
-interface UserDetails {
+interface User {
   id: string;
-  name: string;
-  email: string;
-  role: "student" | "instructor";
+  role: string;
 }
 
-// -----------------------------
-// 🔹 USER LOGIN
-// -----------------------------
-export const userLogin = async (
-  data: LoginPayload
-): Promise<AxiosResponse<ApiResponse<LoginResponse>>> => {
+interface LoginResponse {
+  user: User;
+  token: string;
+  message: string;
+  success: boolean;
+}
+
+export const userLogin = async (data: LoginPayload): Promise<User> => {
   try {
-    const response = await axiosInstance.post<ApiResponse<LoginResponse>>(LOGIN_API, data);
-    return response;
+    const response = await axios.post<LoginResponse>(
+      LOGIN_API,
+      data,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+
+    console.log(response.data, "userLogin response data");
+
+    if (response.data.success && response.data.user && response.data.token) {
+      const { token, user } = response.data;
+
+      // Store token & role
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+
+      Cookies.set("token", token, { expires: 7 });
+      Cookies.set("role", user.role, { expires: 7 });
+
+      return user;
+    } else {
+      throw new Error(response.data.message || "Login failed");
+    }
   } catch (error: any) {
-    console.error("Login error:", error.response || error.message);
+    console.error("Login error:", error.response?.data || error.message);
     throw error;
   }
 };
+
 
 
 // -----------------------------

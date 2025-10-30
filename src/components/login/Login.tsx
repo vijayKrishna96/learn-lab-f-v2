@@ -2,12 +2,10 @@
 import React, { useState, FormEvent } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import Loader from "../loader/Loader";
-import { useRouter } from "next/navigation"; // ✅ updated import
-
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { userLogin } from "@/services/userApi";
 
-// Define the types for the props
 interface LoginProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,7 +16,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   
-  const router = useRouter(); // Use Next.js router
+  const router = useRouter();
   
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,30 +28,39 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
     };
   
     try {
-      const response = await userLogin(data);
+      // userLogin returns the user object (from your API service)
+      const user = await userLogin(data);
       
-      const userId = response.data.user.id; // Extract userId from the response
-      const token = response.data.token; // Get the token from the response (ensure your backend sends it)
-  
-      if (token) {
-        localStorage.setItem('authToken', token);
-      }
-  
-      // Navigate based on user role
-      if (response.data.user.role === 'student') {
-        router.push(`/student/${userId}`);
+      // The token is already stored in localStorage by userLogin function
+      const token = localStorage.getItem("token");
+      const userId = user.id;
+      const role = user.role;
+
+      if (token && userId) {
+        // Navigate based on user role
+        switch(role) {
+          case 'student':
+            router.push(`/student/${userId}`);
+            break;
+          case 'instructor':
+            router.push(`/instructor/${userId}`);
+            break;
+          case 'admin':
+            router.push(`/admin/${userId}`);
+            break;
+          default:
+            toast.error("Unknown user role");
+            setLoading(false);
+            return;
+        }
         onClose();
-      } else if (response.data.user.role === 'instructor') {
-        router.push(`/instructor/${userId}`);
-        onClose();
-      } else if (response.data.user.role === 'admin') {
-        router.push(`/admin/${userId}`);
-        onClose();
+      } else {
+        toast.error("Authentication failed. Please try again.");
       }
     } catch (err: any) {
       console.error(err.response);
       if (err.response?.data?.message === 'User not found') {
-        toast.error("User not Found, Check the UserID!");
+        toast.error("User not Found, Check the email!");
       } else if (err.response?.data?.message === "Invalid password") {
         toast.error("Invalid password, please try again!");
       } else if (err.response?.data?.message === 'User is not active') {
@@ -90,6 +97,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
               placeholder="Enter your email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              required
             />
             <label className="text-2xl my-2">Password</label>
             <input
@@ -98,6 +106,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
               placeholder="Enter your password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              required
             />
           </div>
           <div className="check-box flex items-center gap-2 px-8">
@@ -106,7 +115,8 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
           </div>
           <button
             type="submit"
-            className="btn text-center w-full my-5 bg-primarybtn p-2 text-lg "
+            className="btn text-center w-full my-5 bg-primarybtn p-2 text-lg"
+            disabled={loading}
           >
             {loading ? <Loader /> : "Sign In"}
           </button>
