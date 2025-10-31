@@ -1,0 +1,103 @@
+
+
+/* Navbar.css */
+
+/* 1️⃣ Base theme variables (light mode by default) */
+:root {
+  --navbar-bg: #ffffff;
+  --navbar-text: #0f172a;
+  --navbar-link-hover: #06b6d4;
+  --body-bg: #f8fafc;
+}
+
+/* 2️⃣ Dark mode variables */
+[data-theme="dark"] {
+  --navbar-bg: #0f172a;
+  --navbar-text: #e2e8f0;
+  --navbar-link-hover: #38bdf8;
+  --body-bg: #1e293b;
+}
+
+/* 3️⃣ Apply variables */
+body {
+  background-color: var(--body-bg);
+  color: var(--navbar-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-links a,
+.navbar-links button {
+  color: var(--navbar-text);
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover,
+.navbar-links button:hover {
+  color: var(--navbar-link-hover);
+}
+
+/* navbar.css */
+
+/* 🌞 Default (light mode) */
+nav {
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-links a {
+  color: #0f172a;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--modal-primary);
+}
+
+.navbar-logo {
+  color: var(--modal-primary);
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: all 0.3s ease;
+}
+
+/* 🌙 Dark mode */
+[data-theme="dark"] nav {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .navbar-links a {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .navbar-links a:hover {
+  color: var(--modal-primary);
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .navbar-logo {
+  color: var(--modal-primary);
+}
+
+/* Responsive adjustments (optional) */
+@media (max-width: 768px) {
+  .navbar-links {
+    gap: 1.5rem;
+  }
+}

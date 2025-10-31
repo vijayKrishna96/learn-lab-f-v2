@@ -1,3 +1,5 @@
+
+import StudentHeader from '@/components/navbar/StudentNavbar';
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
@@ -9,13 +11,9 @@ type Props = {}
 
 export default function Layout({children}: StudentLayoutProps) {
   return (
-     <div style={{ border: '2px solid blue', padding: '20px' }}>
-      <h2>🎓 Student Layout</h2>
-      <nav style={{ display: 'flex', gap: '10px' }}>
-        <Link href="/student">Dashboard</Link>
-        <Link href="/student/profile">Profile</Link>
-      </nav>
-      <div>{children}</div>
+     <div>
+      <StudentHeader />
+      <main style={{ padding: "20px" }}>{children}</main>
     </div>
   )
 }

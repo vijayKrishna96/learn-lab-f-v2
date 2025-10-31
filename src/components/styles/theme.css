@@ -1,0 +1,96 @@
+/* theme.css */
+
+/* 🌞 Light mode */
+:root {
+  --modal-bg: #ffffff;
+  --modal-bg-secondary: #f8fafc;
+  --modal-text: #0f172a;
+  --modal-border: #cbd5e1;
+  --modal-primary: #06b6d4;
+}
+
+/* 🌙 Dark mode */
+[data-theme="dark"] {
+  --modal-bg: #0f172a;
+  --modal-bg-secondary: #1e293b;
+  --modal-text: #e2e8f0;
+  --modal-border: #475569;
+  --modal-primary: #38bdf8;
+}
+
+/* 🪄 Shared modal styling */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.modal-container {
+  background-color: var(--modal-bg);
+  color: var(--modal-text);
+  border: 1px solid var(--modal-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.modal-container h3,
+.modal-container h1 {
+  color: var(--modal-text);
+}
+
+/* 🧾 Inputs */
+.modal-input {
+  width: 100%;
+  border: 1px solid var(--modal-border);
+  background-color: var(--modal-bg-secondary);
+  color: var(--modal-text);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.modal-input:focus {
+  border-color: var(--modal-primary);
+}
+
+/* 🖱️ Buttons */
+.modal-btn {
+  background-color: var(--modal-primary);
+  color: white;
+  width: 100%;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.modal-btn:hover {
+  opacity: 0.9;
+}
+
+/* ✖️ Close Icon */
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 1.8rem;
+  color: #f87171;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #ef4444;
+}
