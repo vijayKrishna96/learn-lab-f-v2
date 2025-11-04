@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 
-import { LOGIN_API, LOGOUT_API, USER_DETAILS_API } from "@/utils/constants/api";
+import { LOGIN_API, LOGOUT_API, USER_DETAILS_API, VERIFY_API } from "@/utils/constants/api";
 import axiosInstance from "@/lib/axiosInstance";
 import Cookies from "js-cookie"; // install with `npm i js-cookie`
 
@@ -24,44 +24,67 @@ interface LoginResponse {
   success: boolean;
 }
 
-export const userLogin = async (data: LoginPayload): Promise<User> => {
-  try {
-    const response = await axios.post<LoginResponse>(
-      LOGIN_API,
-      data,
-      {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      }
-    );
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
-    console.log(response.data, "userLogin response data");
+// services/userApi.ts
 
-    if (response.data.success && response.data.user && response.data.token) {
-      const { token, user } = response.data;
 
-      // Store token & role
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
-
-      Cookies.set("token", token, { expires: 7 });
-      Cookies.set("role", user.role, { expires: 7 });
-
-      return user;
-    } else {
-      throw new Error(response.data.message || "Login failed");
+export const userLogin = async (data: { email: string; password: string }) => {
+  const res = await axios.post(
+    LOGIN_API,
+    data,
+    {
+      withCredentials: true, // 👈 IMPORTANT: allows cookie to be set
     }
-  } catch (error: any) {
-    console.error("Login error:", error.response?.data || error.message);
-    throw error;
-  }
+  );
+  return res.data; // backend returns { success, user, message }
 };
+
+
+// export const userLogin = async (data: LoginPayload): Promise<User> => {
+//   try {
+//     const response = await axios.post<LoginResponse>(
+//       LOGIN_API,
+//       data,
+//       {
+//         headers: { "Content-Type": "application/json" },
+//         withCredentials: true,
+//       }
+//     );
+
+//     console.log(response.data, "userLogin response data");
+
+//     if (response.data.success && response.data.user && response.data.token) {
+//       const { token, user } = response.data;
+
+//       // Store token & role
+//       localStorage.setItem("token", token);
+//       localStorage.setItem("role", user.role);
+
+//       Cookies.set("token", token, { expires: 7 });
+//       Cookies.set("role", user.role, { expires: 7 });
+
+//       return user;
+//     } else {
+//       throw new Error(response.data.message || "Login failed");
+//     }
+//   } catch (error: any) {
+//     console.error("Login error:", error.response?.data || error.message);
+//     throw error;
+//   }
+// };
 
 
 
 // -----------------------------
 // 🔹 USER LOGOUT
 // -----------------------------
+
+
 export const userLogout = async (): Promise<AxiosResponse<ApiResponse<null>> | undefined> => {
   try {
     const response = await axios.post<ApiResponse<null>>(LOGOUT_API, {}, { method: "POST" });
@@ -74,9 +97,9 @@ export const userLogout = async (): Promise<AxiosResponse<ApiResponse<null>> | u
 // -----------------------------
 // 🔹 CHECK IF USER IS LOGGED IN
 // -----------------------------
-export const userCheck = async (): Promise<ApiResponse<UserDetails> | undefined> => {
+export const userCheck = async (): Promise<ApiResponse<User> | undefined> => {
   try {
-    const response = await axiosInstance.get<ApiResponse<UserDetails>>("/user/checkUser");
+    const response = await axiosInstance.get<ApiResponse<User>>("/user/checkUser");
     return response.data;
   } catch (error: any) {
     console.error("User check error:", error.message);
@@ -86,9 +109,9 @@ export const userCheck = async (): Promise<ApiResponse<UserDetails> | undefined>
 // -----------------------------
 // 🔹 GET USER DETAILS BY ID
 // -----------------------------
-export const userDetails = async (userId: string): Promise<UserDetails | null> => {
+export const userDetails = async (userId: string): Promise<User | null> => {
   try {
-    const response = await axios.get<ApiResponse<UserDetails>>(USER_DETAILS_API, {
+    const response = await axios.get<ApiResponse<User>>(USER_DETAILS_API, {
       params: { id: userId },
     });
     return response.data.data || null;

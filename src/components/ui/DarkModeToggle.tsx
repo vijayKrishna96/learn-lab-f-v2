@@ -28,7 +28,7 @@ const DarkModeToggle: React.FC = () => {
     <button
       onClick={toggleTheme}
       aria-label="Toggle Dark Mode"
-      className="text-2xl p-2 rounded-full transform transition duration-300 hover:scale-105 hover:-translate-y-1"
+      className="text-xl md:text-2xl p-2 rounded-full transform transition duration-300 hover:scale-105 hover:-translate-y-1"
     >
       {theme === "light" ? <BsFillMoonStarsFill /> : <IoMdSunny />}
     </button>

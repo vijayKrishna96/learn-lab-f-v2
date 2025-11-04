@@ -22,36 +22,29 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    try {
-      const user = await userLogin({ email, password });
-      const token = localStorage.getItem("token");
-      const userId = user.id;
-      const role = user.role;
 
-      if (token && userId) {
-        switch (role) {
-          case "student":
-            router.push(`/student/${userId}`);
-            break;
-          case "instructor":
-            router.push(`/instructor/${userId}`);
-            break;
-          case "admin":
-            router.push(`/admin/${userId}`);
-            break;
-          default:
-            toast.error("Unknown user role");
-        }
-        onClose();
-      } else {
-        toast.error("Authentication failed.");
-      }
+    try {
+      const response = await userLogin({ email, password }); 
+      // expected response => { user: { role: "student" }, token: "...." }
+
+      const role = response.user.role;
+
+      // Redirection based on role
+      if (role === "student") router.push("/student/dashboard");
+      else if (role === "instructor") router.push("/instructor/dashboard");
+      else if (role === "admin") router.push("/admin");
+      else toast.error("Unknown user role");
+
+      onClose();
+
     } catch (err: any) {
       const message = err.response?.data?.message;
+
       if (message === "User not found") toast.error("User not found!");
       else if (message === "Invalid password") toast.error("Invalid password!");
       else if (message === "User is not active") toast.error("User is not active!");
       else toast.error("An error occurred. Please try again later.");
+
     } finally {
       setLoading(false);
     }
@@ -87,27 +80,9 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
             required
           />
 
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="remember-me" />
-            <label htmlFor="remember-me">Remember me</label>
-          </div>
-
           <button type="submit" className="modal-btn" disabled={loading}>
             {loading ? <Loader /> : "Sign In"}
           </button>
-
-          <p className="text-sm text-center">
-            Forgot password?{" "}
-            <a href="#" style={{ color: "var(--modal-primary)" }}>
-              Click here
-            </a>
-          </p>
-          <p className="text-sm text-center">
-            Don’t have an account?{" "}
-            <a href="#" style={{ color: "var(--modal-primary)" }}>
-              Create one
-            </a>
-          </p>
         </form>
       </div>
     </div>

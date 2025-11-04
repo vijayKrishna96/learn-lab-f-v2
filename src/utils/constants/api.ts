@@ -3,6 +3,7 @@ const BaseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || '';
 
 // Auth endpoints
 const loginEndpoint: string = process.env.NEXT_PUBLIC_LOGIN_USER || '';
+const verifyEndpoint: string = process.env.NEXT_PUBLIC_VERIFY_USER || '';
 const signupEndpoint: string = process.env.NEXT_PUBLIC_REGISTER_USER || '';
 const logoutEndpoint: string = process.env.NEXT_PUBLIC_LOGOUT_USER || '';
 
@@ -30,6 +31,7 @@ export const BASE_URL_API: string = BaseUrl;
 // Auth
 export const SIGNUP_API: string = `${BaseUrl}${signupEndpoint}`;
 export const LOGIN_API: string = `${BaseUrl}${loginEndpoint}`;
+export const VERIFY_API: string = `${BaseUrl}${verifyEndpoint}`;
 export const LOGOUT_API: string = `${BaseUrl}${logoutEndpoint}`;
 
 // Category

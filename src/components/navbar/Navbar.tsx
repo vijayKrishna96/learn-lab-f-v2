@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import { IoMdSunny } from "react-icons/io";
-import DarkModeToggle from "@/features/DarkModeToggle";
+import DarkModeToggle from "@/components/ui/DarkModeToggle";
 
 import "./style/Navbar.css";
 

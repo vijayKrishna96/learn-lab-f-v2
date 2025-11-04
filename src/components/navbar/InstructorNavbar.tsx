@@ -14,7 +14,7 @@ import DarkModeToggle from "@/components/ui/DarkModeToggle";
 import "./style/Navbar.css";
 import { useSelector } from "react-redux";
 
-const StudentHeader = () => {
+const InstructorHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userId, setUserId] = useState<string>("");
@@ -49,13 +49,13 @@ const StudentHeader = () => {
             </Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/${userId}`}>Home</Link>
+            <Link href={`/instructor/${userId}`}>Home</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/aboutus/${userId}`}>About Us</Link>
+            <Link href={`/instructor/studentlist/${userId}`}>Student Directory</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/contact/${userId}`}>Contact</Link>
+            <Link href={`/instructor/courses/${userId}`}>My Courses</Link>
           </li>
           <li className="hidden md:block">
             <Link href={`/student/mylearnings/${userId}`}>My Learnings</Link>
@@ -88,7 +88,7 @@ const StudentHeader = () => {
 
           {/* 👤 Profile */}
           <div className="hidden md:block">
-            <Link href={`/student/profile/${userId}`}>
+            <Link href={`/instructor/profile/${userId}`}>
               <img
                 src="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                 alt="Profile"
@@ -151,4 +151,4 @@ const StudentHeader = () => {
   );
 };
 
-export default StudentHeader;
+export default InstructorHeader;
