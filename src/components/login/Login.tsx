@@ -19,37 +19,51 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Handle login
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      const response = await userLogin({ email, password }); 
-      // expected response => { user: { role: "student" }, token: "...." }
+      const response = await userLogin({ email, password });
 
-      const role = response.user.role;
+      // Validate response
+      if (!response || !response.token || !response.user) {
+        toast.error("Invalid login response");
+        return;
+      }
 
-      // Redirection based on role
-      if (role === "student") router.push("/student/dashboard");
-      else if (role === "instructor") router.push("/instructor/dashboard");
-      else if (role === "admin") router.push("/admin");
-      else toast.error("Unknown user role");
+      const { token, user } = response;
 
+      // Store token with proper path
+      document.cookie = `accessToken=${token}; path=/; SameSite=Strict; Secure; Max-Age=86400`;
+
+      // Redirect based on user role
+      switch (user.role) {
+        case "student":
+          router.push("/student/dashboard");
+          break;
+        case "instructor":
+          router.push("/instructor/dashboard");
+          break;
+        case "admin":
+          router.push("/admin");
+          break;
+        default:
+          toast.error("Unknown user role");
+      }
       onClose();
-
     } catch (err: any) {
-      const message = err.response?.data?.message;
-
-      if (message === "User not found") toast.error("User not found!");
-      else if (message === "Invalid password") toast.error("Invalid password!");
-      else if (message === "User is not active") toast.error("User is not active!");
-      else toast.error("An error occurred. Please try again later.");
-
+      console.error("Login error:", err);
+      const message =
+        err?.response?.data?.message || "Login failed. Please try again.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 Don't render modal if it's closed
   if (!isOpen) return null;
 
   return (

@@ -33,15 +33,21 @@ interface ApiResponse<T> {
 // services/userApi.ts
 
 
-export const userLogin = async (data: { email: string; password: string }) => {
-  const res = await axios.post(
-    LOGIN_API,
-    data,
-    {
-      withCredentials: true, // 👈 IMPORTANT: allows cookie to be set
-    }
-  );
-  return res.data; // backend returns { success, user, message }
+export const userLogin = async (credentials: { email: string; password: string }) => {
+  const response = await fetch("http://localhost:4500/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // ✅ Important for CORS
+    body: JSON.stringify(credentials),
+  });
+
+  if (!response.ok) {
+    throw new Error("Login failed");
+  }
+
+  return response.json();
 };
 
 
