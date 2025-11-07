@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import ClientLayout from "./WelcomeLayout";
+import { Providers } from "@/components/providers/Providers";
 
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Your App",
-  description: "App description",
+  title: "Learning Dashboard",
+  description: "Your learning platform",
 };
 
 export default function RootLayout({
@@ -16,8 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <ClientLayout>{children}</ClientLayout>
+      <body className={inter.className}>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

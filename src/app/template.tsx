@@ -2,9 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar/Navbar";
-import { ThemeProvider } from "next-themes";
 
-export default function ClientLayout({
+export default function Template({
   children,
 }: {
   children: React.ReactNode;
@@ -17,9 +16,9 @@ export default function ClientLayout({
     pathname.startsWith("/instructor");
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
+    <>
       {!hideNavbar && <Navbar />}
       {children}
-    </ThemeProvider>
+    </>
   );
 }

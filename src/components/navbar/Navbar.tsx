@@ -5,42 +5,70 @@ import Link from "next/link";
 import { SiAlchemy } from "react-icons/si";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { BsFillMoonStarsFill } from "react-icons/bs";
-import { IoMdSunny } from "react-icons/io";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 
 import "./style/Navbar.css";
 
-const LoginModal = dynamic(() => import("@/components/login/Login"));
-const SignupModal = dynamic(() => import("@/components/signup/Signup"));
+const LoginModal = dynamic(() => import("@/components/login/Login"), {
+  ssr: false,
+});
+const SignupModal = dynamic(() => import("@/components/signup/Signup"), {
+  ssr: false,
+});
 
 const Navbar: React.FC = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [mounted, setMounted] = useState(false);
   const courseSectionRef = useRef<HTMLDivElement | null>(null);
 
-  // On mount, read theme from localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }
+    setMounted(true);
   }, []);
 
-  // Toggle theme
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+  const handleScrollToCourses = () => {
+    if (courseSectionRef.current) {
+      courseSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
-  const handleScrollToCourses = () => {
-    courseSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  if (!mounted) {
+    return (
+      <nav className="shadow-md">
+        <div className="container mx-auto flex justify-between items-center py-4">
+          <ul className="navbar-links flex gap-11 items-center">
+            <li className="navbar-logo text-3xl text-primarybtn">
+              <Link href="/">
+                <SiAlchemy />
+              </Link>
+            </li>
+            <li className="hidden md:block">
+              <Link href="/">Home</Link>
+            </li>
+            <li className="hidden md:block">
+              <button>Courses</button>
+            </li>
+            <li className="hidden md:block">
+              <Link href="/about">About</Link>
+            </li>
+            <li className="hidden md:block">
+              <Link href="/contact">Contact</Link>
+            </li>
+          </ul>
+
+          <div className="flex gap-5 items-center">
+            <div className="w-10 h-10" />
+            <button className="px-3 py-1">Signup</button>
+            <button className="bg-primarybtn px-4 py-1 rounded-full">
+              Login
+            </button>
+            <button className="md:hidden p-2">☰</button>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="shadow-md">
@@ -68,9 +96,7 @@ const Navbar: React.FC = () => {
 
         {/* Actions */}
         <div className="flex gap-5 items-center">
-          {/* 🌗 Dark Mode Toggle */}
-          
-          <DarkModeToggle/>
+          <DarkModeToggle />
 
           <button className="px-3 py-1" onClick={() => setIsSignupOpen(true)}>
             Signup
