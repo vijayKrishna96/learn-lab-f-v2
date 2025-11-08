@@ -1,0 +1,109 @@
+// _variables.scss - Global color and design system variables
+
+// Primary Colors
+:root {
+  // Brand Colors
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-light: #6366f1;
+  --color-secondary: #7c3aed;
+  
+  // Background Gradients
+  --bg-gradient-start: #eff6ff;
+  --bg-gradient-mid: #f3e8ff;
+  --bg-gradient-end: #fce7f3;
+  
+  // Text Colors
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-placeholder: #9ca3af;
+  
+  // Background Colors
+  --bg-white: #ffffff;
+  --bg-gray-50: #f9fafb;
+  --bg-gray-100: #f3f4f6;
+  --bg-gray-200: #e5e7eb;
+  
+  // Border Colors
+  --border-gray: #e5e7eb;
+  --border-gray-dark: #d1d5db;
+  
+  // Accent Colors
+  --color-yellow: #fbbf24;
+  --color-blue: #60a5fa;
+  --color-cyan: #22d3ee;
+  --color-purple: #a78bfa;
+  --color-indigo-100: #e0e7ff;
+  
+  // Shadow Colors
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-primary: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+  --shadow-primary-lg: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
+}
+
+// Dark Theme Colors
+:root.dark,
+.dark {
+  // Brand Colors (Dark)
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: #818cf8;
+  
+  // Background Gradients (Dark)
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-mid: #1e1b4b;
+  --bg-gradient-end: #431407;
+  
+  // Text Colors (Dark)
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-placeholder: #94a3b8;
+  
+  // Background Colors (Dark)
+  --bg-white: #1f2937;
+  --bg-gray-50: #334155;
+  --bg-gray-100: #374151;
+  --bg-gray-200: #4b5563;
+  
+  // Border Colors (Dark)
+  --border-gray: #475569;
+  --border-gray-dark: #64748b;
+  
+  // Accent Colors (Dark remain same)
+  --color-indigo-100: #312e81;
+  
+  // Shadow Colors (Dark)
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  --shadow-primary: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+  --shadow-primary-lg: 0 8px 15px -3px rgba(99, 102, 241, 0.5);
+}
+
+// Export as SCSS variables for use in modules
+$color-primary: var(--color-primary);
+$color-primary-hover: var(--color-primary-hover);
+$color-primary-light: var(--color-primary-light);
+$color-secondary: var(--color-secondary);
+
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-muted: var(--text-muted);
+
+$bg-white: var(--bg-white);
+$bg-gray-50: var(--bg-gray-50);
+$bg-gray-100: var(--bg-gray-100);
+
+$border-gray: var(--border-gray);
+
+// Tech Stack Colors
+$tech-js: var(--color-yellow);
+$tech-react: var(--color-blue);
+$tech-tailwind: var(--color-cyan);
+$tech-python: var(--color-purple);
