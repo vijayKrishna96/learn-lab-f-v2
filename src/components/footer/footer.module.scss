@@ -1,0 +1,97 @@
+.footer {
+  background-color: var(--navbar-bg);
+  
+  color: var(--navbar-text);
+  padding: 3rem 1rem 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  [data-theme="dark"] & {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 80vw;
+    // max-width: clamp(320px, 90vw, 1200px);
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  // About Section
+  .about {
+    .logo {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--navbar-link-hover);
+      font-weight: 700;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+  }
+
+  // Contact Form
+  .contactForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--navbar-link-hover);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      background-color: var(--body-bg);
+      color: var(--navbar-text);
+      font-size: 0.95rem;
+
+      [data-theme="dark"] & {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--navbar-link-hover);
+        box-shadow: 0 0 0 2px var(--navbar-link-hover);
+      }
+    }
+
+    button {
+      background-color: var(--navbar-link-hover);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #0891b2; // slightly darker cyan
+      }
+    }
+  }
+
+  // Bottom Bar
+  .bottomBar {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: var(--navbar-text);
+    opacity: 0.8;
+  }
+}

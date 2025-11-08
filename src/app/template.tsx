@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
 
 export default function Template({
   children,
@@ -19,6 +20,7 @@ export default function Template({
     <>
       {!hideNavbar && <Navbar />}
       {children}
+      <Footer/>
     </>
   );
 }
