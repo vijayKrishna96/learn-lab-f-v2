@@ -1,25 +1,26 @@
 // EnhancedHeroSection.module.scss
+@import './variables';
 
 .heroSection {
+  
   min-height: 100vh;
-  min-height: 100dvh; // Dynamic viewport height for mobile
-  background: linear-gradient(135deg, #eff6ff 0%, #f3e8ff 50%, #fce7f3 100%);
+  min-height: 100dvh;
+  background: $gradient-bg-light;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   
-  // Dark theme styles
-  :global(.dark) & {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #431407 100%);
+  @include dark {
+    background: $gradient-bg-dark;
   }
 }
 
 .backgroundPattern {
   position: absolute;
   inset: 0;
-  opacity: 0.1;
+  opacity: $opacity-light;
 
   .patternSvg {
     width: 100%;
@@ -33,251 +34,193 @@
   left: 0;
   right: 0;
   height: 16rem;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
+  background: $gradient-wave-light;
   pointer-events: none;
   
-  :global(.dark) & {
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.5), transparent);
+  @include dark {
+    background: $gradient-wave-dark;
   }
 }
 
 .heroContainer {
   position: relative;
-  width: 100%;
-  max-width: 100rem; // 1920px
+  width: 76vw;
+  max-width: $container-max;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: $spacing-xl $spacing-md;
 
-  // Tablet
-  @media (min-width: 768px) {
-    padding: 3rem 2rem;
+  @include screen-md {
+    padding: $spacing-2xl $spacing-xl;
   }
 
-  // Desktop
-  @media (min-width: 1024px) {
-    padding: 4rem 2rem;
+  @include screen-lg {
+    padding: $spacing-3xl $spacing-xl;
   }
 
-  // Large desktop
-  @media (min-width: 1440px) {
-    padding: 5rem 2rem;
+  @include screen-2xl {
+    padding: $spacing-4xl $spacing-xl;
   }
 }
 
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: $spacing-xl;
   align-items: center;
 
-  // Tablet
-  @media (min-width: 768px) {
-    gap: 3rem;
+  @include screen-md {
+    gap: $spacing-2xl;
   }
 
-  // Desktop - show image on right
-  @media (min-width: 1024px) {
+  @include screen-lg {
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: $spacing-3xl;
   }
 }
 
 .heroText {
   position: relative;
-  z-index: 10;
+  z-index: $z-dropdown;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   text-align: center;
   animation: fadeInUp 0.8s ease-out;
 
-  // Tablet
-  @media (min-width: 768px) {
-    gap: 1.5rem;
+  @include screen-md {
+    gap: $spacing-lg;
     text-align: left;
   }
 }
 
 .heroHeading {
-  font-size: 2.25rem; // Mobile first - smaller
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.2;
+  font-size: $text-4xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  line-height: $leading-tight;
   margin: 0;
 
-  // Small tablet
-  @media (min-width: 640px) {
+  @include screen-sm {
     font-size: 2.5rem;
   }
 
-  // Tablet
-  @media (min-width: 768px) {
-    font-size: 3rem;
+  @include screen-md {
+    font-size: $text-5xl;
   }
 
-  // Desktop
-  @media (min-width: 1024px) {
+  @include screen-lg {
     font-size: 3.5rem;
   }
 
-  // Large desktop
-  @media (min-width: 1280px) {
-    font-size: 3.75rem;
+  @include screen-xl {
+    font-size: $text-6xl;
   }
 
-  :global(.dark) & {
-    color: #f8fafc;
+  @include dark {
+    color: $dark-text-primary;
   }
 
   .cursorBlink {
     display: inline-block;
     width: 3px;
-    height: 2.25rem;
-    background-color: #4f46e5;
+    height: $text-4xl;
+    background-color: $primary-500;
     margin-left: 0.125rem;
     animation: blink 1s infinite;
     vertical-align: middle;
 
-    @media (min-width: 768px) {
-      height: 3rem;
+    @include screen-md {
+      height: $text-5xl;
       width: 4px;
     }
 
-    @media (min-width: 1024px) {
+    @include screen-lg {
       height: 3.5rem;
     }
   }
 }
 
 .heroSubtitle {
-  font-size: 1.125rem; // Mobile first
-  color: #4b5563;
+  font-size: $text-lg;
+  color: $gray-600;
   max-width: 100%;
   margin: 0;
-  line-height: 1.6;
+  line-height: $leading-relaxed;
 
-  // Tablet
-  @media (min-width: 768px) {
-    font-size: 1.25rem;
+  @include screen-md {
+    font-size: $text-xl;
     max-width: 42rem;
   }
 
-  :global(.dark) & {
-    color: #cbd5e1;
+  @include dark {
+    color: $dark-text-secondary;
   }
 }
 
 .heroTagline {
-  font-size: 1rem; // Mobile first
-  color: #4f46e5;
-  font-weight: 500;
+  font-size: $text-base;
+  color: $primary-500;
+  font-weight: $font-medium;
   margin: 0;
 
-  // Tablet
-  @media (min-width: 768px) {
-    font-size: 1.125rem;
+  @include screen-md {
+    font-size: $text-lg;
   }
 
-  :global(.dark) & {
-    color: #818cf8;
+  @include dark {
+    color: $primary-400;
   }
 }
 
 .ctaButtons {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding-top: 0.5rem;
+  gap: $spacing-md;
+  padding-top: $spacing-xs;
   width: 100%;
 
-  // Tablet
-  @media (min-width: 640px) {
+  @include screen-sm {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  @media (min-width: 768px) {
+  @include screen-md {
     justify-content: flex-start;
   }
 }
 
 .btnPrimary,
 .btnSecondary {
-  padding: 0.875rem 1.5rem; // Smaller on mobile
-  border-radius: 9999px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  font-size: 0.875rem;
+  @include button-base;
+  font-size: $text-sm;
   flex: 1;
   min-width: 140px;
   text-align: center;
 
-  // Tablet
-  @media (min-width: 768px) {
-    padding: 1rem 2rem;
-    font-size: 1rem;
+  @include screen-md {
+    padding: $spacing-md $spacing-xl;
+    font-size: $text-base;
     flex: none;
-  }
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    transform: scale(0.98);
   }
 }
 
 .btnPrimary {
-  background-color: #4f46e5;
-  color: white;
-
-  &:hover {
-    background-color: #4338ca;
-  }
-
-  :global(.dark) & {
-    background-color: #6366f1;
-    
-    &:hover {
-      background-color: #4f46e5;
-    }
-  }
+  @include button-primary;
 }
 
 .btnSecondary {
-  background-color: white;
-  color: #4f46e5;
-  border: 2px solid #4f46e5;
+  @include button-secondary;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-
-  &:hover {
-    background-color: #f9fafb;
-  }
-
-  :global(.dark) & {
-    background-color: #1e293b;
-    color: #818cf8;
-    border-color: #818cf8;
-
-    &:hover {
-      background-color: #334155;
-    }
-  }
+  gap: $spacing-xs;
 
   .iconPlay {
     width: 1.125rem;
     height: 1.125rem;
 
-    @media (min-width: 768px) {
+    @include screen-md {
       width: 1.25rem;
       height: 1.25rem;
     }
@@ -285,7 +228,7 @@
 }
 
 .searchContainer {
-  padding-top: 1rem;
+  padding-top: $spacing-md;
   width: 100%;
 }
 
@@ -293,7 +236,7 @@
   position: relative;
   max-width: 100%;
 
-  @media (min-width: 768px) {
+  @include screen-md {
     max-width: 42rem;
   }
 }
@@ -302,40 +245,40 @@
   width: 100%;
   padding: 0.875rem 1.25rem;
   padding-right: 7rem;
-  border-radius: 9999px;
-  border: 2px solid #e5e7eb;
+  border-radius: $radius-full;
+  border: 2px solid $gray-200;
   outline: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease;
-  font-size: 0.875rem;
+  box-shadow: $shadow-md;
+  transition: border-color $transition-base;
+  font-size: $text-sm;
   background-color: white;
-  color: #111827;
+  color: $gray-900;
 
-  @media (min-width: 768px) {
-    padding: 1rem 1.5rem;
+  @include screen-md {
+    padding: $spacing-md $spacing-lg;
     padding-right: 8rem;
-    font-size: 1rem;
+    font-size: $text-base;
   }
 
   &:focus {
-    border-color: #4f46e5;
+    border-color: $primary-500;
   }
 
   &::placeholder {
-    color: #9ca3af;
+    color: $gray-400;
   }
 
-  :global(.dark) & {
-    background-color: #334155;
-    border-color: #475569;
-    color: #f8fafc;
+  @include dark {
+    background-color: $dark-bg-tertiary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
 
     &:focus {
-      border-color: #818cf8;
+      border-color: $primary-400;
     }
 
     &::placeholder {
-      color: #94a3b8;
+      color: $dark-text-muted;
     }
   }
 }
@@ -345,35 +288,35 @@
   right: 0.375rem;
   top: 50%;
   transform: translateY(-50%);
-  padding: 0.5rem 1.25rem;
-  background-color: #4f46e5;
+  padding: $spacing-xs 1.25rem;
+  background-color: $primary-500;
   color: white;
-  border-radius: 9999px;
-  font-weight: 600;
+  border-radius: $radius-full;
+  font-weight: $font-semibold;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: $transition-colors;
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.75rem;
+  font-size: $text-xs;
 
-  @media (min-width: 768px) {
-    padding: 0.625rem 1.5rem;
-    font-size: 0.875rem;
-    right: 0.5rem;
-    gap: 0.5rem;
+  @include screen-md {
+    padding: 0.625rem $spacing-lg;
+    font-size: $text-sm;
+    right: $spacing-xs;
+    gap: $spacing-xs;
   }
 
   &:hover {
-    background-color: #4338ca;
+    background-color: $primary-600;
   }
 
-  :global(.dark) & {
-    background-color: #6366f1;
+  @include dark {
+    background-color: $primary-400;
 
     &:hover {
-      background-color: #4f46e5;
+      background-color: $primary-500;
     }
   }
 
@@ -381,9 +324,9 @@
     width: 0.875rem;
     height: 0.875rem;
 
-    @media (min-width: 768px) {
-      width: 1rem;
-      height: 1rem;
+    @include screen-md {
+      width: $spacing-md;
+      height: $spacing-md;
     }
   }
 }
@@ -392,60 +335,60 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding-top: 1rem;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
   flex-wrap: wrap;
 
-  @media (min-width: 640px) {
+  @include screen-sm {
     flex-direction: row;
     align-items: center;
-    gap: 1.5rem;
+    gap: $spacing-lg;
   }
 }
 
 .techLabel {
-  color: #6b7280;
-  font-weight: 500;
-  font-size: 0.875rem;
+  color: $gray-500;
+  font-weight: $font-medium;
+  font-size: $text-sm;
 
-  @media (min-width: 768px) {
-    font-size: 1rem;
+  @include screen-md {
+    font-size: $text-base;
   }
 
-  :global(.dark) & {
-    color: #94a3b8;
+  @include dark {
+    color: $dark-text-muted;
   }
 }
 
 .techIcons {
   display: flex;
-  gap: 0.75rem;
+  gap: $spacing-sm;
   flex-wrap: wrap;
   justify-content: center;
 
-  @media (min-width: 768px) {
-    gap: 1rem;
+  @include screen-md {
+    gap: $spacing-md;
   }
 }
 
 .techIcon {
   width: 2rem;
   height: 2rem;
-  border-radius: 0.5rem;
+  border-radius: $radius-sm;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: $font-bold;
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: $shadow-md;
   cursor: pointer;
-  transition: transform 0.3s ease;
-  font-size: 0.75rem;
+  transition: $transition-transform;
+  font-size: $text-xs;
 
-  @media (min-width: 768px) {
+  @include screen-md {
     width: 2.5rem;
     height: 2.5rem;
-    font-size: 0.875rem;
+    font-size: $text-sm;
   }
 
   &:hover {
@@ -453,31 +396,29 @@
   }
 
   &.techJs {
-    background-color: #fbbf24;
+    background-color: $tech-js;
   }
 
   &.techReact {
-    background-color: #60a5fa;
+    background-color: $tech-react;
   }
 
   &.techTailwind {
-    background-color: #22d3ee;
+    background-color: $tech-tailwind;
   }
 
   &.techPython {
-    background-color: #a78bfa;
+    background-color: $tech-python;
   }
 }
 
-// Hero Image Section - Hidden on mobile, shown on desktop
 .heroImageSection {
   position: relative;
   height: 0;
   overflow: hidden;
-  display: none; // Hidden on mobile by default
+  display: none;
 
-  // Show on desktop
-  @media (min-width: 1024px) {
+  @include screen-lg {
     display: flex;
     height: 37.5rem;
     justify-content: flex-end;
@@ -485,11 +426,9 @@
   }
 }
 
-
-
 .imageContainer {
   position: relative;
-  z-index: 10;
+  z-index: $z-dropdown;
   animation: fadeIn 1s ease-out 0.3s both;
 }
 
@@ -500,19 +439,19 @@
 .heroImage {
   width: 18rem;
   height: 18rem;
-  border-radius: 9999px;
+  border-radius: $radius-full;
   object-fit: cover;
-  border: 4px dashed #4f46e5;
-  padding: 0.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 4px dashed $primary-500;
+  padding: $spacing-xs;
+  box-shadow: $shadow-2xl;
 
-  @media (min-width: 1280px) {
+  @include screen-xl {
     width: 24rem;
     height: 24rem;
   }
 
-  :global(.dark) & {
-    border-color: #818cf8;
+  @include dark {
+    border-color: $primary-400;
   }
 }
 
@@ -523,13 +462,13 @@
   border: none;
   padding: 0;
   animation: float 3s ease-in-out infinite;
-  transition: transform 0.3s ease;
+  transition: $transition-transform;
 
   &:hover {
     transform: scale(1.25) rotate(12deg);
 
     .iconCircle {
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      box-shadow: $shadow-2xl;
     }
   }
 }
@@ -537,147 +476,453 @@
 .iconCircle {
   width: 3rem;
   height: 3rem;
-  border-radius: 9999px;
+  border-radius: $radius-full;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(4px);
+  box-shadow: $shadow-lg;
+  backdrop-filter: $backdrop-blur-sm;
   border-width: 2px;
   border-style: solid;
-  transition: box-shadow 0.3s ease;
+  transition: $transition-shadow;
 
-  @media (min-width: 1280px) {
+  @include screen-xl {
     width: 3.5rem;
     height: 3.5rem;
   }
 
   .icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: $spacing-lg;
+    height: $spacing-lg;
 
-    @media (min-width: 1280px) {
+    @include screen-xl {
       width: 1.75rem;
       height: 1.75rem;
     }
   }
 }
 
-
-
 .statsBar {
-  margin-top: 3rem;
+  margin-top: $spacing-2xl;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: $spacing-lg;
   width: 100%;
   max-width: 56rem;
   margin-left: auto;
   margin-right: auto;
 
-  // Tablet
-  @media (min-width: 640px) {
+  @include screen-sm {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  // Desktop
-  @media (min-width: 768px) {
+  @include screen-md {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-top: 5rem;
+    gap: $spacing-xl;
+    margin-top: $spacing-4xl;
   }
 }
 
 .statCard {
+  @include glass;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: $spacing-md;
   padding: 1.25rem;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(4px);
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+  transition: $transition-all;
 
-  @media (min-width: 768px) {
-    padding: 1.5rem;
+  @include screen-md {
+    padding: $spacing-lg;
   }
 
   &:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    transform: translateY(-4px);
-  }
-
-  :global(.dark) & {
-    background-color: rgba(30, 41, 59, 0.8);
-    color: #f8fafc;
+    @include hover-lift;
   }
 }
 
 .statIconWrapper {
   width: 3rem;
   height: 3rem;
-  border-radius: 9999px;
-  background-color: #e0e7ff;
+  border-radius: $radius-full;
+  background-color: $primary-100;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 
-  @media (min-width: 768px) {
+  @include screen-md {
     width: 3.5rem;
     height: 3.5rem;
   }
 
-  :global(.dark) & {
-    background-color: #312e81;
+  @include dark {
+    background-color: $dark-accent;
   }
 
   .statIcon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: #4f46e5;
+    width: $spacing-lg;
+    height: $spacing-lg;
+    color: $primary-500;
 
-    @media (min-width: 768px) {
+    @include screen-md {
       width: 1.75rem;
       height: 1.75rem;
     }
 
-    :global(.dark) & {
-      color: #818cf8;
+    @include dark {
+      color: $primary-400;
     }
   }
 }
 
 .statContent {
   .statNumber {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #111827;
+    font-size: $text-2xl;
+    font-weight: $font-bold;
+    color: $gray-900;
     margin: 0;
-    line-height: 1.2;
+    line-height: $leading-tight;
 
-    @media (min-width: 768px) {
-      font-size: 1.875rem;
+    @include screen-md {
+      font-size: $text-3xl;
     }
 
-    :global(.dark) & {
-      color: #f8fafc;
+    @include dark {
+      color: $dark-text-primary;
     }
   }
 
   .statLabel {
-    color: #4b5563;
+    color: $gray-600;
     margin: 0;
-    font-size: 0.875rem;
+    font-size: $text-sm;
 
-    @media (min-width: 768px) {
-      font-size: 1rem;
+    @include screen-md {
+      font-size: $text-base;
     }
 
-    :global(.dark) & {
-      color: #cbd5e1;
+    @include dark {
+      color: $dark-text-secondary;
     }
+  }
+}
+
+// Courses Section
+.courses {
+  position: relative;
+  overflow: hidden;
+  width: 80vw;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: $spacing-5xl;
+  padding-bottom: $spacing-4xl;
+
+  .backgroundPattern {
+    position: absolute;
+    inset: 0;
+    opacity: $opacity-light;
+    z-index: $z-base;
+
+    .patternSvg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .coursesContainer {
+    position: relative;
+    width: 100%;
+    max-width: $container-max;
+    margin: 0 auto;
+    padding: $spacing-xl $spacing-md;
+    z-index: $z-dropdown;
+
+    @include screen-md {
+      padding: $spacing-2xl $spacing-xl;
+    }
+
+    @include screen-lg {
+      padding: $spacing-3xl $spacing-xl;
+    }
+
+    @include screen-2xl {
+      padding: $spacing-4xl $spacing-xl;
+    }
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: $font-bold;
+    text-align: center;
+    color: $gray-900;
+    margin-bottom: $spacing-2xl;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: $gradient-primary;
+      border-radius: 2px;
+    }
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+
+    @include screen-md {
+      font-size: $text-5xl;
+    }
+  }
+}
+
+.categoryList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  justify-content: center;
+  margin-bottom: $spacing-2xl;
+  padding: 0 $spacing-md;
+
+  @include screen-md {
+    gap: $spacing-lg;
+  }
+}
+
+.cat,
+.activeCat {
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-full;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  border: none;
+  transition: $transition-all;
+  font-size: $text-sm;
+
+  @include screen-md {
+    padding: $spacing-md $spacing-xl;
+    font-size: $text-base;
+  }
+}
+
+.cat {
+  background-color: $gray-100;
+  color: $gray-600;
+  border: 2px solid transparent;
+
+  &:hover {
+    background-color: $gray-200;
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  @include dark {
+    background-color: $gray-700;
+    color: $gray-300;
+
+    &:hover {
+      background-color: $gray-600;
+    }
+  }
+}
+
+.activeCat {
+  background: $gradient-primary;
+  color: white;
+  border: 2px solid transparent;
+  box-shadow: $shadow-primary;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-primary-lg;
+  }
+
+  @include dark {
+    box-shadow: $shadow-primary-dark;
+
+    &:hover {
+      box-shadow: $shadow-primary-dark-lg;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  font-size: $text-xl;
+  color: $gray-500;
+  padding: $spacing-2xl;
+
+  @include dark {
+    color: $gray-400;
+  }
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+  padding: 0 $spacing-md;
+
+  @include screen-md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include screen-lg {
+    gap: $spacing-xl;
+  }
+}
+
+.courseCard {
+  @include card;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:hover {
+    @include hover-lift;
+
+    img {
+      transform: scale(1.05);
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: $transition-transform;
+
+    @include screen-md {
+      height: 220px;
+    }
+  }
+
+  h4 {
+    padding: $spacing-lg;
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin: 0;
+    line-height: $leading-snug;
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+
+    @include screen-md {
+      font-size: 1.375rem;
+      padding: 1.75rem;
+    }
+  }
+}
+
+// Feedback Section
+.feedback {
+  position: relative;
+  overflow: hidden;
+  width: 80vw;
+  margin: $spacing-2xl auto;
+
+  @include screen-sm {
+    padding-left: $spacing-lg;
+    padding-right: $spacing-lg;
+  }
+
+  @include screen-lg {
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+  }
+}
+
+.feedbackHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-2xl;
+  padding: 0 $spacing-md;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: $spacing-md;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: $font-bold;
+    color: $gray-900;
+    margin: 0;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.75rem;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: $gradient-primary;
+      border-radius: 2px;
+
+      @media (max-width: 640px) {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+
+    @include screen-md {
+      font-size: $text-5xl;
+    }
+  }
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  background: $gradient-primary;
+  color: white;
+  text-decoration: none;
+  border-radius: $radius-full;
+  font-weight: $font-semibold;
+  transition: $transition-all;
+  box-shadow: $shadow-primary;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-primary-lg;
+    color: white;
+    text-decoration: none;
+  }
+
+  @include dark {
+    box-shadow: $shadow-primary-dark;
+
+    &:hover {
+      box-shadow: $shadow-primary-dark-lg;
+    }
+  }
+
+  &::after {
+    content: '→';
+    font-weight: bold;
+    transition: $transition-transform;
+  }
+
+  &:hover::after {
+    transform: translateX(4px);
   }
 }
 
@@ -720,365 +965,7 @@
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-
-// Courses Section
-.courses {
-  position: relative;
-  overflow: hidden;
-  width: 80vw;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 6rem; // Increased padding to compensate for overlap
-  padding-bottom: 5rem;
-
-  .backgroundPattern {
-    position: absolute;
-    inset: 0;
-    opacity: 0.1;
-    z-index: 1;
-
-    .patternSvg {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
- 
-  .coursesContainer {
-    position: relative;
-    width: 100%;
-    max-width: 100rem;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-    z-index: 2;
-
-    @media (min-width: 768px) {
-      padding: 3rem 2rem;
-    }
-
-    @media (min-width: 1024px) {
-      padding: 4rem 2rem;
-    }
-
-    @media (min-width: 1440px) {
-      padding: 5rem 2rem;
-    }
-  }
-
-  h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    color: #111827;
-    margin-bottom: 3rem;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -0.75rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, #4f46e5, #7c3aed);
-      border-radius: 2px;
-    }
-
-    :global(.dark) & {
-      color: #f8fafc;
-    }
-
-    @media (min-width: 768px) {
-      font-size: 3rem;
-    }
-  }
-}
-
-.categoryList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 3rem;
-  padding: 0 1rem;
-
-  @media (min-width: 768px) {
-    gap: 1.5rem;
-  }
-}
-
-.cat,
-.activeCat {
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  font-size: 0.875rem;
-
-  @media (min-width: 768px) {
-    padding: 1rem 2rem;
-    font-size: 1rem;
-  }
-}
-
-.cat {
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: 2px solid transparent;
-
-  &:hover {
-    background-color: #e5e7eb;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-
-  :global(.dark) & {
-    background-color: #374151;
-    color: #d1d5db;
-
-    &:hover {
-      background-color: #4b5563;
-    }
-  }
-}
-
-.activeCat {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  color: white;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
-  }
-
-  :global(.dark) & {
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
-
-    &:hover {
-      box-shadow: 0 8px 15px -3px rgba(99, 102, 241, 0.5);
-    }
-  }
-}
-
-.loading {
-  text-align: center;
-  font-size: 1.25rem;
-  color: #6b7280;
-  padding: 3rem;
-
-  :global(.dark) & {
-    color: #9ca3af;
-  }
-}
-
-.courseGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Default: 2 per row on small screens */
-  gap: 1.5rem;
-  padding: 0 1rem;
-}
-
-@media (min-width: 768px) {
-  .courseGrid {
-    grid-template-columns: repeat(3, 1fr); /* 3 per row on medium screens */
-  }
-}
-
-@media (min-width: 1024px) {
-  .courseGrid {
-    grid-template-columns: repeat(3, 1fr); /* 4 per row on large screens */
-    gap: 2rem;
-  }
-}
-
-
-.courseCard {
-  background: white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-    img {
-      transform: scale(1.05);
-    }
-  }
-
-  :global(.dark) & {
-    background: #1f2937;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-
-    &:hover {
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-    }
-  }
-}
-
-.courseCard img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-
-  @media (min-width: 768px) {
-    height: 220px;
-  }
-}
-
-.courseCard h4 {
-  padding: 1.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
-  line-height: 1.4;
-
-  :global(.dark) & {
-    color: #f8fafc;
-  }
-
-  @media (min-width: 768px) {
-    font-size: 1.375rem;
-    padding: 1.75rem;
-  }
-}
-
-// Feedback Section
-.feedback {
-  position: relative;
-  overflow: hidden;
-  width: 80vw;
-  margin: 3rem auto;
-
-  @media (min-width: 640px) {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
-  @media (min-width: 1024px) {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-.feedbackHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-  padding: 0 1rem;
-
-  @media (max-width: 640px) {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -0.75rem;
-      left: 0;
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, #4f46e5, #7c3aed);
-      border-radius: 2px;
-
-      @media (max-width: 640px) {
-        left: 50%;
-        transform: translateX(-50%);
-      }
-    }
-
-    :global(.dark) & {
-      color: #f8fafc;
-    }
-
-    @media (min-width: 768px) {
-      font-size: 3rem;
-    }
-  }
-}
-
-.viewAll {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  color: white;
-  text-decoration: none;
-  border-radius: 9999px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
-    color: white;
-    text-decoration: none;
-  }
-
-  :global(.dark) & {
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
-
-    &:hover {
-      box-shadow: 0 8px 15px -3px rgba(99, 102, 241, 0.5);
-    }
-  }
-
-  &::after {
-    content: '→';
-    font-weight: bold;
-    transition: transform 0.3s ease;
-  }
-
-  &:hover::after {
-    transform: translateX(4px);
-  }
-}
-
-// Additional animations
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+// Animation delays for course cards
 .courseCard {
   animation: fadeInUp 0.6s ease-out;
 
@@ -1089,3 +976,9 @@
   &:nth-child(5) { animation-delay: 0.5s; }
   &:nth-child(6) { animation-delay: 0.6s; }
 }
+
+
+
+
+
+

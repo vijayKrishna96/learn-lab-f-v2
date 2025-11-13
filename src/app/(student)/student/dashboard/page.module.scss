@@ -1,0 +1,332 @@
+// HomePage.scss
+// Import variables (assuming _variables.scss is imported in a global scope or here via @import 'variables';
+
+@import '../../../styles/variables'; // Adjust path as needed
+
+// Hero Section
+.hero-section {
+  @include screen-sm {
+    padding: $spacing-xl 0;
+  }
+}
+
+.hero-container {
+  height: 50vh;
+  max-width: $container-2xl;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+
+  @include screen-sm {
+    padding: 0 $spacing-2xl;
+  }
+
+  @include screen-xl {
+    padding: 0;
+  }
+}
+
+.welcome-section {
+  display: flex;
+  gap: $spacing-xl;
+  margin-top: $spacing-2xl;
+  align-items: center;
+  padding: 0 $spacing-md;
+
+  @include screen-sm {
+    padding: 0 $spacing-3xl;
+  }
+
+  @include screen-xl {
+    padding: 0;
+  }
+}
+
+.profile-image {
+  height: 3rem;
+  width: 3rem;
+  border-radius: $radius-full;
+  object-fit: cover;
+}
+
+.welcome-content {
+  @include screen-sm {
+    padding: $spacing-sm;
+  }
+}
+
+.welcome-title {
+  font-size: $text-lg;
+
+  @include screen-sm {
+    font-size: $text-xl;
+  }
+
+  font-weight: $font-semibold;
+}
+
+.search-container {
+  margin-top: $spacing-lg;
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: column;
+
+  @include screen-sm {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+  }
+
+  border-radius: $radius-lg;
+  margin: 0 auto;
+}
+
+.search-input {
+  border-radius: $radius-full;
+  padding: $spacing-md $spacing-2xl $spacing-md $spacing-xl;
+  width: 100%;
+
+  @include screen-sm {
+    width: 30rem;
+    margin-bottom: 0;
+  }
+
+  @include screen-md {
+    width: 40rem;
+  }
+
+  @include screen-lg {
+    width: 48rem;
+  }
+
+  background-color: $gray-100;
+}
+
+.search-button {
+  @include button-primary;
+  padding: $spacing-sm $spacing-xl;
+
+  @include screen-sm {
+    padding: $spacing-lg $spacing-xl;
+    margin-left: $spacing-xl;
+  }
+
+  margin-top: $spacing-md;
+
+  @include screen-sm {
+    margin-top: 0;
+    margin-left: $spacing-xl;
+  }
+}
+
+.hero-content-wrapper {
+  position: relative;
+  margin-top: $spacing-2xl;
+}
+
+.hero-overlay {
+  position: absolute;
+  background-color: white;
+  top: 4rem;
+
+  @include screen-sm {
+    top: 7rem;
+    left: $spacing-xl;
+    padding: $spacing-2xl;
+  }
+
+  left: $spacing-md;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+}
+
+.hero-title {
+  font-size: $text-xl;
+
+  @include screen-sm {
+    font-size: $text-3xl;
+  }
+
+  font-weight: $font-semibold;
+  margin-bottom: $spacing-lg;
+}
+
+.hero-subtitle {
+  font-size: $text-sm;
+
+  @include screen-sm {
+    font-size: $text-base;
+  }
+}
+
+.hero-image {
+  width: 100%;
+  object-fit: cover;
+  height: 10rem;
+
+  @include screen-sm {
+    height: auto;
+  }
+}
+
+// Courses Section
+.courses-section {
+  margin-top: $spacing-3xl;
+}
+
+.courses-container {
+  max-width: $container-xl;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: $spacing-3xl;
+}
+
+.section-title {
+  font-size: $text-2xl;
+
+  @include screen-sm {
+    font-size: $text-3xl;
+  }
+
+  @include screen-lg {
+    font-size: $text-4xl;
+  }
+
+  font-weight: $font-semibold;
+  line-height: $leading-tight;
+}
+
+.section-divider {
+  width: 4rem;
+
+  @include screen-sm {
+    width: 5rem;
+  }
+
+  height: 0.5rem;
+  border-radius: $radius-lg;
+  margin: $spacing-sm auto 0;
+  background-color: $secondary-500; // Assuming primarybtn is secondary-500 based on context
+}
+
+.categories-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.categories-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+
+  @include screen-sm {
+    gap: $spacing-xl;
+  }
+
+  @include screen-lg {
+    gap: $spacing-2xl;
+  }
+
+  margin-top: $spacing-2xl;
+  justify-content: center;
+}
+
+.category-button {
+  padding: $spacing-sm $spacing-md;
+  font-weight: $font-semibold;
+  border-radius: $radius-md;
+  color: $gray-500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  &.active {
+    background-color: $secondary-500; // Assuming secondarybtn
+    color: white;
+  }
+
+  &:hover {
+    color: $primary-500;
+  }
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md $spacing-xl;
+
+  @include screen-sm {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-md $spacing-2xl;
+  }
+
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-md $spacing-3xl;
+  }
+
+  @include screen-xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  margin-top: $spacing-xl;
+}
+
+.loading-message,
+.no-courses-message {
+  @extend .section-title; // Reuse for centering if needed, but adjust
+  text-align: center;
+  color: $gray-500;
+  grid-column: 1 / -1;
+
+  @include screen-sm {
+    grid-column: 1 / -1;
+  }
+}
+
+// Recommended Section
+.recommended-section {
+  height: 85vh;
+
+  @include screen-lg {
+    height: 85vh;
+  }
+
+  max-width: $container-xl;
+  margin: $spacing-xl auto 0;
+}
+
+.recommended-container {
+  padding: $spacing-xl 0;
+}
+
+.recommended-title {
+  font-size: $text-xl;
+  font-weight: $font-medium;
+}
+
+// Error Message
+.error-message {
+  text-align: center;
+  color: $error;
+  margin-top: $spacing-lg;
+}
+
+// Custom line for HR (used in CourseCard too, but defined here for consistency)
+.custom-line {
+  width: 90%;
+  height: 1px;
+  border-radius: $radius-lg;
+  margin: $spacing-sm auto 0;
+  background-color: $secondary-500; // Assuming primarybtn
+}

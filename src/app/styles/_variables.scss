@@ -1,109 +1,371 @@
-// _variables.scss - Global color and design system variables
+// _variables.scss
+
+// ============================================
+// COLOR PALETTE
+// ============================================
 
 // Primary Colors
-:root {
-  // Brand Colors
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-light: #6366f1;
-  --color-secondary: #7c3aed;
-  
-  // Background Gradients
-  --bg-gradient-start: #eff6ff;
-  --bg-gradient-mid: #f3e8ff;
-  --bg-gradient-end: #fce7f3;
-  
-  // Text Colors
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
-  --text-placeholder: #9ca3af;
-  
-  // Background Colors
-  --bg-white: #ffffff;
-  --bg-gray-50: #f9fafb;
-  --bg-gray-100: #f3f4f6;
-  --bg-gray-200: #e5e7eb;
-  
-  // Border Colors
-  --border-gray: #e5e7eb;
-  --border-gray-dark: #d1d5db;
-  
-  // Accent Colors
-  --color-yellow: #fbbf24;
-  --color-blue: #60a5fa;
-  --color-cyan: #22d3ee;
-  --color-purple: #a78bfa;
-  --color-indigo-100: #e0e7ff;
-  
-  // Shadow Colors
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --shadow-primary: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-  --shadow-primary-lg: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
+$primary-500: #4f46e5;
+$primary-600: #4338ca;
+$primary-400: #818cf8;
+$primary-300: #a5b4fc;
+$primary-200: #c7d2fe;
+$primary-100: #e0e7ff;
+$primary-50: #eff6ff;
+
+// Secondary Colors
+$secondary-500: #7c3aed;
+$secondary-600: #6d28d9;
+
+// Gray Scale (Light Mode)
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-500: #6b7280;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$gray-900: #111827;
+
+// Dark Mode Colors
+$dark-bg-primary: #0f172a;
+$dark-bg-secondary: #1e293b;
+$dark-bg-tertiary: #334155;
+$dark-bg-card: #1f2937;
+$dark-border: #475569;
+$dark-text-primary: #f8fafc;
+$dark-text-secondary: #cbd5e1;
+$dark-text-muted: #94a3b8;
+$dark-accent: #312e81;
+$dark-purple: #1e1b4b;
+$dark-red: #431407;
+
+// Accent Colors
+$cyan-400: #22d3ee;
+$yellow-400: #fbbf24;
+$blue-400: #60a5fa;
+$purple-400: #a78bfa;
+$pink-50: #fce7f3;
+$purple-50: #f3e8ff;
+
+// Semantic Colors
+$success: #10b981;
+$warning: #f59e0b;
+$error: #ef4444;
+$info: #3b82f6;
+
+// ============================================
+// GRADIENTS
+// ============================================
+
+$gradient-primary: linear-gradient(135deg, $primary-500, $secondary-500);
+$gradient-bg-light: linear-gradient(135deg, $primary-50 0%, $purple-50 50%, $pink-50 100%);
+$gradient-bg-dark: linear-gradient(135deg, $dark-bg-primary 0%, $dark-purple 50%, $dark-red 100%);
+$gradient-wave-light: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
+$gradient-wave-dark: linear-gradient(to top, rgba(15, 23, 42, 0.5), transparent);
+
+// ============================================
+// SPACING
+// ============================================
+
+$spacing-xs: 0.5rem;    // 8px
+$spacing-sm: 0.75rem;   // 12px
+$spacing-md: 1rem;      // 16px
+$spacing-lg: 1.5rem;    // 24px
+$spacing-xl: 2rem;      // 32px
+$spacing-2xl: 3rem;     // 48px
+$spacing-3xl: 4rem;     // 64px
+$spacing-4xl: 5rem;     // 80px
+$spacing-5xl: 6rem;     // 96px
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+// Font Sizes
+$text-xs: 0.75rem;      // 12px
+$text-sm: 0.875rem;     // 14px
+$text-base: 1rem;       // 16px
+$text-lg: 1.125rem;     // 18px
+$text-xl: 1.25rem;      // 20px
+$text-2xl: 1.5rem;      // 24px
+$text-3xl: 1.875rem;    // 30px
+$text-4xl: 2.25rem;     // 36px
+$text-5xl: 3rem;        // 48px
+$text-6xl: 3.75rem;     // 60px
+
+// Font Weights
+$font-normal: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+// Line Heights
+$leading-tight: 1.2;
+$leading-snug: 1.4;
+$leading-normal: 1.5;
+$leading-relaxed: 1.6;
+
+// ============================================
+// BORDER RADIUS
+// ============================================
+
+$radius-sm: 0.5rem;     // 8px
+$radius-md: 1rem;       // 16px
+$radius-lg: 1.5rem;     // 24px
+$radius-full: 9999px;   // Pill shape
+
+// ============================================
+// SHADOWS
+// ============================================
+
+$shadow-sm: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+// Dark Mode Shadows
+$shadow-dark-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+$shadow-dark-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+
+// Colored Shadows
+$shadow-primary: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+$shadow-primary-lg: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
+$shadow-primary-dark: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+$shadow-primary-dark-lg: 0 8px 15px -3px rgba(99, 102, 241, 0.5);
+
+// ============================================
+// TRANSITIONS
+// ============================================
+
+$transition-fast: 0.15s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+$transition-all: all 0.3s ease;
+$transition-transform: transform 0.3s ease;
+$transition-colors: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+$transition-shadow: box-shadow 0.3s ease;
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1440px;
+$breakpoint-3xl: 1920px;
+
+// ============================================
+// Z-INDEX
+// ============================================
+
+$z-base: 1;
+$z-dropdown: 10;
+$z-sticky: 20;
+$z-fixed: 30;
+$z-modal-backdrop: 40;
+$z-modal: 50;
+$z-popover: 60;
+$z-tooltip: 70;
+
+// ============================================
+// CONTAINER WIDTHS
+// ============================================
+
+$container-sm: 640px;
+$container-md: 768px;
+$container-lg: 1024px;
+$container-xl: 1280px;
+$container-2xl: 1536px;
+$container-max: 1920px;
+
+// ============================================
+// OPACITY
+// ============================================
+
+$opacity-light: 0.1;
+$opacity-medium: 0.5;
+$opacity-heavy: 0.8;
+
+// ============================================
+// BACKDROP FILTERS
+// ============================================
+
+$backdrop-blur-sm: blur(4px);
+$backdrop-blur-md: blur(8px);
+$backdrop-blur-lg: blur(16px);
+
+// ============================================
+// TECH STACK COLORS
+// ============================================
+
+$tech-js: #fbbf24;
+$tech-react: #60a5fa;
+$tech-tailwind: #22d3ee;
+$tech-python: #a78bfa;
+
+// ============================================
+// MIXINS
+// ============================================
+
+// Responsive breakpoints
+@mixin screen-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
 }
 
-// Dark Theme Colors
-:root.dark,
-.dark {
-  // Brand Colors (Dark)
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-primary-light: #818cf8;
-  
-  // Background Gradients (Dark)
-  --bg-gradient-start: #0f172a;
-  --bg-gradient-mid: #1e1b4b;
-  --bg-gradient-end: #431407;
-  
-  // Text Colors (Dark)
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-placeholder: #94a3b8;
-  
-  // Background Colors (Dark)
-  --bg-white: #1f2937;
-  --bg-gray-50: #334155;
-  --bg-gray-100: #374151;
-  --bg-gray-200: #4b5563;
-  
-  // Border Colors (Dark)
-  --border-gray: #475569;
-  --border-gray-dark: #64748b;
-  
-  // Accent Colors (Dark remain same)
-  --color-indigo-100: #312e81;
-  
-  // Shadow Colors (Dark)
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-  --shadow-primary: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
-  --shadow-primary-lg: 0 8px 15px -3px rgba(99, 102, 241, 0.5);
+@mixin screen-md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
 }
 
-// Export as SCSS variables for use in modules
-$color-primary: var(--color-primary);
-$color-primary-hover: var(--color-primary-hover);
-$color-primary-light: var(--color-primary-light);
-$color-secondary: var(--color-secondary);
+@mixin screen-lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
 
-$text-primary: var(--text-primary);
-$text-secondary: var(--text-secondary);
-$text-muted: var(--text-muted);
+@mixin screen-xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
 
-$bg-white: var(--bg-white);
-$bg-gray-50: var(--bg-gray-50);
-$bg-gray-100: var(--bg-gray-100);
+@mixin screen-2xl {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
 
-$border-gray: var(--border-gray);
+// Dark mode
+@mixin dark {
+  :global(.dark) & {
+    @content;
+  }
+}
 
-// Tech Stack Colors
-$tech-js: var(--color-yellow);
-$tech-react: var(--color-blue);
-$tech-tailwind: var(--color-cyan);
-$tech-python: var(--color-purple);
+// Hover effects
+@mixin hover-lift {
+  transition: $transition-all;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+  }
+}
+
+@mixin hover-scale {
+  transition: $transition-transform;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Gradient text
+@mixin gradient-text {
+  background: $gradient-primary;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Card style
+@mixin card {
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-md;
+  padding: $spacing-lg;
+  transition: $transition-all;
+  
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+// Button base
+@mixin button-base {
+  padding: $spacing-md $spacing-xl;
+  border-radius: $radius-full;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  border: none;
+  transition: $transition-all;
+  box-shadow: $shadow-lg;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: $shadow-xl;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Primary button
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-500;
+  color: white;
+  
+  &:hover {
+    background-color: $primary-600;
+  }
+  
+  @include dark {
+    background-color: $primary-400;
+    
+    &:hover {
+      background-color: $primary-500;
+    }
+  }
+}
+
+// Secondary button
+@mixin button-secondary {
+  @include button-base;
+  background-color: white;
+  color: $primary-500;
+  border: 2px solid $primary-500;
+  
+  &:hover {
+    background-color: $gray-50;
+  }
+  
+  @include dark {
+    background-color: $dark-bg-secondary;
+    color: $primary-400;
+    border-color: $primary-400;
+    
+    &:hover {
+      background-color: $dark-bg-tertiary;
+    }
+  }
+}
+
+// Glassmorphism effect
+@mixin glass {
+  background: rgba(255, 255, 255, $opacity-heavy);
+  backdrop-filter: $backdrop-blur-sm;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  @include dark {
+    background: rgba(30, 41, 59, $opacity-heavy);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+

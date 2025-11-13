@@ -60,21 +60,21 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Get theme from Redux store
-  const theme = useSelector((state: RootState) => state.theme.theme);
-  const [currentTheme, setCurrentTheme] = useState("light");
+  // const theme = useSelector((state: RootState) => state.theme.theme);
+  // const [currentTheme, setCurrentTheme] = useState("light");
 
-  useEffect(() => {
-    // Determine current theme (accounting for system preference)
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    const actualTheme = theme === "system" ? systemTheme : theme;
-    setCurrentTheme(actualTheme);
+  // useEffect(() => {
+  //   // Determine current theme (accounting for system preference)
+  //   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+  //     .matches
+  //     ? "dark"
+  //     : "light";
+  //   const actualTheme = theme === "system" ? systemTheme : theme;
+  //   setCurrentTheme(actualTheme);
 
-    // Apply theme class to document
-    document.documentElement.classList.toggle("dark", actualTheme === "dark");
-  }, [theme]);
+  //   // Apply theme class to document
+  //   document.documentElement.classList.toggle("dark", actualTheme === "dark");
+  // }, [theme]);
 
   useEffect(() => {
     let index = 0;
@@ -147,31 +147,31 @@ const Page = () => {
     {
       Icon: Book,
       color: "#4F46E5",
-      position: { top: "10%", left: "15%" },
+      position: { top: "1%", left: "1%" },
       delay: 0,
     },
     {
       Icon: Award,
       color: "#7C3AED",
-      position: { top: "30%", right: "10%" },
+      position: { top: "1%", right: "1%" },
       delay: 0.5,
     },
     {
       Icon: Lightbulb,
       color: "#F59E0B",
-      position: { bottom: "25%", left: "8%" },
+      position: { bottom: "1%", left: "1%" },
       delay: 1,
     },
     {
       Icon: Laptop,
       color: "#3B82F6",
-      position: { bottom: "15%", right: "15%" },
+      position: { bottom: "1%", right: "1%" },
       delay: 1.5,
     },
     {
       Icon: GraduationCap,
       color: "#10B981",
-      position: { top: "50%", left: "5%" },
+      position: { top: "1%", left: "25%" },
       delay: 2,
     },
   ];
