@@ -13,6 +13,11 @@ $primary-200: #c7d2fe;
 $primary-100: #e0e7ff;
 $primary-50: #eff6ff;
 
+$primary-color: $primary-500;  // Or any other color you prefer
+$primary-color-light: #6366f1; // Lighter shade for gradients
+$primary-color-dark: #4338ca;  // Darker shade for dark mode
+
+
 // Secondary Colors
 $secondary-500: #7c3aed;
 $secondary-600: #6d28d9;
@@ -115,7 +120,9 @@ $leading-relaxed: 1.6;
 $radius-sm: 0.5rem;     // 8px
 $radius-md: 1rem;       // 16px
 $radius-lg: 1.5rem;     // 24px
+$radius-xl: 2rem;       // Add this line for the $radius-xl variable
 $radius-full: 9999px;   // Pill shape
+
 
 // ============================================
 // SHADOWS

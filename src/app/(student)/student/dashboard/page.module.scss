@@ -1,17 +1,14 @@
-// HomePage.scss
-// Import variables (assuming _variables.scss is imported in a global scope or here via @import 'variables';
-
-@import '../../../styles/variables'; // Adjust path as needed
+@use '../../../styles/variables' as *;
 
 // Hero Section
-.hero-section {
+.heroSection {
   @include screen-sm {
     padding: $spacing-xl 0;
   }
 }
 
-.hero-container {
-  height: 50vh;
+.heroContainer {
+  min-height: 50vh; // Changed from fixed height to min-height for better content flow
   max-width: $container-2xl;
   margin: 0 auto;
   padding: 0 $spacing-md;
@@ -25,15 +22,17 @@
   }
 }
 
-.welcome-section {
+.welcomeSection {
   display: flex;
-  gap: $spacing-xl;
-  margin-top: $spacing-2xl;
+  gap: $spacing-md; // Reduced gap for better mobile alignment
+  margin-top: $spacing-lg; // Reduced from 2xl to lg for tighter spacing
   align-items: center;
   padding: 0 $spacing-md;
 
   @include screen-sm {
     padding: 0 $spacing-3xl;
+    gap: $spacing-xl;
+    margin-top: $spacing-xl;
   }
 
   @include screen-xl {
@@ -41,156 +40,267 @@
   }
 }
 
-.profile-image {
+.profileImage {
   height: 3rem;
   width: 3rem;
   border-radius: $radius-full;
   object-fit: cover;
 }
 
-.welcome-content {
+.welcomeContent {
   @include screen-sm {
     padding: $spacing-sm;
   }
 }
 
-.welcome-title {
+.welcomeTitle {
   font-size: $text-lg;
+  color: $gray-900;
 
   @include screen-sm {
     font-size: $text-xl;
   }
 
+  @include screen-xl {
+    font-size: $text-2xl;
+  }
+
   font-weight: $font-semibold;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
-.search-container {
-  margin-top: $spacing-lg;
-}
-
-.search-bar {
+.searchContainer {
+  margin-top: $spacing-xl;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.searchBar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 48rem;
+  border-radius: $radius-xl;
+  margin: 0 auto;
+  background-color: $gray-50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden; // Ensures rounded corners are neat
 
   @include screen-sm {
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    align-items: stretch;
     width: 80%;
   }
 
-  border-radius: $radius-lg;
-  margin: 0 auto;
+  @include dark {
+    background-color: $dark-bg-secondary;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
 }
 
-.search-input {
-  border-radius: $radius-full;
-  padding: $spacing-md $spacing-2xl $spacing-md $spacing-xl;
-  width: 100%;
+.searchInput {
+  flex: 1;
+  padding: $spacing-md $spacing-2xl;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  border-radius: $radius-xl 0 0 $radius-xl; // Only left corners rounded
+  background-color: $gray-100;
+  color: $gray-900;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: $gray-400;
+  }
+
+  &:focus {
+    box-shadow: inset 0 0 0 2px $primary-color;
+    background-color: $gray-50;
+  }
 
   @include screen-sm {
-    width: 30rem;
+    border-radius: $radius-xl 0 0 $radius-xl;
     margin-bottom: 0;
   }
 
-  @include screen-md {
-    width: 40rem;
-  }
+  @include dark {
+    background-color: $dark-bg-card;
+    color: $dark-text-primary;
 
-  @include screen-lg {
-    width: 48rem;
-  }
-
-  background-color: $gray-100;
-}
-
-.search-button {
-  @include button-primary;
-  padding: $spacing-sm $spacing-xl;
-
-  @include screen-sm {
-    padding: $spacing-lg $spacing-xl;
-    margin-left: $spacing-xl;
-  }
-
-  margin-top: $spacing-md;
-
-  @include screen-sm {
-    margin-top: 0;
-    margin-left: $spacing-xl;
+    &::placeholder {
+      color: $dark-text-muted;
+    }
+    
+    &:focus {
+      box-shadow: inset 0 0 0 2px $primary-color-dark;
+      background-color: $dark-bg-secondary;
+    }
   }
 }
 
-.hero-content-wrapper {
+.searchButton {
+  @include button-primary; // keep primary styles
+  border-radius: 0 $radius-xl $radius-xl 0; // Right corners rounded
+  padding: $spacing-md $spacing-2xl;
+  font-weight: 600;
+  background: linear-gradient(90deg, $primary-color, $primary-color-light);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: linear-gradient(90deg, $primary-color-dark, $primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  @include screen-sm {
+    margin-left: 0;
+  }
+
+  @include dark {
+    background: linear-gradient(90deg, $primary-color-dark, $primary-color);
+    color: #fff;
+
+    &:hover {
+      background: linear-gradient(90deg, $primary-color, $primary-color-dark);
+    }
+  }
+}
+
+
+.heroContentWrapper {
   position: relative;
   margin-top: $spacing-2xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Center content for better alignment
 }
 
-.hero-overlay {
+.heroOverlay {
   position: absolute;
   background-color: white;
   top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+  max-width: calc(100% - #{$spacing-md * 2});
+  width: auto;
+  z-index: $z-fixed;
 
+  // Medium screens — keep it left aligned with spacing (no centering)
   @include screen-sm {
     top: 7rem;
     left: $spacing-xl;
+    transform: none;
     padding: $spacing-2xl;
+    max-width: none;
   }
 
-  left: $spacing-md;
-  padding: $spacing-md;
-  border-radius: $radius-md;
+  // Large screens — align LEFT (fix)
+  @include screen-xl {
+    left: $spacing-2xl;   // <-- Align to left
+    right: auto;          // <-- Reset right
+    transform: none;      // <-- Ensure no centering transform
+  }
+
+  // Dark mode
+  @include dark { background-color: $dark-bg-card; box-shadow: $shadow-dark-xl; }
 }
 
-.hero-title {
+
+.heroTitle {
   font-size: $text-xl;
+  color: $gray-900;
+  font-weight: $font-semibold;
+  margin-bottom: $spacing-lg;
 
   @include screen-sm {
     font-size: $text-3xl;
   }
 
-  font-weight: $font-semibold;
-  margin-bottom: $spacing-lg;
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
-.hero-subtitle {
+.heroSubtitle {
   font-size: $text-sm;
+  color: $gray-600;
+  line-height: $leading-relaxed; // Added for better readability
 
   @include screen-sm {
     font-size: $text-base;
   }
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
 }
 
-.hero-image {
+.heroImage {
   width: 100%;
   object-fit: cover;
   height: 10rem;
+  border-radius: $radius-md; // Added subtle rounding
 
   @include screen-sm {
     height: auto;
+    min-height: 20rem; // Ensure taller image on larger screens
+  }
+
+  @include dark {
+    // Optional: slight filter for dark mode if needed
+    // filter: brightness(0.9);
   }
 }
 
 // Courses Section
-.courses-section {
-  margin-top: $spacing-3xl;
+.coursesSection {
+  margin-top: $spacing-2xl; // Reduced from 3xl to avoid excessive spacing
+  padding: 0 $spacing-md; // Added side padding for mobile
+
+  @include screen-sm {
+    padding: 0 $spacing-2xl;
+  }
+
+  @include screen-xl {
+    padding: 0;
+  }
 }
 
-.courses-container {
+.coursesContainer {
   max-width: $container-xl;
   margin: 0 auto;
 }
 
-.section-header {
+.sectionHeader {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: $spacing-3xl;
+  margin-top: $spacing-xl; // Reduced from 3xl
+  text-align: center; // Ensure centering
 }
 
-.section-title {
+.sectionTitle {
   font-size: $text-2xl;
+  color: $gray-900;
+  font-weight: $font-semibold;
+  line-height: $leading-tight;
 
   @include screen-sm {
     font-size: $text-3xl;
@@ -200,11 +310,12 @@
     font-size: $text-4xl;
   }
 
-  font-weight: $font-semibold;
-  line-height: $leading-tight;
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
-.section-divider {
+.sectionDivider {
   width: 4rem;
 
   @include screen-sm {
@@ -214,16 +325,17 @@
   height: 0.5rem;
   border-radius: $radius-lg;
   margin: $spacing-sm auto 0;
-  background-color: $secondary-500; // Assuming primarybtn is secondary-500 based on context
+  background-color: $secondary-500;
 }
 
-.categories-section {
+.categoriesSection {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: $spacing-xl; // Added for separation
 }
 
-.categories-buttons {
+.categoriesButtons {
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-md;
@@ -240,29 +352,50 @@
   justify-content: center;
 }
 
-.category-button {
+.categoryButton {
   padding: $spacing-sm $spacing-md;
   font-weight: $font-semibold;
   border-radius: $radius-md;
   color: $gray-500;
   background: transparent;
-  border: none;
+  border: 1px solid transparent; // Added subtle border for definition
   cursor: pointer;
   transition: $transition-colors;
 
   &.active {
-    background-color: $secondary-500; // Assuming secondarybtn
+    background-color: $secondary-500;
     color: white;
+    border-color: $secondary-500;
   }
 
   &:hover {
     color: $primary-500;
+    border-color: $primary-200;
+  }
+
+  @include screen-sm {
+    padding: $spacing-md $spacing-lg; // Slightly larger on sm+
+  }
+
+  @include dark {
+    color: $dark-text-secondary;
+
+    &.active {
+      background-color: $secondary-500;
+      color: white;
+      border-color: $secondary-500;
+    }
+
+    &:hover {
+      color: $primary-400;
+      border-color: $primary-400;
+    }
   }
 }
 
-.courses-grid {
+.coursesGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr; // Single column on mobile for better alignment
   gap: $spacing-md $spacing-xl;
 
   @include screen-sm {
@@ -282,51 +415,62 @@
   margin-top: $spacing-xl;
 }
 
-.loading-message,
-.no-courses-message {
-  @extend .section-title; // Reuse for centering if needed, but adjust
+.loadingMessage,
+.noCoursesMessage {
+  @extend .sectionTitle;
   text-align: center;
   color: $gray-500;
   grid-column: 1 / -1;
+  padding: $spacing-xl; // Added padding for better visual spacing
 
-  @include screen-sm {
-    grid-column: 1 / -1;
+  @include dark {
+    color: $dark-text-muted;
   }
 }
 
 // Recommended Section
-.recommended-section {
-  height: 85vh;
+.recommendedSection {
+  min-height: 85vh; // Changed to min-height for flexibility
+  max-width: $container-xl;
+  margin: $spacing-2xl auto 0; // Adjusted spacing
+  padding: 0 $spacing-md; // Side padding for mobile
 
-  @include screen-lg {
-    height: 85vh;
+  @include screen-sm {
+    padding: 0 $spacing-2xl;
   }
 
-  max-width: $container-xl;
-  margin: $spacing-xl auto 0;
+  @include screen-xl {
+    padding: 0;
+  }
 }
 
-.recommended-container {
+.recommendedContainer {
   padding: $spacing-xl 0;
 }
 
-.recommended-title {
+.recommendedTitle {
   font-size: $text-xl;
+  color: $gray-900;
   font-weight: $font-medium;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
 // Error Message
-.error-message {
+.errorMessage {
   text-align: center;
   color: $error;
   margin-top: $spacing-lg;
+  padding: $spacing-xl; // Added padding for better isolation
 }
 
-// Custom line for HR (used in CourseCard too, but defined here for consistency)
-.custom-line {
+// Custom line
+.customLine {
   width: 90%;
   height: 1px;
   border-radius: $radius-lg;
   margin: $spacing-sm auto 0;
-  background-color: $secondary-500; // Assuming primarybtn
+  background-color: $secondary-500;
 }

@@ -1,211 +1,193 @@
+'use client';
+
 import React, { useEffect, useState } from "react";
-
-// import { useParams } from "react-router-dom";
 import axios from "axios";
-
 import { useDispatch } from "react-redux";
-// import { setUserData } from "../../features/userSlice";
-import "./page.module.scss"; // Import the SCSS file
+import styles from "./page.module.scss"; 
+
 import { ALL_CATEGORY_API, ALL_COURSE_API, USER_DETAILS_API } from "@/utils/constants/api";
+import CourseCard from "@/components/coursecard/Card";
 
-const Page = () => {
-  const [userData, setUsersData] = useState(null);
-  // const { userId } = useParams(); // Destructure userId from useParams
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [categories, setCategories] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [instructors , setInstructors] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface UserData {
+  name: string;
+}
 
-  const dispatch = useDispatch()
+interface Category {
+  _id: string;
+  name: string;
+}
 
+interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  // Add other course properties as needed
+}
+
+const Page: React.FC = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [instructors, setInstructors] = useState<any[]>([]); // Use correct type if available
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMounted, setHasMounted] = useState(false); // State to prevent hydration errors
+
+  const dispatch = useDispatch();
+
+  // Fetch categories - runs on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(ALL_CATEGORY_API); // Replace with your categories API endpoint
+        const response = await axios.get(ALL_CATEGORY_API);
         setCategories([{ _id: "all", name: "All" }, ...response.data]);
       } catch (error) {
-        console.error("Error fetching categories:", error);
         setError("Failed to load categories");
       }
     };
-
     fetchCategories();
   }, []);
 
+  // Fetch courses based on selected category
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
         let url = ALL_COURSE_API;
-        url =
-          selectedCategory === "all"
-            ? url
-            : `${url}?category=${selectedCategory}`;
+
+        // Modify URL to filter by category
+        url = selectedCategory === "all" ? url : `${url}?category=${selectedCategory}`;
+
         const response = await axios.get(url);
-        // console.log(response, "cateww");
         setCourses(response.data);
       } catch (error) {
-        console.error("Error fetching courses:", error);
         setError("Failed to load courses");
       } finally {
         setLoading(false);
       }
     };
-
     fetchCourses();
   }, [selectedCategory]);
 
+  // Fetch instructors - runs on mount
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const getAllInstructors = async () => {
       try {
-        const response = await axios.get(`${USER_DETAILS_API}/user/${userId} `);
-        // console.log("User details response:", response.data[0]);
-        setUsersData(response.data[0]);
+        const response = await axios.get(`${USER_DETAILS_API}/users`);
+        setInstructors(response.data); // Assuming you need instructors data
       } catch (error) {
-        console.error("Error fetching user details:", error);
-        // Handle the error 
+        console.log(error);
       }
     };
-
-    if (userId) {
-      fetchUserDetails(); // Call the async function if userId is available
-    }
-  }, [userId]);
-
-  useEffect(()=>{
-    const getAllInstructors = async ()=>{
-      try{
-        const response = await axios.get(`${USER_DETAILS_API}/users`);
-        const filteredInstructors = response.data.users.filter(user => user.role === 'instructor');
-        setInstructors(filteredInstructors)
-      }catch(error){
-        console.log(error)
-      }
-    }
     getAllInstructors();
-  },[])
-  
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
-  console.log(userData , "data")
-  dispatch(setUserData(userData))
-  const userRole = userData?.role;
+  }, []);
 
+  // Fetch user data for personalized greeting
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${USER_DETAILS_API}/me`);
+        setUserData(response.data);
+      } catch (error) {
+        console.log("Failed to fetch user data");
+      }
+    };
+    fetchUserData();
+  }, []);
+
+
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  // Avoid rendering dynamic data until the component has mounted
+  if (!hasMounted) return null; // Skip SSR rendering until after the component has mounted
+
+  if (error) return <div className={styles.errorMessage}>{error}</div>;
 
   return (
     <>
-      {/* Hero */}
-      <section className="hero-section">
-        <div className="hero-container">
-          {/* Welcome Section */}
-          <div className="welcome-section">
+      {/* Hero Section */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroContainer}>
+          <div className={styles.welcomeSection}>
             <img
-              className="profile-image"
-              src= {userData?.profilePicture?.url}
-              alt=""
+              className={styles.profileImage}
+              src="https://blog.ipleaders.in/wp-content/uploads/2021/05/online-course-blog-header.jpg"
+              alt="Profile"
             />
-            <div className="welcome-content">
-              {userData && (
-                <h3 className="welcome-title">
-                  Welcome, {userData.name} {/* Use userData.name */}
-                </h3>
-              )}
+            <div className={styles.welcomeContent}>
+              {userData && <h3 className={styles.welcomeTitle}>Welcome, {userData.name}</h3>}
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="search-container">
-            <div className="search-bar">
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search course"
-              />
-              <button className="search-button">
-                Search
-              </button>
+          <div className={styles.searchContainer}>
+            <div className={styles.searchBar}>
+              <input type="text" className={styles.searchInput} placeholder="Search course" />
+              <button className={styles.searchButton}>Search</button>
             </div>
 
-            {/* Image and Content */}
-            <div className="hero-content-wrapper">
-              <div className="hero-overlay">
-                <h1 className="hero-title">
-                  Learning that gets you
-                </h1>
-                <p className="hero-subtitle">
-                  Skills for your present (and your future).
-                  <br />
-                  Get started with us.
+            <div className={styles.heroContentWrapper}>
+              <div className={styles.heroOverlay}>
+                <h1 className={styles.heroTitle}>Learning that gets you</h1>
+                <p className={styles.heroSubtitle}>
+                  Skills for your present (and your future). <br /> Get started with us.
                 </p>
               </div>
+
               <img
-                className="hero-image"
+                className={styles.heroImage}
                 src="https://s.udemycdn.com/browse_components/billboard/fallback_banner_image_udlite.jpg"
-                alt=""
+                alt="Hero"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Courses */}
-      <section className="courses-section">
-        <div className="courses-container">
-          {/* Header Section */}
-          <div className="section-header">
-            <h2 className="section-title">
-              Our Online Courses
-            </h2>
-            <hr className="section-divider" />
+      {/* Courses Section */}
+      <section className={styles.coursesSection}>
+        <div className={styles.coursesContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Our Online Courses</h2>
+            <hr className={styles.sectionDivider} />
           </div>
 
-          {/* Buttons Section */}
-          <div className="categories-section">
-            <div className="categories-buttons">
+          <div className={styles.categoriesSection}>
+            <div className={styles.categoriesButtons}>
               {categories.map((category) => (
                 <button
                   key={category._id}
-                  className={`category-button ${selectedCategory === category._id ? 'active' : ''}`}
+                  className={`${styles.categoryButton} ${selectedCategory === category._id ? styles.active : ""}`}
                   onClick={() => setSelectedCategory(category._id)}
                 >
                   {category.name}
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Course Grid Section */}
+          <div className={styles.coursesGrid}>
             {loading ? (
-              <div className="loading-message">Loading...</div>
+              <div className={styles.loadingMessage}>Loading courses...</div>
+            ) : courses.length === 0 ? (
+              <div className={styles.noCoursesMessage}>No courses found</div>
             ) : (
-              <div className="courses-grid">
-                {courses.length > 0 ? (
-                  courses.map((course) => (
-                    <CourseCard
-                      key={course._id}
-                      course={course}
-                      role={userRole}
-                    />
-                  ))
-                ) : (
-                  <p className="no-courses-message">
-                    No courses available in this category
-                  </p>
-                )}
-              </div>
+              courses.map((course) => (
+                <CourseCard key={course._id} course={course} />
+              ))
             )}
           </div>
         </div>
       </section>
 
-      <section className="recommended-section">
-        <div className="recommended-container">
-          <h2 className="recommended-title">Recomended For You</h2>
-          <div>
-            {/* <AppleCardsCarouselDemo instructor = {instructors} /> */}
-          </div>
+      {/* Recommended Section */}
+      <section className={styles.recommendedSection}>
+        <div className={styles.recommendedContainer}>
+          <h2 className={styles.recommendedTitle}>Recommended For You</h2>
+          {/* Similar grid rendering can be added here */}
         </div>
       </section>
     </>

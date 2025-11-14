@@ -5,42 +5,43 @@ import { useDispatch, useSelector } from "react-redux";
 // import { addItemToCart } from "../../features/cartSlice";
 import { FaHeart } from "react-icons/fa6";
 // import { addItemToWishlist, removeWishlistItem, selectWishlistItems } from "../../features/wishlistSlice";
-import "./CourseCard.scss"; // Import SCSS for CourseCard
+import "./CourseCard.module.scss"; // Import SCSS for CourseCard
+import Link from "next/link";
 
 function CourseCard({ role, course }) {
-  const { userId } = useParams();
+  // const { userId } = useParams();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const wishlistItems = useSelector(selectWishlistItems);
+  // const wishlistItems = useSelector(selectWishlistItems);
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  // const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Update local state when wishlist items change
-  useEffect(() => {
-    if (wishlistItems && course) {
-      const inWishlist = wishlistItems.some((item) => item._id === course._id);
-      setIsWishlisted(inWishlist);
-    }
-  }, [wishlistItems, course]);
+  // useEffect(() => {
+  //   if (wishlistItems && course) {
+  //     const inWishlist = wishlistItems.some((item) => item._id === course._id);
+  //     setIsWishlisted(inWishlist);
+  //   }
+  // }, [wishlistItems, course]);
 
   // Handle wishlist toggle
-  const handleWishlistToggle = () => {
-    if (!course || !userId) return;
+  // const handleWishlistToggle = () => {
+  //   if (!course || !userId) return;
 
-    if (isWishlisted) {
-      dispatch(removeWishlistItem({ courseId: course._id, userId }));
-    } else {
-      dispatch(addItemToWishlist({ ...course, userId }));
-    }
-  };
+  //   if (isWishlisted) {
+  //     dispatch(removeWishlistItem({ courseId: course._id, userId }));
+  //   } else {
+  //     dispatch(addItemToWishlist({ ...course, userId }));
+  //   }
+  // };
 
   return (
     <article
       className="course-card"
       id="Card"
     >
-      <Link to={`/${role}/${userId}/coursepage/${course?._id}`}>
+      <Link href={`/course/${course?._id}`}>
         <img
           className="course-image"
           src={course?.image?.url}
@@ -49,11 +50,11 @@ function CourseCard({ role, course }) {
       </Link>
       <button
         className="wishlist-button"
-        onClick={handleWishlistToggle}
-        aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        // onClick={handleWishlistToggle}
+        // aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
       >
         <FaHeart 
-          className={`wishlist-icon ${isWishlisted ? 'active' : ''}`}
+          // className={`wishlist-icon ${isWishlisted ? 'active' : ''}`}
         />
       </button>
       <p
@@ -89,7 +90,7 @@ function CourseCard({ role, course }) {
         </span>
         <button
           className="add-button"
-          onClick={() => dispatch(addItemToCart({ ...course, userId: userId }))}
+          // onClick={() => dispatch(addItemToCart({ ...course, userId: userId }))}
         >
           Add+
         </button>
