@@ -1,7 +1,7 @@
 // CourseCard.scss
 // Import variables (assuming _variables.scss is imported globally or here)
 
-@use '../../styles/variables' as *;  // This brings in all variables, mixins, etc.
+@use '../../app/styles/variables' as *;  // This brings in all variables, mixins, etc.
 
 
 .course-card {
