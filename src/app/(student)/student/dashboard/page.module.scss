@@ -1,11 +1,13 @@
 @use '../../../styles/variables' as *;
 
-// Hero Section
-.heroSection {
-  @include screen-sm {
-    padding: $spacing-xl 0;
+.dashboardContainer {
+  @include dark {
+    background: $gradient-bg-dark;
   }
 }
+
+// Hero Section
+
 
 .heroContainer {
   min-height: 50vh; // Changed from fixed height to min-height for better content flow
@@ -25,18 +27,16 @@
 .welcomeSection {
   display: flex;
   gap: $spacing-md; // Reduced gap for better mobile alignment
-  margin-top: $spacing-lg; // Reduced from 2xl to lg for tighter spacing
   align-items: center;
-  padding: 0 $spacing-md;
+  padding: $spacing-lg $spacing-md;
 
   @include screen-sm {
-    padding: 0 $spacing-3xl;
+    padding:$spacing-2xl 0;
     gap: $spacing-xl;
-    margin-top: $spacing-xl;
   }
 
   @include screen-xl {
-    padding: 0;
+    padding: $spacing-2xl 0;
   }
 }
 
@@ -283,7 +283,7 @@
 }
 
 .coursesContainer {
-  max-width: $container-xl;
+  max-width: $container-2xl;
   margin: 0 auto;
 }
 
@@ -396,16 +396,16 @@
 .coursesGrid {
   display: grid;
   grid-template-columns: 1fr; // Single column on mobile for better alignment
-  gap: $spacing-md $spacing-xl;
+  gap: $spacing-md $spacing-sm;
 
   @include screen-sm {
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-md $spacing-2xl;
+    gap: $spacing-md $spacing-xl;
   }
 
   @include screen-lg {
     grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-md $spacing-3xl;
+    gap: $spacing-md $spacing-xl;
   }
 
   @include screen-xl {

@@ -13,7 +13,7 @@ export default function Layout({children}: StudentLayoutProps) {
   return (
      <div>
       <StudentHeader />
-      <main style={{ padding: "20px" }}>{children}</main>
+      <main>{children}</main>
     </div>
   )
 }

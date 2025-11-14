@@ -1,167 +1,252 @@
-// CourseCard.scss
-// Import variables (assuming _variables.scss is imported globally or here)
+@use '../../app/styles/variables' as *;
 
-@use '../../app/styles/variables' as *;  // This brings in all variables, mixins, etc.
-
-
-.course-card {
+.courseCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
   max-width: 20rem;
-
-  @include screen-sm {
-    max-width: 24rem;
-  }
-
-  @include screen-lg {
-    max-width: 28rem;
-  }
-
+  min-height: 24rem; // Fixed minimum height for consistency
   background-color: white;
   box-shadow: $shadow-lg;
   border-radius: $radius-lg;
   overflow: hidden;
-  margin: $spacing-xs;
+  margin: $spacing-sm;
   position: relative;
   transition: $transition-all;
 
+  @include screen-sm {
+    max-width: 22rem;
+    min-height: 26rem;
+  }
+
+  @include screen-md {
+    max-width: 24rem;
+    min-height: 28rem;
+  }
+
+  @include screen-lg {
+    max-width: 24rem;
+    min-height: 26rem;
+  }
+
   &:hover {
-    @include hover-lift;
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+  }
+
+  // Dark mode support using :global(.dark) selector
+  :global(.dark) & {
+    background-color: $dark-bg-card;
+    box-shadow: $shadow-dark-md;
+
+    .courseDescription {
+      color: $dark-text-secondary;
+    }
+
+    .courseMetaGrid,
+    .courseDetailsGrid {
+      border-top-color: $dark-border;
+    }
+
+    .metaItem,
+    .detailsItem {
+      color: $dark-text-muted;
+    }
+
+    .customLine {
+      background-color: $dark-border;
+    }
+
+    .addButton {
+      background-color: $primary-400;
+      
+      &:hover {
+        background-color: $primary-500;
+      }
+    }
+
+    .wishlistButton {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .wishlistIcon {
+      color: $dark-text-muted;
+
+      &.active {
+        color: $error;
+      }
+    }
   }
 }
 
-.course-image {
-  height: 9.375rem; // 150px
+.imageContainer {
+  width: 100%;
+  height: 12rem; // Fixed height for rectangular shape
+  overflow: hidden;
+  flex-shrink: 0; // Prevent image from shrinking
 
   @include screen-sm {
-    height: 11.25rem; // 180px
+    height: 13rem;
   }
 
-  width: 100%;
-  object-fit: fill;
+  @include screen-md {
+    height: 14rem;
+  }
 }
 
-.wishlist-button {
+.courseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+
+  .courseCard:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.courseContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1; // Take remaining space
+  padding: $spacing-md;
+  padding-top: $spacing-sm;
+}
+
+.courseDescription {
+  margin-bottom: $spacing-sm;
+  font-size: $text-sm;
+  color: $gray-700;
+  line-height: $leading-snug;
+  
+  // Critical: These properties ensure 2-line truncation
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  // Fallback for non-webkit browsers
+  max-height: calc(#{$text-sm} * #{$leading-snug} * 2);
+
+  @include screen-sm {
+    font-size: $text-base;
+    max-height: calc(#{$text-base} * #{$leading-snug} * 2);
+  }
+}
+
+.courseMetaGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  margin-top: auto; // Push to bottom
+  text-align: center;
+}
+
+.customLine {
+  width: 100%;
+  height: 1px;
+  border: none;
+  background-color: $gray-200;
+  margin: $spacing-sm 0;
+}
+
+.courseDetailsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+  align-items: center;
+  text-align: center;
+  padding-top: $spacing-sm;
+}
+
+.addButton {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-full;
+  cursor: pointer;
+  background-color: $primary-500;
+  color: white;
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  transition: $transition-all;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    background-color: $primary-600;
+    transform: scale(1.05);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @include screen-sm {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $text-sm;
+  }
+}
+
+.wishlistButton {
   position: absolute;
-  top: $spacing-sm;
+  top: $spacing-md;
   right: $spacing-md;
   padding: $spacing-sm;
   border-radius: $radius-full;
-  transition: $transition-colors;
-  background: transparent;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
   border: none;
   cursor: pointer;
+  z-index: $z-base;
+  box-shadow: $shadow-sm;
 
   &:hover {
-    background-color: rgba($gray-100, $opacity-medium);
+    background-color: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
-.wishlist-icon {
-  font-size: $text-2xl;
-  color: $gray-400;
+.wishlistIcon {
+  font-size: $text-xl;
+  color: $gray-500;
+  transition: color 0.3s ease;
 
   &.active {
     color: $error;
   }
 }
 
-.course-description {
+.metaItem,
+.detailsItem {
+  font-size: $text-xs;
+  font-weight: $font-medium;
+  color: $gray-600;
+
+  @include screen-sm {
+    font-size: $text-sm;
+  }
+}
+
+.metaItem {
   padding: $spacing-xs;
-  font-size: $text-sm;
-
-  @include screen-sm {
-    font-size: $text-base;
-  }
-
-  color: $gray-700;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.course-meta-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-sm;
-
-  @include screen-sm {
-    gap: $spacing-md;
-  }
-
-  padding: $spacing-sm;
-  border-top: 1px solid $gray-200;
-  text-align: center;
-}
-
-.meta-item {
-  font-size: $text-xs;
-
-  @include screen-sm {
-    font-size: $text-sm;
-  }
-
-  font-weight: $font-medium;
-  color: $gray-600;
-}
-
-.course-details-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-sm;
-
-  @include screen-sm {
-    gap: $spacing-md;
-    padding: $spacing-lg;
-  }
-
-  padding: $spacing-sm;
-  border-top: 1px solid $gray-200;
-  text-align: center;
-}
-
-.details-item {
-  font-size: $text-xs;
-
-  @include screen-sm {
-    font-size: $text-sm;
-  }
-
-  font-weight: $font-medium;
-  color: $gray-600;
-}
-
-.add-button {
-  @include button-primary;
-  padding: $spacing-xs $spacing-sm;
-
-  @include screen-sm {
-    padding: $spacing-xs $spacing-md;
-    margin: $spacing-sm;
-  }
-
-  margin: $spacing-xs $spacing-md;
-
-  @include screen-sm {
-    margin: $spacing-sm $spacing-lg;
-  }
-
-  font-size: $text-xs;
-
-  @include screen-sm {
-    font-size: $text-sm;
-  }
-}
-
-// Reuse custom-line from HomePage if global, or redefine if needed
-.custom-line {
-  width: 90%;
-  height: 1px;
-  border-radius: $radius-lg;
-  margin: $spacing-sm auto 0;
-  background-color: $secondary-500;
+.detailsItem {
+  padding: $spacing-xs;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import styles from "./page.module.scss"; 
+import styles from "./page.module.scss";
 
-import { ALL_CATEGORY_API, ALL_COURSE_API, USER_DETAILS_API } from "@/utils/constants/api";
+import {
+  ALL_CATEGORY_API,
+  ALL_COURSE_API,
+  USER_DETAILS_API,
+} from "@/utils/constants/api";
 import CourseCard from "@/components/coursecard/Card";
 
 interface UserData {
@@ -57,7 +61,10 @@ const Page: React.FC = () => {
         let url = ALL_COURSE_API;
 
         // Modify URL to filter by category
-        url = selectedCategory === "all" ? url : `${url}?category=${selectedCategory}`;
+        url =
+          selectedCategory === "all"
+            ? url
+            : `${url}?category=${selectedCategory}`;
 
         const response = await axios.get(url);
         setCourses(response.data);
@@ -96,8 +103,6 @@ const Page: React.FC = () => {
     fetchUserData();
   }, []);
 
-
-
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -109,87 +114,100 @@ const Page: React.FC = () => {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className={styles.heroSection}>
-        <div className={styles.heroContainer}>
-          <div className={styles.welcomeSection}>
-            <img
-              className={styles.profileImage}
-              src="https://blog.ipleaders.in/wp-content/uploads/2021/05/online-course-blog-header.jpg"
-              alt="Profile"
-            />
-            <div className={styles.welcomeContent}>
-              {userData && <h3 className={styles.welcomeTitle}>Welcome, {userData.name}</h3>}
+      <div className={styles.dashboardContainer}>
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroContainer}>
+            <div className={styles.welcomeSection}>
+              <img
+                className={styles.profileImage}
+                src="https://blog.ipleaders.in/wp-content/uploads/2021/05/online-course-blog-header.jpg"
+                alt="Profile"
+              />
+              <div className={styles.welcomeContent}>
+                {userData && (
+                  <h3 className={styles.welcomeTitle}>
+                    Welcome, {userData.name}
+                  </h3>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className={styles.searchContainer}>
-            <div className={styles.searchBar}>
-              <input type="text" className={styles.searchInput} placeholder="Search course" />
-              <button className={styles.searchButton}>Search</button>
-            </div>
-
-            <div className={styles.heroContentWrapper}>
-              <div className={styles.heroOverlay}>
-                <h1 className={styles.heroTitle}>Learning that gets you</h1>
-                <p className={styles.heroSubtitle}>
-                  Skills for your present (and your future). <br /> Get started with us.
-                </p>
+            <div className={styles.searchContainer}>
+              <div className={styles.searchBar}>
+                <input
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder="Search course"
+                />
+                <button className={styles.searchButton}>Search</button>
               </div>
 
-              <img
-                className={styles.heroImage}
-                src="https://s.udemycdn.com/browse_components/billboard/fallback_banner_image_udlite.jpg"
-                alt="Hero"
-              />
+              <div className={styles.heroContentWrapper}>
+                <div className={styles.heroOverlay}>
+                  <h1 className={styles.heroTitle}>Learning that gets you</h1>
+                  <p className={styles.heroSubtitle}>
+                    Skills for your present (and your future). <br /> Get
+                    started with us.
+                  </p>
+                </div>
+
+                <img
+                  className={styles.heroImage}
+                  src="https://s.udemycdn.com/browse_components/billboard/fallback_banner_image_udlite.jpg"
+                  alt="Hero"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Courses Section */}
-      <section className={styles.coursesSection}>
-        <div className={styles.coursesContainer}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Our Online Courses</h2>
-            <hr className={styles.sectionDivider} />
-          </div>
+        {/* Courses Section */}
+        <section className={styles.coursesSection}>
+          <div className={styles.coursesContainer}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Our Online Courses</h2>
+              <hr className={styles.sectionDivider} />
+            </div>
 
-          <div className={styles.categoriesSection}>
-            <div className={styles.categoriesButtons}>
-              {categories.map((category) => (
-                <button
-                  key={category._id}
-                  className={`${styles.categoryButton} ${selectedCategory === category._id ? styles.active : ""}`}
-                  onClick={() => setSelectedCategory(category._id)}
-                >
-                  {category.name}
-                </button>
-              ))}
+            <div className={styles.categoriesSection}>
+              <div className={styles.categoriesButtons}>
+                {categories.map((category) => (
+                  <button
+                    key={category._id}
+                    className={`${styles.categoryButton} ${
+                      selectedCategory === category._id ? styles.active : ""
+                    }`}
+                    onClick={() => setSelectedCategory(category._id)}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.coursesGrid}>
+              {loading ? (
+                <div className={styles.loadingMessage}>Loading courses...</div>
+              ) : courses.length === 0 ? (
+                <div className={styles.noCoursesMessage}>No courses found</div>
+              ) : (
+                courses.map((course) => (
+                  <CourseCard key={course._id} course={course} />
+                ))
+              )}
             </div>
           </div>
+        </section>
 
-          <div className={styles.coursesGrid}>
-            {loading ? (
-              <div className={styles.loadingMessage}>Loading courses...</div>
-            ) : courses.length === 0 ? (
-              <div className={styles.noCoursesMessage}>No courses found</div>
-            ) : (
-              courses.map((course) => (
-                <CourseCard key={course._id} course={course} />
-              ))
-            )}
+        {/* Recommended Section */}
+        <section className={styles.recommendedSection}>
+          <div className={styles.recommendedContainer}>
+            <h2 className={styles.recommendedTitle}>Recommended For You</h2>
+            {/* Similar grid rendering can be added here */}
           </div>
-        </div>
-      </section>
-
-      {/* Recommended Section */}
-      <section className={styles.recommendedSection}>
-        <div className={styles.recommendedContainer}>
-          <h2 className={styles.recommendedTitle}>Recommended For You</h2>
-          {/* Similar grid rendering can be added here */}
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 };

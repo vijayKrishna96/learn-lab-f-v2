@@ -1,20 +1,33 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { Link, useParams } from "react-router-dom";
-// import { addItemToCart } from "../../features/cartSlice";
+import { useParams } from "next/navigation";
 import { FaHeart } from "react-icons/fa6";
-// import { addItemToWishlist, removeWishlistItem, selectWishlistItems } from "../../features/wishlistSlice";
-import "./CourseCard.module.scss"; // Import SCSS for CourseCard
 import Link from "next/link";
+// import { addItemToCart } from "../../features/cartSlice";
+// import { addItemToWishlist, removeWishlistItem, selectWishlistItems } from "../../features/wishlistSlice";
+import styles from "./CourseCard.module.scss";
 
-function CourseCard({ role, course }) {
-  // const { userId } = useParams();
+// Define types for the props
+interface CourseCardProps {
+  role: string;
+  course: {
+    _id: string;
+    image: {
+      url: string;
+    };
+    description: string;
+    averageRating: number;
+    price: number;
+    modules: Array<any>;
+  };
+}
 
-  // const dispatch = useDispatch();
-
+const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
+  const params = useParams();
+  const userId = params.userId as string;
+  const dispatch = useDispatch();
   // const wishlistItems = useSelector(selectWishlistItems);
-
   // const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Update local state when wishlist items change
@@ -28,7 +41,6 @@ function CourseCard({ role, course }) {
   // Handle wishlist toggle
   // const handleWishlistToggle = () => {
   //   if (!course || !userId) return;
-
   //   if (isWishlisted) {
   //     dispatch(removeWishlistItem({ courseId: course._id, userId }));
   //   } else {
@@ -37,66 +49,64 @@ function CourseCard({ role, course }) {
   // };
 
   return (
-    <article
-      className="course-card"
-      id="Card"
-    >
-      <Link href={`/course/${course?._id}`}>
+    <article className={styles.courseCard}>
+      {/* Image Container with Link */}
+      <Link href={`/${role}/course/${course._id}`} className={styles.imageContainer}>
         <img
-          className="course-image"
+          className={styles.courseImage}
           src={course?.image?.url}
-          alt="Course Image"
+          alt={course?.description || "Course Image"}
         />
       </Link>
+
+      {/* Wishlist Button */}
       <button
-        className="wishlist-button"
+        className={styles.wishlistButton}
         // onClick={handleWishlistToggle}
+        aria-label="Add to wishlist"
         // aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
       >
-        <FaHeart 
-          // className={`wishlist-icon ${isWishlisted ? 'active' : ''}`}
+        <FaHeart
+          className={styles.wishlistIcon}
+          // className={`${styles.wishlistIcon} ${isWishlisted ? styles.active : ''}`}
         />
       </button>
-      <p
-        className="course-description"
-        id="Text"
-      >
-        {course?.description}
-      </p>
-      <div
-        className="course-meta-grid"
-        id="Text"
-      >
-        <span
-          className="meta-item"
-          id="Text"
-        >
-          {course?.averageRating}
-        </span>
-        <span
-          className="meta-item"
-          id="Text"
-        >
-          &#8377; {course?.price}
-        </span>
-      </div>
-      <hr className="custom-line" />
-      <div className="course-details-grid">
-        <span
-          className="details-item"
-          id="Text"
-        >
-          Modules {course?.modules?.length}
-        </span>
-        <button
-          className="add-button"
-          // onClick={() => dispatch(addItemToCart({ ...course, userId: userId }))}
-        >
-          Add+
-        </button>
+
+      {/* Course Content */}
+      <div className={styles.courseContent}>
+        <p className={styles.courseDescription}>
+          {course?.description}
+        </p>
+
+        {/* Rating and Price */}
+        <div className={styles.courseMetaGrid}>
+          <span className={styles.metaItem}>
+            ⭐ {course?.averageRating?.toFixed(1) || "N/A"}
+          </span>
+          <span className={styles.metaItem}>
+            ₹{course?.price?.toLocaleString()}
+          </span>
+        </div>
+
+        {/* Divider */}
+        <hr className={styles.customLine} />
+
+        {/* Modules Count and Add Button */}
+        <div className={styles.courseDetailsGrid}>
+          <span className={styles.detailsItem}>
+            {course?.modules?.length || 0} Modules
+          </span>
+          <button
+            className={styles.addButton}
+            // onClick={() => dispatch(addItemToCart({ ...course, userId }))}
+            aria-label="Add to cart"
+          >
+            Add +
+          </button>
+        </div>
       </div>
     </article>
   );
-}
+};
 
 export default CourseCard;
