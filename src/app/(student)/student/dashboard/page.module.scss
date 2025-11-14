@@ -217,7 +217,6 @@
     transform: none;      // <-- Ensure no centering transform
   }
 
-  // Dark mode
   @include dark { background-color: $dark-bg-card; box-shadow: $shadow-dark-xl; }
 }
 
@@ -292,7 +291,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: $spacing-xl; // Reduced from 3xl
+  margin: $spacing-xl 0; // Reduced from 3xl
   text-align: center; // Ensure centering
 }
 
@@ -473,4 +472,391 @@
   border-radius: $radius-lg;
   margin: $spacing-sm auto 0;
   background-color: $secondary-500;
+}
+
+// ===========================
+// Top Instructors
+// ===========================
+
+.topInstructors {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  
+  
+  .sectionHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  .sectionTitle {
+    font-size: $text-2xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+
+    @include screen-sm {
+      font-size: $text-3xl;
+    }
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+
+  .sectionDivider {
+    width: 5rem;
+    height: 0.5rem;
+    margin: $spacing-sm auto 0;
+    border-radius: $radius-lg;
+    background-color: $secondary-500;
+  }
+
+  .instructorsList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @include screen-sm {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-md $spacing-lg;
+    }
+
+    @include screen-lg {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include screen-xl {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .instructorCard {
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    box-shadow: $shadow-md;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @include dark {
+      background-color: $gray-800;
+      border-color: $gray-700;
+    }
+
+    &:hover {
+      @include hover-lift;
+      box-shadow: $shadow-lg;
+    }
+
+    .instructorPhoto {
+      width: 6rem;
+      height: 6rem;
+      border-radius: $radius-full;
+      overflow: hidden;
+      margin-bottom: $spacing-md;
+    }
+
+    .instructorInfo {
+      margin-bottom: $spacing-md;
+
+      .instructorName {
+        font-size: $text-lg;
+        font-weight: $font-semibold;
+        color: $gray-900;
+
+        @include dark {
+          color: $dark-text-primary;
+        }
+      }
+
+      .instructorSpecialization {
+        font-size: $text-sm;
+        color: $gray-600;
+      }
+
+      .numOfStudents {
+        font-size: $text-sm;
+        color: $gray-500;
+      }
+    }
+
+    .viewCoursesButton {
+      padding: $spacing-sm $spacing-md;
+      font-weight: $font-semibold;
+      background: linear-gradient(90deg, $primary-color, $primary-color-light);
+      color: #fff;
+      border: none;
+      border-radius: $radius-md;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(90deg, $primary-color-dark, $primary-color);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      @include dark {
+        background: linear-gradient(90deg, $primary-color-dark, $primary-color);
+      }
+    }
+  }
+}
+
+// ==========================
+// Upcoming Events
+// ==========================
+
+.upcomingEventsSection {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  background-color: $gradient-bg-light;
+
+  @include dark {
+    background-color: $gradient-bg-dark;
+  }
+
+  @include screen-sm {
+    padding: $spacing-xl;
+  }
+}
+
+.upcomingSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5rem;
+}
+
+.upcomingSectionTitle {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.viewAllLink {
+  color: $primary-500;
+  text-decoration: none;
+  margin: $spacing-sm 0;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $primary-600;
+  }
+
+  @include dark {
+    color: $primary-400;
+
+    &:hover {
+      color: $primary-300;
+    }
+  }
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: $spacing-md;
+
+  @include screen-sm {
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: $spacing-lg;
+  }
+
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.eventCard {
+  background-color: $gray-50;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  box-shadow: $shadow-md;
+  transition: $transition-all;
+  border: 1px solid $gray-200;
+
+  &:hover {
+    @include hover-lift;
+    box-shadow: $shadow-lg;
+  }
+
+  @include dark {
+    background-color: $dark-bg-card;
+    border-color: $dark-border;
+
+    &:hover {
+      box-shadow: $shadow-dark-xl;
+    }
+  }
+
+  min-height: 14rem; // Slightly taller to accommodate countdown
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.eventHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.eventIcon {
+  font-size: $text-lg;
+  color: $primary-500;
+
+  @include dark {
+    color: $primary-400;
+  }
+}
+
+.eventType {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.liveBadge {
+  margin-left: auto;
+  background-color: $success;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: $radius-sm;
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+}
+
+.eventTitle {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  margin-bottom: $spacing-sm;
+  line-height: 1.4;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.eventDescription {
+  font-size: $text-sm;
+  color: $gray-600;
+  margin-bottom: $spacing-md;
+  line-height: 1.5;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.eventMeta {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  align-items: flex-start;
+}
+
+.dateTime {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $primary-600;
+
+  @include dark {
+    color: $primary-400;
+  }
+}
+
+.countdownText {
+  font-family: 'Courier New', monospace; // Monospace for timer feel
+}
+
+.metaIcon {
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.pastButton {
+  background-color: $gray-400 !important;
+  color: $gray-600 !important;
+
+  @include dark {
+    background-color: $gray-600 !important;
+    color: $gray-400 !important;
+  }
+}
+
+.joinButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background-color: $primary-500;  // Using $primary-500
+  color: white;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-600;  // Using $primary-600
+  }
+
+  &:disabled {
+    background-color: $gray-400;  // Using $gray-400 for disabled state
+    cursor: not-allowed;
+  }
+
+  @include dark {
+    background-color: $primary-400;  // Using $primary-400 for dark mode
+
+    &:hover:not(:disabled) {
+      background-color: $primary-500;  // Using $primary-500 for hover in dark mode
+    }
+
+    &:disabled {
+      background-color: $gray-600;  // Using $gray-600 for disabled in dark mode
+    }
+  }
 }

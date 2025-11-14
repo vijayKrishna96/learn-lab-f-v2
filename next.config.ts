@@ -4,6 +4,9 @@ const nextConfig = {
     includePaths: ['./src/app/styles'],
     modules: true,
   },
+  images: {
+    domains: ['hips.hearstapps.com'],
+  },
 };
 
 export default nextConfig;

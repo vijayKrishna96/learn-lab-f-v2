@@ -11,6 +11,15 @@ import {
   USER_DETAILS_API,
 } from "@/utils/constants/api";
 import CourseCard from "@/components/coursecard/Card";
+import {
+  FaCalendarAlt,
+  FaChalkboardTeacher,
+  FaClock,
+  FaHandshake,
+  FaQuestionCircle,
+} from "react-icons/fa";
+import Link from "next/link";
+import Image from "next/image";
 
 interface UserData {
   name: string;
@@ -28,14 +37,101 @@ interface Course {
   // Add other course properties as needed
 }
 
+interface Instructor {
+  id: number;
+  name: string;
+  specialization: string;
+  numOfStudents: number;
+  photoUrl: string;
+}
+
+const mockEvents = [
+  {
+    id: "1",
+    title: "Live Q&A Sessions: Mastering React Hooks",
+    type: "Q&A",
+    date: "November 20, 2025",
+    time: "7:00 PM IST",
+    description:
+      "Join our experts for an interactive Q&A on advanced React concepts.",
+    icon: FaQuestionCircle,
+    isLive: false,
+  },
+  {
+    id: "2",
+    title: "Hands-on Workshop: Building Scalable APIs",
+    type: "Workshop",
+    date: "November 25, 2025",
+    time: "10:00 AM IST",
+    description:
+      "Dive deep into API development with real-time coding exercises.",
+    icon: FaChalkboardTeacher,
+    isLive: true,
+  },
+  {
+    id: "3",
+    title: "Mentorship Session: Career Growth in Tech",
+    type: "Mentorship",
+    date: "November 28, 2025",
+    time: "3:00 PM IST",
+    description:
+      "One-on-one guidance from industry leaders on your career path.",
+    icon: FaHandshake,
+    isLive: false,
+  },
+];
+
+const instructors: Instructor[] = [
+  {
+    id: 1,
+    name: "John Doe",
+    specialization: "Mathematics",
+    numOfStudents: 1200,
+    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg", // Make sure to place an image in the public folder
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    specialization: "Computer Science",
+    numOfStudents: 900,
+    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+  },
+  {
+    id: 3,
+    name: "Alice Johnson",
+    specialization: "Physics",
+    numOfStudents: 650,
+    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+  },
+  {
+    id: 4,
+    name: "Alice Johnson",
+    specialization: "Physics",
+    numOfStudents: 650,
+    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+  },
+];
+
+interface Countdown {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+interface UpcomingEventsProps {
+  // Add props as needed, e.g., events data from props
+}
+
 const Page: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [categories, setCategories] = useState<Category[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [instructors, setInstructors] = useState<any[]>([]); // Use correct type if available
+  // const [instructors, setInstructors] = useState<any[]>([]); // Use correct type if available
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [countdowns, setCountdowns] = useState<Record<string, Countdown>>({});
   const [hasMounted, setHasMounted] = useState(false); // State to prevent hydration errors
 
   const dispatch = useDispatch();
@@ -102,6 +198,60 @@ const Page: React.FC = () => {
     };
     fetchUserData();
   }, []);
+
+  // Function to calculate countdown
+  const calculateCountdown = (
+    eventDate: string,
+    eventTime: string
+  ): Countdown => {
+    const [day, month, year] = eventDate.split(" ");
+    const [hour, minute, period] = eventTime.split(":").map((s) => s.trim());
+    let eventHour = parseInt(hour);
+    if (period === "PM" && eventHour !== 12) eventHour += 12;
+    if (period === "AM" && eventHour === 12) eventHour = 0;
+
+    const eventDateTime = new Date(
+      `${month} ${day}, ${year} ${eventHour}:${minute}:00 GMT+5:30`
+    ); // IST offset
+    const now = new Date();
+    const diff = eventDateTime.getTime() - now.getTime();
+
+    if (diff < 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 }; // Event passed
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return { days, hours, minutes, seconds };
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newCountdowns = mockEvents.reduce((acc, event) => {
+        acc[event.id] = calculateCountdown(event.date, event.time);
+        return acc;
+      }, {} as Record<string, Countdown>);
+      setCountdowns(newCountdowns);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Format countdown string
+  const formatCountdown = (countdown: Countdown) => {
+    if (
+      countdown.days === 0 &&
+      countdown.hours === 0 &&
+      countdown.minutes === 0 &&
+      countdown.seconds === 0
+    ) {
+      return "Event Started!";
+    }
+    return `${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s`;
+  };
 
   useEffect(() => {
     setHasMounted(true);
@@ -201,10 +351,104 @@ const Page: React.FC = () => {
         </section>
 
         {/* Recommended Section */}
-        <section className={styles.recommendedSection}>
-          <div className={styles.recommendedContainer}>
-            <h2 className={styles.recommendedTitle}>Recommended For You</h2>
-            {/* Similar grid rendering can be added here */}
+        <section className={styles.topInstructors}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Top Instructors</h2>
+            <div className={styles.sectionDivider} />
+          </div>
+
+          <div className={styles.instructorsList}>
+            {instructors.map((instructor) => (
+              <div key={instructor.id} className={styles.instructorCard}>
+                <div className={styles.instructorPhoto}>
+                  <Image
+                    src={instructor.photoUrl}
+                    alt={instructor.name}
+                    width={100}
+                    height={100}
+                    objectFit="cover"
+                  />
+                </div>
+                <div className={styles.instructorInfo}>
+                  <h3 className={styles.instructorName}>{instructor.name}</h3>
+                  <p className={styles.instructorSpecialization}>
+                    {instructor.specialization}
+                  </p>
+                  <p className={styles.numOfStudents}>
+                    {instructor.numOfStudents} Students
+                  </p>
+                </div>
+                <button className={styles.viewCoursesButton}>View Courses</button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Upcoming Events Section */}
+        <section className={styles.upcomingEventsSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>
+              Upcoming Live Classes / Events
+            </h2>
+            <Link href="/student/events" className={styles.viewAllLink}>
+              View All
+            </Link>
+          </div>
+          <div className={styles.eventsGrid}>
+            {mockEvents.map((event) => {
+              const IconComponent = event.icon;
+              const countdown = countdowns[event.id] || {
+                days: 0,
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+              };
+              const isPast =
+                countdown.days === 0 &&
+                countdown.hours === 0 &&
+                countdown.minutes === 0 &&
+                countdown.seconds === 0;
+
+              return (
+                <article key={event.id} className={styles.eventCard}>
+                  <div className={styles.eventHeader}>
+                    <IconComponent className={styles.eventIcon} />
+                    <span className={styles.eventType}>{event.type}</span>
+                    {event.isLive && (
+                      <span className={styles.liveBadge}>LIVE</span>
+                    )}
+                  </div>
+                  <h3 className={styles.eventTitle}>{event.title}</h3>
+                  <p className={styles.eventDescription}>{event.description}</p>
+                  <div className={styles.eventMeta}>
+                    <div className={styles.dateTime}>
+                      <FaCalendarAlt className={styles.metaIcon} />
+                      <span>
+                        {event.date} at {event.time}
+                      </span>
+                    </div>
+                    <div className={styles.countdown}>
+                      <FaClock className={styles.metaIcon} />
+                      <span className={styles.countdownText}>
+                        {formatCountdown(countdown)}
+                      </span>
+                    </div>
+                    <button
+                      className={`${styles.joinButton} ${
+                        isPast ? styles.pastButton : ""
+                      }`}
+                      disabled={isPast}
+                    >
+                      {event.isLive || !isPast
+                        ? event.isLive
+                          ? "Join Now"
+                          : "Register"
+                        : "Ended"}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       </div>
