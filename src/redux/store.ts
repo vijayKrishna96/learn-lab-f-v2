@@ -1,9 +1,7 @@
 
-// import authReducer from './slices/authSlice';
-// import cartReducer from './slices/cartSlice';
-// import wishlistReducer from './slices/wishlistSlice';
-import themeReducer from './slices/themeSlice'; // Add this
 
+import themeReducer from './slices/themeSlice'; // Add this
+import userReducer from './slices/userSlice';
 import { configureStore } from '@reduxjs/toolkit';
 
 export const store = configureStore({
@@ -11,6 +9,7 @@ export const store = configureStore({
     // auth: authReducer,
     // cart: cartReducer,
     // wishlist: wishlistReducer,
+    user: userReducer,
     theme: themeReducer, // Add this
   },
 });

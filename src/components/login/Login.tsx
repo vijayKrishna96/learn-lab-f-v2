@@ -26,6 +26,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
 
     try {
       const response = await userLogin({ email, password });
+      console.log("Login response:", response);
 
       // Validate response
       if (!response || !response.token || !response.user) {
