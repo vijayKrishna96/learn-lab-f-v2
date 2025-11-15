@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { userLogin } from "@/services/userApi";
 import "../styles/theme.css";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { setUserData } from "@/redux/slices/userSlice";
 
 interface LoginProps {
   isOpen: boolean;
@@ -18,6 +21,8 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const dispatch = useDispatch<AppDispatch>();
 
   // Handle login
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -38,6 +43,14 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
 
       // Store token with proper path
       document.cookie = `accessToken=${token}; path=/; SameSite=Strict; Secure; Max-Age=86400`;
+
+      const userStore = {
+        _id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+
+      localStorage.setItem("user", JSON.stringify(userStore));
 
       // Redirect based on user role
       switch (user.role) {

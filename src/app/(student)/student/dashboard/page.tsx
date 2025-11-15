@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+
 import styles from "./page.module.scss";
 
 import {
@@ -20,6 +20,11 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+
+
 
 interface UserData {
   name: string;
@@ -87,28 +92,32 @@ const instructors: Instructor[] = [
     name: "John Doe",
     specialization: "Mathematics",
     numOfStudents: 1200,
-    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg", // Make sure to place an image in the public folder
+    photoUrl:
+      "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg", // Make sure to place an image in the public folder
   },
   {
     id: 2,
     name: "Jane Smith",
     specialization: "Computer Science",
     numOfStudents: 900,
-    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+    photoUrl:
+      "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
   },
   {
     id: 3,
     name: "Alice Johnson",
     specialization: "Physics",
     numOfStudents: 650,
-    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+    photoUrl:
+      "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
   },
   {
     id: 4,
     name: "Alice Johnson",
     specialization: "Physics",
     numOfStudents: 650,
-    photoUrl: "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
+    photoUrl:
+      "https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg",
   },
 ];
 
@@ -134,7 +143,29 @@ const Page: React.FC = () => {
   const [countdowns, setCountdowns] = useState<Record<string, Countdown>>({});
   const [hasMounted, setHasMounted] = useState(false); // State to prevent hydration errors
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  // ✅ useSelector must be at the top level
+  const user = useSelector((state: RootState) => state.user.userData);
+
+  console.log("User data from Redux:", user); // ✅ logs whenever component renders
+
+  useEffect(() => {
+    const saved = localStorage.getItem("user");
+    if (saved) {
+      try {
+        const parsed: UserData = JSON.parse(saved);
+        dispatch(setUserData(parsed)); // ✅ dispatch the Redux action
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+      }
+    }
+  }, [dispatch]); // ✅ only runs once
+  
+
+  useEffect(() => {
+    console.log("User data from Redux:", user);
+  }, []);
 
   // Fetch categories - runs on mount
   useEffect(() => {
@@ -190,7 +221,8 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${USER_DETAILS_API}/me`);
+        const response = await axios.get(`${USER_DETAILS_API}/user/${userId}`);
+        console.log("User data response:", response.data);
         setUserData(response.data);
       } catch (error) {
         console.log("Failed to fetch user data");
@@ -378,7 +410,9 @@ const Page: React.FC = () => {
                     {instructor.numOfStudents} Students
                   </p>
                 </div>
-                <button className={styles.viewCoursesButton}>View Courses</button>
+                <button className={styles.viewCoursesButton}>
+                  View Courses
+                </button>
               </div>
             ))}
           </div>
