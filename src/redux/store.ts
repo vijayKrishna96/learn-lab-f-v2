@@ -1,16 +1,23 @@
-
-
-import themeReducer from './slices/themeSlice'; // Add this
-import userReducer from './slices/userSlice';
+import themeReducer from './slices/themeSlice';
+import userReducer, { UserData } from './slices/userSlice';
 import { configureStore } from '@reduxjs/toolkit';
+
+let preloadedUser: UserData = {};
+
+if (typeof window !== 'undefined') {
+  const stored = localStorage.getItem('user');
+  if (stored) preloadedUser = JSON.parse(stored);
+}
 
 export const store = configureStore({
   reducer: {
-    // auth: authReducer,
-    // cart: cartReducer,
-    // wishlist: wishlistReducer,
     user: userReducer,
-    theme: themeReducer, // Add this
+    theme: themeReducer,
+  },
+  preloadedState: {
+    user: {
+      userData: preloadedUser,
+    },
   },
 });
 

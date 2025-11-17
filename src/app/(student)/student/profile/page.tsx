@@ -26,9 +26,11 @@ function Page() {
   const [isLoading, setIsLoading] = useState(false);
 //   const navigate = useNavigate();
 //   const { userId } = useParams();
-  const userData = useSelector((state: any) => state.user.userData);
-  const dispatch = useDispatch();
+const userData = useSelector((state: any) => state.user.userData);
 
+  console.log("User Data from Redux:", userData);
+  
+  console.log("User Data from Redux:", userData);
   const [formsData, setFormData] = useState({
     name: "",
     email: "",

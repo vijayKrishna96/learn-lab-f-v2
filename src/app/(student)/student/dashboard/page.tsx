@@ -21,13 +21,15 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { setUserData } from "../../../../redux/slices/userSlice";
 
 
 
 interface UserData {
-  name: string;
+  _id: string;
+  email: string;
+  role: string;
 }
 
 interface Category {
@@ -133,7 +135,7 @@ interface UpcomingEventsProps {
 }
 
 const Page: React.FC = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
+  // const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [categories, setCategories] = useState<Category[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -145,28 +147,27 @@ const Page: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  // ✅ useSelector must be at the top level
-  const user = useSelector((state: RootState) => state.user.userData);
-
-  console.log("User data from Redux:", user); // ✅ logs whenever component renders
+  // // ✅ useSelector must be at the top level
+  // const user = useSelector((state: RootState) => state.user.userData);
 
   useEffect(() => {
-    const saved = localStorage.getItem("user");
-    if (saved) {
-      try {
-        const parsed: UserData = JSON.parse(saved);
-        dispatch(setUserData(parsed)); // ✅ dispatch the Redux action
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-      }
-    }
-  }, [dispatch]); // ✅ only runs once
+  if (typeof window === "undefined") return;
+
+  try {
+    const stored = localStorage.getItem("user");
+    if (!stored) return;
+
+    const user: UserData = JSON.parse(stored);
+
+    dispatch(setUserData(user));  
+    console.log("Loaded user:", user);
+
+  } catch (err) {
+    console.error("Failed to load user from localStorage", err);
+  }
+}, [dispatch]);
+
   
-
-  useEffect(() => {
-    console.log("User data from Redux:", user);
-  }, []);
-
   // Fetch categories - runs on mount
   useEffect(() => {
     const fetchCategories = async () => {
@@ -306,13 +307,13 @@ const Page: React.FC = () => {
                 src="https://blog.ipleaders.in/wp-content/uploads/2021/05/online-course-blog-header.jpg"
                 alt="Profile"
               />
-              <div className={styles.welcomeContent}>
+              {/* <div className={styles.welcomeContent}>
                 {userData && (
                   <h3 className={styles.welcomeTitle}>
                     Welcome, {userData.name}
                   </h3>
                 )}
-              </div>
+              </div> */}
             </div>
 
             <div className={styles.searchContainer}>
