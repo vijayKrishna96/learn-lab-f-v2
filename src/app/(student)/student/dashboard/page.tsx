@@ -159,9 +159,34 @@ const Page: React.FC = () => {
 
     const user: UserData = JSON.parse(stored);
 
-    dispatch(setUserData(user));  
-    console.log("Loaded user:", user);
+    // 1️⃣ Save localStorage user to Redux
+    // dispatch(setUserData(user));
 
+    // 2️⃣ Fetch fresh user data
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${USER_DETAILS_API}/user/${user._id}`);
+
+        // Normalize API response (object OR array → always object)
+        const userData = Array.isArray(response.data)
+          ? response.data[0]
+          : response.data;
+
+        console.log("Normalized User Data:", userData);
+
+        // 3️⃣ Update Redux with merged data
+        dispatch(
+          setUserData({
+            ...user,
+            ...userData,
+          })
+        );
+      } catch (error) {
+        console.log("Failed to fetch user data", error);
+      }
+    };
+
+    fetchUserData();
   } catch (err) {
     console.error("Failed to load user from localStorage", err);
   }
@@ -219,18 +244,18 @@ const Page: React.FC = () => {
   }, []);
 
   // Fetch user data for personalized greeting
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${USER_DETAILS_API}/user/${userId}`);
-        console.log("User data response:", response.data);
-        setUserData(response.data);
-      } catch (error) {
-        console.log("Failed to fetch user data");
-      }
-    };
-    fetchUserData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await axios.get(`${USER_DETAILS_API}/user/${userId}`);
+  //       console.log("User data response:", response.data);
+  //       setUserData(response.data);
+  //     } catch (error) {
+  //       console.log("Failed to fetch user data");
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   // Function to calculate countdown
   const calculateCountdown = (
