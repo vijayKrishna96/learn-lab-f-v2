@@ -1,4 +1,3 @@
-// store/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
@@ -38,11 +37,14 @@ const userSlice = createSlice({
         ...action.payload, // merge, do NOT replace
       };
     },
+    clearUserData: (state) => {
+      state.userData = {}; // ✅ Add this for logout
+    },
   },
 });
 
-// 5️⃣ Export actions (ONLY setUserData)
-export const { setUserData } = userSlice.actions;
+// 5️⃣ Export actions
+export const { setUserData, clearUserData } = userSlice.actions;
 
 // 6️⃣ Selector
 export const selectUserCourses = (state: RootState) =>

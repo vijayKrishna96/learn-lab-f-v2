@@ -88,7 +88,7 @@ const StudentHeader = () => {
 
           {/* 👤 Profile */}
           <div className="hidden md:block">
-            <Link href={`/student/profile/${userId}`}>
+            <Link href={`/student/profile`}>
               <img
                 src="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                 alt="Profile"

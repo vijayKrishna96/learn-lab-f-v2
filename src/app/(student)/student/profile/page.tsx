@@ -30,7 +30,6 @@ const userData = useSelector((state: any) => state.user.userData);
 
   console.log("User Data from Redux:", userData);
   
-  console.log("User Data from Redux:", userData);
   const [formsData, setFormData] = useState({
     name: "",
     email: "",

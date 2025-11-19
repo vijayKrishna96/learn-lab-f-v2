@@ -159,8 +159,9 @@ const Page: React.FC = () => {
 
     const user: UserData = JSON.parse(stored);
 
-    // 1️⃣ Save localStorage user to Redux
-    // dispatch(setUserData(user));
+    // ✅ 1️⃣ IMPORTANT: Dispatch localStorage data immediately
+    // This prevents the Profile page from seeing empty state
+    dispatch(setUserData(user));
 
     // 2️⃣ Fetch fresh user data
     const fetchUserData = async () => {
@@ -174,15 +175,16 @@ const Page: React.FC = () => {
 
         console.log("Normalized User Data:", userData);
 
-        // 3️⃣ Update Redux with merged data
+        // 3️⃣ Update Redux with fresh data from API
         dispatch(
           setUserData({
-            ...user,
-            ...userData,
+            ...user, // Keep localStorage data as fallback
+            ...userData, // Override with fresh API data
           })
         );
       } catch (error) {
         console.log("Failed to fetch user data", error);
+        // Even if API fails, we still have localStorage data in Redux
       }
     };
 

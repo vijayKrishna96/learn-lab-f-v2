@@ -4,16 +4,9 @@ interface ThemeState {
   theme: 'light' | 'dark' | 'system';
 }
 
-const getInitialTheme = (): ThemeState['theme'] => {
-  if (typeof window === 'undefined') {
-    return 'system';
-  }
-  const saved = localStorage.getItem('theme');
-  return (saved as ThemeState['theme']) || 'system';
-};
-
+// ✅ Remove localStorage logic - Redux Persist handles it now
 const initialState: ThemeState = {
-  theme: getInitialTheme(),
+  theme: 'system', // Simple default
 };
 
 const themeSlice = createSlice({
@@ -22,9 +15,7 @@ const themeSlice = createSlice({
   reducers: {
     setTheme: (state, action: PayloadAction<ThemeState['theme']>) => {
       state.theme = action.payload;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', action.payload);
-      }
+      // ✅ Remove localStorage.setItem - Redux Persist handles it
     },
   },
 });
