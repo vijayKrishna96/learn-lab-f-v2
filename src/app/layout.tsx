@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
-import { persistor, store } from "@/redux/store";
-import { PersistGate } from "redux-persist/integration/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,19 +12,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  store, persistor
 }: {
   children: React.ReactNode;
-  store: any;
-  persistor: any;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers store= {store}>
-          <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-            {children}
-          </PersistGate>
+        <Providers>
+          {children}
         </Providers>
       </body>
     </html>

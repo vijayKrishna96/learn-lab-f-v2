@@ -3,7 +3,7 @@ import { RootState } from "../store";
 
 // 1️⃣ User Data Interface (all optional)
 export interface UserData {
-  profilePicture?: string;
+  profilePicture?: { url: string } | null;
   _id?: string;
   name?: string;
   email?: string;

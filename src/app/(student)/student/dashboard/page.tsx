@@ -24,8 +24,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { setUserData } from "../../../../redux/slices/userSlice";
 
-
-
 interface UserData {
   _id: string;
   email: string;
@@ -150,49 +148,45 @@ const Page: React.FC = () => {
   // // ✅ useSelector must be at the top level
   // const user = useSelector((state: RootState) => state.user.userData);
 
-  useEffect(() => {
-  if (typeof window === "undefined") return;
+//   useEffect(() => {
+//   if (typeof window === "undefined") return;
 
-  try {
-    const stored = localStorage.getItem("user");
-    if (!stored) return;
+//   try {
+//     const stored = localStorage.getItem("user");
+//     if (!stored) return;
 
-    const user: UserData = JSON.parse(stored);
+//     const user: UserData = JSON.parse(stored);  
 
-    // ✅ 1️⃣ IMPORTANT: Dispatch localStorage data immediately
-    // This prevents the Profile page from seeing empty state
-    dispatch(setUserData(user));
+//     // 2️⃣ Fetch fresh user data
+//     const fetchUserData = async () => {
+//       try {
+//         const response = await axios.get(`${USER_DETAILS_API}/user/${user._id}`);
 
-    // 2️⃣ Fetch fresh user data
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${USER_DETAILS_API}/user/${user._id}`);
+//         // Normalize API response (object OR array → always object)
+//         const userData = Array.isArray(response.data)
+//           ? response.data[0]
+//           : response.data;
 
-        // Normalize API response (object OR array → always object)
-        const userData = Array.isArray(response.data)
-          ? response.data[0]
-          : response.data;
+//         console.log("Normalized User Data:", userData);
 
-        console.log("Normalized User Data:", userData);
+//         // 3️⃣ Update Redux with fresh data from API
+//         dispatch(
+//           setUserData({
+//             ...user, // Keep localStorage data as fallback
+//             ...userData, // Override with fresh API data
+//           })
+//         );
+//       } catch (error) {
+//         console.log("Failed to fetch user data", error);
+//         // Even if API fails, we still have localStorage data in Redux
+//       }
+//     };
 
-        // 3️⃣ Update Redux with fresh data from API
-        dispatch(
-          setUserData({
-            ...user, // Keep localStorage data as fallback
-            ...userData, // Override with fresh API data
-          })
-        );
-      } catch (error) {
-        console.log("Failed to fetch user data", error);
-        // Even if API fails, we still have localStorage data in Redux
-      }
-    };
-
-    fetchUserData();
-  } catch (err) {
-    console.error("Failed to load user from localStorage", err);
-  }
-}, [dispatch]);
+//     fetchUserData();
+//   } catch (err) {
+//     console.error("Failed to load user from localStorage", err);
+//   }
+// }, [dispatch]);
 
   
   // Fetch categories - runs on mount

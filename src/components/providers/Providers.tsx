@@ -1,8 +1,10 @@
 "use client";
 import { Provider } from "react-redux";
-import { store } from "@/redux/store"; // Adjust path if needed
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "@/redux/store"; // Import persistor
 import ThemeProvider from "./ThemeProvider";
 import { ReactNode } from "react";
+import { UserDataProvider } from "./UserDataProvider";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -11,7 +13,23 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <Provider store={store}>
-      <ThemeProvider>{children}</ThemeProvider>
+      <PersistGate 
+        loading={
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <div className="loading loading-infinity loading-lg"></div>
+              <p className="mt-2">Loading...</p>
+            </div>
+          </div>
+        } 
+        persistor={persistor}
+      >
+        <ThemeProvider>
+          <UserDataProvider>
+          {children}
+          </UserDataProvider>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 }

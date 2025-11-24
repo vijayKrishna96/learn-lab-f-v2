@@ -1,17 +1,17 @@
 'use client';
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-// import { useNavigate, useParams } from "react-router-dom";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
-// import { LOGOUT_API, UPDATE_USER_DETAILS } from "../../Utils/Constants/Api";
 import { useDispatch, useSelector } from "react-redux";
-// import { setUserData } from "../../features/userSlice";
-import style from './profile.module.scss'; // Import the SCSS file
+import { setUserData } from "@/redux/slices/userSlice"; // Uncomment if needed for update
+import style from './profile.module.scss';
 import { UPDATE_USER_DETAILS } from "@/utils/constants/api";
+import { RootState } from "@/redux/store"; // Import for typing
 
 interface UserData {
+  _id: string; // Add this for full consistency
   name: string;
   email: string;
   phone: string;
@@ -23,14 +23,11 @@ interface UserData {
 }
 
 function Page() {
+  const dispatch = useDispatch();
+  const userData = useSelector((state: RootState) => state.user.userData) as UserData;
   const [isLoading, setIsLoading] = useState(false);
-//   const navigate = useNavigate();
-//   const { userId } = useParams();
-const userData = useSelector((state: any) => state.user.userData);
-
-  console.log("User Data from Redux:", userData);
-  
-  const [formsData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserData & { profilePicture: File | null }>({
+    _id: "",
     name: "",
     email: "",
     phone: "",
@@ -40,43 +37,40 @@ const userData = useSelector((state: any) => state.user.userData);
     language: "English (US)",
     profilePicture: null,
   });
-
   const [imagePreview, setImagePreview] = useState<string>("https://via.placeholder.com/150");
 
-//   useEffect(() => {
-//     if (userData) {
-//       setFormData({
-//         name: userData.name || "",
-//         email: userData.email || "",
-//         phone: userData.phone || "",
-//         headline: userData.headline || "",
-//         bio: userData.bio || "",
-//         expertise: userData.expertise || "",
-//         language: userData.language || "English (US)",
-//         profilePicture: null,
-//       });
+  // Guard: If no user data, show loading or redirect (e.g., to login)
+  if (!userData._id) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="loading loading-infinity loading-lg"></div>
+          <p className="mt-2">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
-//       if (userData.profilePicture?.url) {
-//         setImagePreview(userData.profilePicture.url);
-//       }
-//     }
-//   }, [userData]);
+  console.log("User Data from Redux:", userData);
 
-//   const handleLogout = async () => {
-//     setIsLoading(true);
-//     try {
-//       const response = await axios.post(LOGOUT_API);
-//       if (response?.data?.success) {
-//         dispatch(setUserData({}));
-//         localStorage.removeItem('token');
-//         navigate("/");
-//       }
-//     } catch (error) {
-//       console.error(error.message);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  useEffect(() => {
+    // Populate form with existing data from Redux
+    setFormData({
+      _id: userData._id,
+      name: userData.name || "",
+      email: userData.email || "",
+      phone: userData.phone || "",
+      headline: userData.headline || "",
+      bio: userData.bio || "",
+      expertise: userData.expertise || "",
+      language: userData.language || "English (US)",
+      profilePicture: null, // Reset to null; use preview for display
+    });
+
+    if (userData.profilePicture?.url) {
+      setImagePreview(userData.profilePicture.url);
+    }
+  }, [userData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -87,7 +81,7 @@ const userData = useSelector((state: any) => state.user.userData);
     const file = e.target.files?.[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
-    //   setFormData(prev => ({ ...prev, profilePicture: file }));
+      setFormData(prev => ({ ...prev, profilePicture: file })); // Fixed: Attach file for submit
     }
   };
 
@@ -97,19 +91,19 @@ const userData = useSelector((state: any) => state.user.userData);
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formsData.name);
-      formDataToSend.append("phone", formsData.phone);
-      formDataToSend.append("headline", formsData.headline);
-      formDataToSend.append("bio", formsData.bio);
-      formDataToSend.append("expertise", formsData.expertise);
-      formDataToSend.append("language", formsData.language);
+      formDataToSend.append("name", formData.name); // Fixed: Consistent naming
+      formDataToSend.append("phone", formData.phone);
+      formDataToSend.append("headline", formData.headline);
+      formDataToSend.append("bio", formData.bio);
+      formDataToSend.append("expertise", formData.expertise);
+      formDataToSend.append("language", formData.language);
 
-      if (formsData.profilePicture) {
-        formDataToSend.append("images", formsData.profilePicture);
+      if (formData.profilePicture) {
+        formDataToSend.append("images", formData.profilePicture);
       }
 
       const response = await axios.patch(
-        `${UPDATE_USER_DETAILS}/${userId}`,
+        `${UPDATE_USER_DETAILS}/${userData._id}`, // Fixed: Use userData._id
         formDataToSend,
         {
           headers: {
@@ -119,6 +113,9 @@ const userData = useSelector((state: any) => state.user.userData);
       );
 
       if (response.data) {
+        // Update Redux with new data (merge with response for full sync)
+        const updatedUserData = { ...userData, ...response.data };
+        dispatch(setUserData(updatedUserData));
         alert("Profile updated successfully!");
       }
     } catch (error) {
@@ -128,7 +125,6 @@ const userData = useSelector((state: any) => state.user.userData);
       setIsLoading(false);
     }
   };
-
   return (
     <div className={style.minHeightAuto}>
       {isLoading ? (
@@ -180,7 +176,7 @@ const userData = useSelector((state: any) => state.user.userData);
                   <input
                     type="text"
                     name="name"
-                    value={formsData.name}
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     className={style.input}
@@ -191,7 +187,7 @@ const userData = useSelector((state: any) => state.user.userData);
                   <input
                     type="text"
                     name="email"
-                    value={formsData.email}
+                    value={formData.email}
                     readOnly
                     className={style.input}
                   />
@@ -204,7 +200,7 @@ const userData = useSelector((state: any) => state.user.userData);
                   <input
                     type="text"
                     name="headline"
-                    value={formsData.headline}
+                    value={formData.headline}
                     onChange={handleChange}
                     className={style.input}
                   />
@@ -214,7 +210,7 @@ const userData = useSelector((state: any) => state.user.userData);
                   <input
                     type="text"
                     name="phone"
-                    value={formsData.phone}
+                    value={formData.phone}
                     onChange={handleChange}
                     className={style.input}
                   />
@@ -226,7 +222,7 @@ const userData = useSelector((state: any) => state.user.userData);
                 <textarea
                   name="bio"
                   rows={4}
-                  value={formsData.bio}
+                  value={formData.bio}
                   onChange={handleChange}
                   className={style.textarea}
                 ></textarea>
@@ -236,7 +232,7 @@ const userData = useSelector((state: any) => state.user.userData);
                 <label htmlFor="language" className={style.label}>Language</label>
                 <select
                   name="language"
-                  value={formsData.language}
+                  value={formData.language}
                   onChange={handleChange}
                   className={style.select}
                 >

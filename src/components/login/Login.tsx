@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { userLogin } from "@/services/userApi";
 import "../styles/theme.css";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
 import { setUserData } from "@/redux/slices/userSlice";
 
 interface LoginProps {
@@ -22,7 +21,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   // Handle login
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -51,6 +50,8 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
       };
 
       localStorage.setItem("user", JSON.stringify(userStore));
+
+      dispatch(setUserData(userStore));
 
       // Redirect based on user role
       switch (user.role) {
