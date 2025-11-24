@@ -13,22 +13,27 @@ import { FaSortDown } from "react-icons/fa";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 import "./style/Navbar.css";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+
 
 const StudentHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userId, setUserId] = useState<string>("");
 
-  const pathname = usePathname(); // ✅ Example: /student/6714c06217f165436c5361ac
+  // const pathname = usePathname(); // ✅ Example: /student/6714c06217f165436c5361ac
+
+  const user = useSelector((state: RootState) => state.user.userData);
+  
 
   // ✅ Extract userId from the pathname
-  useEffect(() => {
-    if (pathname) {
-      const parts = pathname.split("/");
-      const idFromPath = parts[parts.length - 1];
-      setUserId(idFromPath);
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (pathname) {
+  //     const parts = pathname.split("/");
+  //     const idFromPath = parts[parts.length - 1];
+  //     setUserId(idFromPath);
+  //   }
+  // }, [pathname]);
 
   // ✅ Redux state
   // const cartItems = useSelector((state: any) => state.cart.cartItems);
@@ -49,7 +54,7 @@ const StudentHeader = () => {
             </Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/${userId}`}>Home</Link>
+            <Link href={`/student/dashboard`}>Home</Link>
           </li>
           <li className="hidden md:block">
             <Link href={`/student/aboutus/${userId}`}>About Us</Link>
@@ -90,7 +95,7 @@ const StudentHeader = () => {
           <div className="hidden md:block">
             <Link href={`/student/profile`}>
               <img
-                src="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
+                src={user.profilePicture?.url || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="h-10 w-10 rounded-full object-cover"
               />

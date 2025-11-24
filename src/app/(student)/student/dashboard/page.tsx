@@ -21,8 +21,9 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { setUserData } from "../../../../redux/slices/userSlice";
+import { useSelector } from "react-redux";
 
 interface UserData {
   _id: string;
@@ -146,48 +147,7 @@ const Page: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // // ✅ useSelector must be at the top level
-  // const user = useSelector((state: RootState) => state.user.userData);
-
-//   useEffect(() => {
-//   if (typeof window === "undefined") return;
-
-//   try {
-//     const stored = localStorage.getItem("user");
-//     if (!stored) return;
-
-//     const user: UserData = JSON.parse(stored);  
-
-//     // 2️⃣ Fetch fresh user data
-//     const fetchUserData = async () => {
-//       try {
-//         const response = await axios.get(`${USER_DETAILS_API}/user/${user._id}`);
-
-//         // Normalize API response (object OR array → always object)
-//         const userData = Array.isArray(response.data)
-//           ? response.data[0]
-//           : response.data;
-
-//         console.log("Normalized User Data:", userData);
-
-//         // 3️⃣ Update Redux with fresh data from API
-//         dispatch(
-//           setUserData({
-//             ...user, // Keep localStorage data as fallback
-//             ...userData, // Override with fresh API data
-//           })
-//         );
-//       } catch (error) {
-//         console.log("Failed to fetch user data", error);
-//         // Even if API fails, we still have localStorage data in Redux
-//       }
-//     };
-
-//     fetchUserData();
-//   } catch (err) {
-//     console.error("Failed to load user from localStorage", err);
-//   }
-// }, [dispatch]);
-
+  const user = useSelector((state: RootState) => state.user.userData);
   
   // Fetch categories - runs on mount
   useEffect(() => {
@@ -238,20 +198,6 @@ const Page: React.FC = () => {
     };
     getAllInstructors();
   }, []);
-
-  // Fetch user data for personalized greeting
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await axios.get(`${USER_DETAILS_API}/user/${userId}`);
-  //       console.log("User data response:", response.data);
-  //       setUserData(response.data);
-  //     } catch (error) {
-  //       console.log("Failed to fetch user data");
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, []);
 
   // Function to calculate countdown
   const calculateCountdown = (
@@ -325,16 +271,16 @@ const Page: React.FC = () => {
             <div className={styles.welcomeSection}>
               <img
                 className={styles.profileImage}
-                src="https://blog.ipleaders.in/wp-content/uploads/2021/05/online-course-blog-header.jpg"
+                src={user.profilePicture?.url || "https://via.placeholder.com/150"}
                 alt="Profile"
               />
-              {/* <div className={styles.welcomeContent}>
-                {userData && (
+              <div className={styles.welcomeContent}>
+                {user && (
                   <h3 className={styles.welcomeTitle}>
-                    Welcome, {userData.name}
+                    Welcome, {user.name}
                   </h3>
                 )}
-              </div> */}
+              </div>
             </div>
 
             <div className={styles.searchContainer}>
