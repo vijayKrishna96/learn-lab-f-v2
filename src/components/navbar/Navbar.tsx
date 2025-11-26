@@ -9,10 +9,10 @@ import DarkModeToggle from "@/components/ui/DarkModeToggle";
 
 import "./style/Navbar.css";
 
-const LoginModal = dynamic(() => import("@/components/login/Login"), {
+const LoginModal = dynamic(() => import("@/app/(public)/auth/login/Login"), {
   ssr: false,
 });
-const SignupModal = dynamic(() => import("@/components/signup/Signup"), {
+const SignupModal = dynamic(() => import("@/app/(public)/auth/signup/Signup"), {
   ssr: false,
 });
 

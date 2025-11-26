@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "@/redux/slices/userSlice";
 import axios from "axios";
 import { USER_DETAILS_API } from "@/utils/constants/api";
+import Spinner from "@/components/spinner/Spinner";
 
 interface PartialUser {
   id: string;
@@ -182,8 +183,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="loading loading-infinity loading-lg"></div>
-          <p className="mt-2">Loading user data...</p>
+          <Spinner size={64} className="text-blue-600" />
         </div>
       </div>
     );

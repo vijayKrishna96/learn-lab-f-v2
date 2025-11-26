@@ -12,6 +12,8 @@ import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import { userLogout } from "@/services/userApi"; // Import the correct logout function
 import { toast } from "react-toastify";
+import Spinner from "@/components/spinner/Spinner";
+
 
 interface UserData {
   _id: string;
@@ -22,7 +24,7 @@ interface UserData {
   bio: string;
   expertise: string;
   language: string;
-  profilePicture: { url: string } | null;
+  profilePicture: string | null;
 }
 
 function Page() {
@@ -55,8 +57,7 @@ function Page() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="loading loading-infinity loading-lg"></div>
-          <p className="mt-2">Loading profile...</p>
+          <Spinner size={64} className="text-green-600" />
         </div>
       </div>
     );
@@ -78,8 +79,8 @@ function Page() {
       profilePicture: null,
     });
 
-    if (userData.profilePicture?.url) {
-      setImagePreview(userData.profilePicture.url);
+    if (userData.profilePicture) {
+      setImagePreview(userData.profilePicture);
     }
   }, [userData]);
 

@@ -271,7 +271,7 @@ const Page: React.FC = () => {
             <div className={styles.welcomeSection}>
               <img
                 className={styles.profileImage}
-                src={user.profilePicture?.url || "https://via.placeholder.com/150"}
+                src={user.profilePicture || "https://via.placeholder.com/150"}
                 alt="Profile"
               />
               <div className={styles.welcomeContent}>

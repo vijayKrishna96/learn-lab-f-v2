@@ -2,7 +2,7 @@
 
 import React, { useState, FormEvent } from "react";
 import { IoCloseCircle } from "react-icons/io5";
-import Loader from "../loader/Loader";
+import Loader from "../../../../components/spinner/Spinner";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { userLogin } from "@/services/userApi";

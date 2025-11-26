@@ -95,7 +95,7 @@ const StudentHeader = () => {
           <div className="hidden md:block">
             <Link href={`/student/profile`}>
               <img
-                src={user.profilePicture?.url || "https://via.placeholder.com/150"}
+                src={user?.profilePicture || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="h-10 w-10 rounded-full object-cover"
               />
