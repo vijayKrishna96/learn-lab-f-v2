@@ -6,9 +6,9 @@ import Loader from "../loader/Loader";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { userLogin } from "@/services/userApi";
+
 import "../styles/theme.css";
-import { useDispatch } from "react-redux";
-import { setUserData } from "@/redux/slices/userSlice";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginProps {
   isOpen: boolean;
@@ -20,93 +20,115 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { refreshUser } = useAuth();
 
-  const dispatch = useDispatch();
-
-  // Handle login
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
     try {
+      // Call login API - this sets httpOnly cookies automatically
       const response = await userLogin({ email, password });
       console.log("Login response:", response);
 
-      // Validate response
-      if (!response || !response.token || !response.user) {
-        toast.error("Invalid login response");
-        return;
+      if (!response?.success || !response?.user) {
+        throw new Error("Invalid login response");
       }
 
-      const { token, user } = response;
+      const { user } = response;
 
-      // Store token with proper path
-      document.cookie = `accessToken=${token}; path=/; SameSite=Strict; Secure; Max-Age=86400`;
+      // Show success message
+      toast.success(response.message || "Login successful");
 
-      const userStore = {
-        _id: user.id,
-        email: user.email,
-        role: user.role,
-      };
+      // Close modal
+      onClose();
 
-      localStorage.setItem("user", JSON.stringify(userStore));
+      // Determine redirect path based on role BEFORE refreshing
+      const roleLower = user.role.toLowerCase();
+      let redirectPath = "/";
 
-      dispatch(setUserData(userStore));
-
-      // Redirect based on user role
-      switch (user.role) {
+      switch (roleLower) {
         case "student":
-          router.push("/student/dashboard");
+          redirectPath = "/student/dashboard";
           break;
         case "instructor":
-          router.push("/instructor/dashboard");
+          redirectPath = "/instructor/dashboard";
           break;
         case "admin":
-          router.push("/admin");
+          redirectPath = "/admin";
           break;
         default:
           toast.error("Unknown user role");
+          console.error("Unknown role:", user.role);
+          setLoading(false);
+          return;
       }
-      onClose();
+
+      console.log("Redirecting to:", redirectPath);
+
+      // Refresh user context (this will fetch full user data and update Redux)
+      await refreshUser();
+
+      console.log("User refreshed, now navigating...");
+
+      // Use window.location for hard navigation to ensure route guards pick up the new auth state
+      window.location.href = redirectPath;
+
     } catch (err: any) {
       console.error("Login error:", err);
+      
+      // Extract error message from various possible error formats
       const message =
-        err?.response?.data?.message || "Login failed. Please try again.";
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed. Please try again.";
+      
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 Don't render modal if it's closed
+  // Reset form when modal closes
+  const handleClose = () => {
+    setEmail("");
+    setPassword("");
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
-        <IoCloseCircle className="modal-close" onClick={onClose} />
+        <IoCloseCircle className="modal-close" onClick={handleClose} />
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <h3 className="text-3xl font-semibold text-center">Sign In</h3>
 
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
             type="email"
             className="modal-input"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
+            autoComplete="email"
           />
 
-          <label>Password</label>
+          <label htmlFor="password">Password</label>
           <input
+            id="password"
             type="password"
             className="modal-input"
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
+            autoComplete="current-password"
           />
 
           <button type="submit" className="modal-btn" disabled={loading}>

@@ -1,17 +1,20 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "@/redux/slices/userSlice"; // Uncomment if needed for update
-import style from './profile.module.scss';
+import { setUserData } from "@/redux/slices/userSlice";
+import style from "./profile.module.scss";
 import { UPDATE_USER_DETAILS } from "@/utils/constants/api";
-import { RootState } from "@/redux/store"; // Import for typing
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
+import { userLogout } from "@/services/userApi"; // Import the correct logout function
+import { toast } from "react-toastify";
 
 interface UserData {
-  _id: string; // Add this for full consistency
+  _id: string;
   name: string;
   email: string;
   phone: string;
@@ -24,9 +27,13 @@ interface UserData {
 
 function Page() {
   const dispatch = useDispatch();
-  const userData = useSelector((state: RootState) => state.user.userData) as UserData;
+  const userData = useSelector(
+    (state: RootState) => state.user.userData
+  ) as UserData;
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<UserData & { profilePicture: File | null }>({
+  const [formData, setFormData] = useState<
+    UserData & { profilePicture: File | null }
+  >({
     _id: "",
     name: "",
     email: "",
@@ -37,10 +44,14 @@ function Page() {
     language: "English (US)",
     profilePicture: null,
   });
-  const [imagePreview, setImagePreview] = useState<string>("https://via.placeholder.com/150");
+  const [imagePreview, setImagePreview] = useState<string>(
+    "https://via.placeholder.com/150"
+  );
 
-  // Guard: If no user data, show loading or redirect (e.g., to login)
-  if (!userData._id) {
+  const router = useRouter();
+
+  // Guard: If no user data, show loading or redirect
+  if (!userData?._id) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -64,7 +75,7 @@ function Page() {
       bio: userData.bio || "",
       expertise: userData.expertise || "",
       language: userData.language || "English (US)",
-      profilePicture: null, // Reset to null; use preview for display
+      profilePicture: null,
     });
 
     if (userData.profilePicture?.url) {
@@ -72,16 +83,59 @@ function Page() {
     }
   }, [userData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      console.log("🚪 Logging out...");
+
+      // Call the proper logout API from userApi.ts
+      // This will clear httpOnly cookies on the backend
+      await userLogout();
+
+      console.log("🚪 Logout API successful");
+
+      // Clear Redux state
+      dispatch(setUserData(null));
+
+      // Show success message
+      toast.success("Logged out successfully");
+
+      console.log("🚪 Redirecting to home...");
+
+      // Use window.location for hard redirect (clears all state)
+      window.location.href = "/";
+
+    } catch (error) {
+      console.error("Logout error:", error);
+      
+      // Even if API fails, clear local state for safety
+      dispatch(setUserData(null));
+      localStorage.removeItem("user");
+      localStorage.removeItem("userFull");
+      
+      toast.error("Logout failed, but local session cleared");
+      
+      // Still redirect
+      window.location.href = "/";
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
-      setFormData(prev => ({ ...prev, profilePicture: file })); // Fixed: Attach file for submit
+      setFormData((prev) => ({ ...prev, profilePicture: file }));
     }
   };
 
@@ -91,7 +145,7 @@ function Page() {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name); // Fixed: Consistent naming
+      formDataToSend.append("name", formData.name);
       formDataToSend.append("phone", formData.phone);
       formDataToSend.append("headline", formData.headline);
       formDataToSend.append("bio", formData.bio);
@@ -103,28 +157,34 @@ function Page() {
       }
 
       const response = await axios.patch(
-        `${UPDATE_USER_DETAILS}/${userData._id}`, // Fixed: Use userData._id
+        `${UPDATE_USER_DETAILS}/${userData._id}`,
         formDataToSend,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
+          withCredentials: true, // Important: Send cookies with request
         }
       );
 
       if (response.data) {
-        // Update Redux with new data (merge with response for full sync)
+        // Update Redux with new data
         const updatedUserData = { ...userData, ...response.data };
         dispatch(setUserData(updatedUserData));
-        alert("Profile updated successfully!");
+        
+        // Update localStorage
+        localStorage.setItem("userFull", JSON.stringify(updatedUserData));
+        
+        toast.success("Profile updated successfully!");
       }
     } catch (error) {
       console.error("Error updating profile", error);
-      alert("Failed to update profile. Please try again.");
+      toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div className={style.minHeightAuto}>
       {isLoading ? (
@@ -135,15 +195,16 @@ function Page() {
         <div className={style.profileContainer}>
           <div className={style.header}>
             <h2 className={style.headerText}>Profile & Settings</h2>
-            <label
+            <button
               className={style.logoutButton}
-            //   onClick={handleLogout}
+              onClick={handleLogout}
+              type="button"
             >
               Logout
               <span className={style.logoutIcon}>
                 <BiLogOutCircle />
               </span>
-            </label>
+            </button>
           </div>
           <form onSubmit={handleSubmit}>
             <div className={style.formSection}>
@@ -172,10 +233,13 @@ function Page() {
 
               <div className={style.formGrid}>
                 <div>
-                  <label htmlFor="name" className={style.label}>Name</label>
+                  <label htmlFor="name" className={style.label}>
+                    Name
+                  </label>
                   <input
                     type="text"
                     name="name"
+                    id="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -183,10 +247,13 @@ function Page() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className={style.label}>Email</label>
+                  <label htmlFor="email" className={style.label}>
+                    Email
+                  </label>
                   <input
-                    type="text"
+                    type="email"
                     name="email"
+                    id="email"
                     value={formData.email}
                     readOnly
                     className={style.input}
@@ -196,20 +263,26 @@ function Page() {
 
               <div className={style.formGrid}>
                 <div>
-                  <label htmlFor="headline" className={style.label}>Headline</label>
+                  <label htmlFor="headline" className={style.label}>
+                    Headline
+                  </label>
                   <input
                     type="text"
                     name="headline"
+                    id="headline"
                     value={formData.headline}
                     onChange={handleChange}
                     className={style.input}
                   />
                 </div>
                 <div>
-                  <label htmlFor="phone" className={style.label}>Phone Number</label>
+                  <label htmlFor="phone" className={style.label}>
+                    Phone Number
+                  </label>
                   <input
-                    type="text"
+                    type="tel"
                     name="phone"
+                    id="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     className={style.input}
@@ -218,9 +291,12 @@ function Page() {
               </div>
 
               <div>
-                <label htmlFor="bio" className={style.label}>Biography</label>
+                <label htmlFor="bio" className={style.label}>
+                  Biography
+                </label>
                 <textarea
                   name="bio"
+                  id="bio"
                   rows={4}
                   value={formData.bio}
                   onChange={handleChange}
@@ -229,9 +305,12 @@ function Page() {
               </div>
 
               <div>
-                <label htmlFor="language" className={style.label}>Language</label>
+                <label htmlFor="language" className={style.label}>
+                  Language
+                </label>
                 <select
                   name="language"
+                  id="language"
                   value={formData.language}
                   onChange={handleChange}
                   className={style.select}
@@ -245,10 +324,7 @@ function Page() {
             </div>
 
             <div className={style.submitButtonWrapper}>
-              <button
-                type="submit"
-                className={style.saveButton}
-              >
+              <button type="submit" className={style.saveButton}>
                 Save
               </button>
             </div>

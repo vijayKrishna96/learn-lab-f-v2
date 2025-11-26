@@ -1,12 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-
-
-import { LOGIN_API, LOGOUT_API, USER_DETAILS_API, VERIFY_API } from "@/utils/constants/api";
 import axiosInstance from "@/lib/axiosInstance";
-import Cookies from "js-cookie"; // install with `npm i js-cookie`
 
+// API URL - adjust to match your backend
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4500";
 
-// Define payload & response types
+// Define types
 interface LoginPayload {
   email: string;
   password: string;
@@ -15,114 +13,209 @@ interface LoginPayload {
 interface User {
   id: string;
   role: string;
+  email: string;
+  name?: string; // Optional, as per login response
 }
 
 interface LoginResponse {
-  user: User;
-  token: string;
-  message: string;
   success: boolean;
+  message: string;
+  user: User;
 }
 
 interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data: T;
+  data?: T;
 }
 
-// services/userApi.ts
+interface VerifyResponse {
+  loggedIn: boolean;
+  user?: User;
+}
 
+interface RefreshResponse {
+  success: boolean;
+}
 
-export const userLogin = async (credentials: { email: string; password: string }) => {
-  const response = await fetch("http://localhost:4500/auth/login", {
+// -----------------------------
+// 🔹 USER LOGIN
+// -----------------------------
+export const userLogin = async (
+  credentials: LoginPayload
+): Promise<LoginResponse> => {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // ✅ Important for CORS
+    credentials: "include", // ✅ Critical: sends/receives cookies
     body: JSON.stringify(credentials),
   });
 
   if (!response.ok) {
-    throw new Error("Login failed");
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Login failed");
   }
 
-  return response.json();
+  const data = await response.json();
+  if (!data.success || !data.user) {
+    throw new Error(data.message || "Invalid login response");
+  }
+
+  return data;
 };
 
+// -----------------------------
+// 🔹 VERIFY LOGIN (Check Auth Status)
+// -----------------------------
+// In verifyLogin:
+export const verifyLogin = async (): Promise<VerifyResponse> => {
+  try {
+    console.log("🔍 VerifyLogin: Sending request with credentials");
+    const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+      method: "GET",
+      credentials: "include",
+    });
 
-// export const userLogin = async (data: LoginPayload): Promise<User> => {
-//   try {
-//     const response = await axios.post<LoginResponse>(
-//       LOGIN_API,
-//       data,
-//       {
-//         headers: { "Content-Type": "application/json" },
-//         withCredentials: true,
-//       }
-//     );
+    console.log("🔍 VerifyLogin: Response status:", response.status); // Temp log
 
-//     console.log(response.data, "userLogin response data");
+    if (!response.ok) {
+      console.log("🔍 VerifyLogin: Not OK, returning false");
+      return { loggedIn: false };
+    }
 
-//     if (response.data.success && response.data.user && response.data.token) {
-//       const { token, user } = response.data;
+    const data = await response.json();
+    console.log("🔍 VerifyLogin: Decoded data:", data); // Temp log
+    if (data.loggedIn && data.user) {
+      return data;
+    }
 
-//       // Store token & role
-//       localStorage.setItem("token", token);
-//       localStorage.setItem("role", user.role);
+    return { loggedIn: false };
+  } catch (error) {
+    console.error("Verify login error:", error);
+    return { loggedIn: false };
+  }
+};
 
-//       Cookies.set("token", token, { expires: 7 });
-//       Cookies.set("role", user.role, { expires: 7 });
+// -----------------------------
+// 🔹 REFRESH TOKEN (New: For token rotation)
+// -----------------------------
+export const refreshToken = async (): Promise<RefreshResponse> => {
+  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    method: "POST",
+    credentials: "include", // ✅ Uses refreshToken cookie
+  });
 
-//       return user;
-//     } else {
-//       throw new Error(response.data.message || "Login failed");
-//     }
-//   } catch (error: any) {
-//     console.error("Login error:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Token refresh failed");
+  }
 
-
+  return await response.json(); // ✅ Added await
+};
 
 // -----------------------------
 // 🔹 USER LOGOUT
 // -----------------------------
-
-
-export const userLogout = async (): Promise<AxiosResponse<ApiResponse<null>> | undefined> => {
+export const userLogout = async (): Promise<{ success: boolean; message: string }> => {
   try {
-    const response = await axios.post<ApiResponse<null>>(LOGOUT_API, {}, { method: "POST" });
-    return response;
-  } catch (error: any) {
-    console.error("Logout error:", error.message);
-  }
-};
-
-// -----------------------------
-// 🔹 CHECK IF USER IS LOGGED IN
-// -----------------------------
-export const userCheck = async (): Promise<ApiResponse<User> | undefined> => {
-  try {
-    const response = await axiosInstance.get<ApiResponse<User>>("/user/checkUser");
-    return response.data;
-  } catch (error: any) {
-    console.error("User check error:", error.message);
-  }
-};
-
-// -----------------------------
-// 🔹 GET USER DETAILS BY ID
-// -----------------------------
-export const userDetails = async (userId: string): Promise<User | null> => {
-  try {
-    const response = await axios.get<ApiResponse<User>>(USER_DETAILS_API, {
-      params: { id: userId },
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include", // ✅ Sends cookies to be cleared
     });
-    return response.data.data || null;
-  } catch (error: any) {
-    console.error("Error fetching user details:", error.message);
-    return null;
+
+    if (!response.ok) {
+      throw new Error("Logout failed");
+    }
+
+    const data = await response.json();
+    // Clear local storage on success
+    localStorage.removeItem("user");
+    localStorage.removeItem("userFull"); // ✅ Also clear full user data
+    return data;
+  } catch (error) {
+    // Even on error, clear local state for safety
+    localStorage.removeItem("user");
+    localStorage.removeItem("userFull");
+    throw error;
   }
 };
+
+// -----------------------------
+// 🔹 AXIOS INTERCEPTOR (For Protected Routes)
+// -----------------------------
+// Add this to your axiosInstance configuration
+// This ensures all API calls include credentials
+axiosInstance.defaults.withCredentials = true;
+axiosInstance.defaults.baseURL = API_BASE_URL;
+
+// Enhanced response interceptor to handle 401 errors with refresh (cookie-based)
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (value: any) => void; reject: (reason?: any) => void }> = [];
+
+const processQueue = (error: any) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      // For cookie-based: no token to pass, just resolve to retry
+      resolve(true);
+    }
+  });
+
+  failedQueue = [];
+};
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Queue the request while refreshing
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => {
+            // Retry original request (new cookies will be sent automatically)
+            return axiosInstance(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Attempt to refresh token (backend sets new httpOnly cookies)
+        const refreshResponse = await refreshToken();
+        if (refreshResponse.success) {
+          processQueue(null);
+          // No header update needed for cookies; retry will use new cookies
+          return axiosInstance(originalRequest);
+        } else {
+          throw new Error("Refresh failed");
+        }
+      } catch (refreshError) {
+        processQueue(refreshError);
+        // Clear state and redirect to login
+        localStorage.removeItem("user");
+        localStorage.removeItem("userFull");
+        // Optional: Trigger logout or redirect
+        if (typeof window !== "undefined") {
+          window.location.href = "/"; // Or your login path
+        }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// Export axiosInstance for use in other services
+export default axiosInstance;

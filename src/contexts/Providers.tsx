@@ -4,7 +4,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/redux/store"; // Import persistor
 import ThemeProvider from "./ThemeProvider";
 import { ReactNode } from "react";
-import { UserDataProvider } from "./UserDataProvider";
+import { AuthProvider } from "./AuthContext";
+
 
 interface ProvidersProps {
   children: ReactNode;
@@ -25,9 +26,9 @@ export function Providers({ children }: ProvidersProps) {
         persistor={persistor}
       >
         <ThemeProvider>
-          <UserDataProvider>
-          {children}
-          </UserDataProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>
