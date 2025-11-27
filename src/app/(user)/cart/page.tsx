@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+// import jwtDecode from "jwt-decode";
 
 // import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 // import { clearCart, removeItem } from "@/redux/features/cartSlice";
 // import { addUserCourse, selectUserCourses } from "@/redux/features/userSlice";
 
 import styles from "./Cart.module.scss";
-import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
+// import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface Lesson {
   duration: string;
@@ -20,6 +21,12 @@ interface Lesson {
 
 interface Module {
   lessons: Lesson[];
+}
+
+interface UserData {
+  _id: string;
+  name: string;
+  cart: string[];
 }
 
 interface Course {
@@ -42,96 +49,101 @@ export default function Page() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const dispatch = useDispatch();
+  const userData = useSelector(
+      (state: RootState) => state.user.userData
+    ) as UserData;
 
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const userCourses = useSelector(selectUserCourses);
+    console.log(userData, "userDatataata")
+
+  // const cartItems = useSelector((state) => state.cart.cartItems);
+  // const userCourses = useSelector(selectUserCourses);
 
   /** -----------------------------------------------
    *  ✔ Get userId from Redux Persist (preferred)
    *  ✔ fallback to localStorage if needed
    ----------------------------------------------- */
-  const userId =
-    useSelector((state) => state.user.userData?._id) ||
-    (typeof window !== "undefined" ? localStorage.getItem("userId") : null);
+  // const userId =
+  //   useSelector((state) => state.user.userData?._id) ||
+  //   (typeof window !== "undefined" ? localStorage.getItem("userId") : null);
 
-  const userRole = useSelector((state) => state.user.userData.role);
+  // const userRole = useSelector((state) => state.user.userData.role);
 
-  const filteredItems =
-    cartItems
-      ?.filter((course: Course) => course.userId === userId)
-      ?.filter((course: Course) => !userCourses.includes(course._id)) || [];
+  // const filteredItems =
+  //   cartItems
+  //     ?.filter((course: Course) => course.userId === userId)
+  //     ?.filter((course: Course) => !userCourses.includes(course._id)) || [];
 
-  const PK = process.env.NEXT_PUBLIC_STRIPE_PK as string;
+  //const PK = process.env.NEXT_PUBLIC_STRIPE_PK as string;
 
-  const makePayment = async () => {
-    setIsLoading(true);
-    try {
-      const stripe = await loadStripe(PK);
-      const returnUrl = `${window.location.origin}/cart`;
+  // const makePayment = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const stripe = await loadStripe(PK);
+  //     const returnUrl = `${window.location.origin}/cart`;
 
-      const response = await fetch(STRIPE_PAYMENT_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product: filteredItems, returnUrl }),
-      });
+  //     const response = await fetch(STRIPE_PAYMENT_API, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ product: filteredItems, returnUrl }),
+  //     });
 
-      if (!response.ok) throw new Error("Checkout session creation failed");
+  //     if (!response.ok) throw new Error("Checkout session creation failed");
 
-      const session = await response.json();
-      if (!session?.id) throw new Error("Invalid session response");
+  //     const session = await response.json();
+  //     if (!session?.id) throw new Error("Invalid session response");
 
-      const result = await stripe?.redirectToCheckout({ sessionId: session.id });
-      if (result?.error) throw new Error(result.error.message);
-    } catch (err) {
-      console.error("Payment error:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const result = await stripe?.redirectToCheckout({ sessionId: session.id });
+  //     if (result?.error) throw new Error(result.error.message);
+  //   } catch (err) {
+  //     console.error("Payment error:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   /** -----------------------------------------------
    *  ✔ Handle Stripe Redirect Success
    ----------------------------------------------- */
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const isSuccess = params.get("success") === "true";
-    const token = params.get("token");
+  // useEffect(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   const isSuccess = params.get("success") === "true";
+  //   const token = params.get("token");
 
-    if (!isSuccess || !token || isProcessingPayment) return;
+  //   if (!isSuccess || !token || isProcessingPayment) return;
 
-    const handleSuccess = async () => {
-      setIsProcessingPayment(true);
+  //   const handleSuccess = async () => {
+  //     setIsProcessingPayment(true);
 
-      try {
-        const decoded: DecodedToken = jwtDecode(token);
-        const itemIds = decoded.items || [];
-        const instructorIds = decoded.instructorIds || [];
+  //     try {
+  //       const decoded: DecodedToken = jwtDecode(token);
+  //       const itemIds = decoded.items || [];
+  //       const instructorIds = decoded.instructorIds || [];
 
-        dispatch(addUserCourse(itemIds));
-        dispatch(clearCart());
+  //       dispatch(addUserCourse(itemIds));
+  //       dispatch(clearCart());
 
-        await axios.patch(`${UPDATE_USER_DETAILS}/${userId}`, { courses: itemIds });
+  //       await axios.patch(`${UPDATE_USER_DETAILS}/${userId}`, { courses: itemIds });
 
-        for (const courseId of itemIds) {
-          await axios.patch(`${UPDATE_COURSE_API}/${courseId}`, { students: userId });
-        }
+  //       for (const courseId of itemIds) {
+  //         await axios.patch(`${UPDATE_COURSE_API}/${courseId}`, { students: userId });
+  //       }
 
-        await Promise.all(
-          instructorIds.map((id) =>
-            axios.patch(`${UPDATE_USER_DETAILS}/${id}`, { students: [userId] })
-          )
-        );
+  //       await Promise.all(
+  //         instructorIds.map((id) =>
+  //           axios.patch(`${UPDATE_USER_DETAILS}/${id}`, { students: [userId] })
+  //         )
+  //       );
 
-        window.location.href = `/${userRole}/${userId}`;
-      } catch (err) {
-        console.error("Payment processing error:", err);
-      } finally {
-        setIsProcessingPayment(false);
-      }
-    };
+  //       window.location.href = `/${userRole}/${userId}`;
+  //     } catch (err) {
+  //       console.error("Payment processing error:", err);
+  //     } finally {
+  //       setIsProcessingPayment(false);
+  //     }
+  //   };
 
-    handleSuccess();
-  }, [isProcessingPayment, userId, userRole, dispatch]);
+  //   handleSuccess();
+  // }, [isProcessingPayment, userId, userRole, dispatch]);
 
   if (isLoading) {
     return <div className={styles.loadingWrapper}>Loading...</div>;
@@ -141,14 +153,14 @@ export default function Page() {
     <div className={styles.cartContainer}>
       <h2 className={styles.heading}>Shopping Cart</h2>
       <p className={styles.subHeading}>
-        {filteredItems.length} Course{filteredItems.length > 1 ? "s" : ""} in cart
+        {/* {filteredItems.length} Course{filteredItems.length > 1 ? "s" : ""} in cart */}
       </p>
 
       <div className={styles.gridContainer}>
         {/* ---------------------------- */}
         {/* CART ITEMS */}
         {/* ---------------------------- */}
-        <div className={styles.cartItems}>
+        {/* <div className={styles.cartItems}>
           {filteredItems.map((course: Course) => {
             const totalMinutes = course.modules
               ?.flatMap((m) => m.lessons)
@@ -175,7 +187,7 @@ export default function Page() {
               </div>
             );
           })}
-        </div>
+        </div> */}
 
         {/* ---------------------------- */}
         {/* CHECKOUT SECTION */}
@@ -183,8 +195,8 @@ export default function Page() {
         <div className={styles.checkoutSection}>
           <div className={styles.card}>
             <h3>Total:</h3>
-            <p>₹ {filteredItems.reduce((sum, c) => sum + c.price, 0)}</p>
-            <button onClick={makePayment}>Checkout</button>
+            {/* <p>₹ {filteredItems.reduce((sum, c) => sum + c.price, 0)}</p>
+            <button onClick={makePayment}>Checkout</button> */}
           </div>
 
           <div className={styles.promotions}>

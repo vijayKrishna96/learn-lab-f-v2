@@ -32,20 +32,20 @@
   .gridContainer {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: $spacing-6;
+    gap: $spacing-md;
   }
 
   .cartItems {
     display: flex;
     flex-direction: column;
-    gap: $spacing-6;
+    gap: $spacing-md;
   }
 
   .cartItem {
     display: flex;
     align-items: center;
-    gap: $spacing-4;
-    padding: $spacing-4;
+    gap: $spacing-md;
+    padding: $spacing-md;
     border-radius: $radius-md;
     background: $gray-50;
     transition: $transition-all;
@@ -98,7 +98,7 @@
     .price {
       font-size: $text-lg;
       font-weight: $font-semibold;
-      padding: $spacing-4 0;
+      padding: $spacing-md 0;
       color: $gray-900;
 
       @include dark {
@@ -110,7 +110,7 @@
   .checkoutSection {
     display: flex;
     flex-direction: column;
-    gap: $spacing-6;
+    gap: $spacing-md;
 
     .card {
       @include card;

@@ -14,6 +14,8 @@ export interface UserData {
   phone?: string;
   rating?: string;
   courses?: string[];
+  cart?:string[];
+  wishlist?:string[];
 }
 
 // 2️⃣ Slice State Type

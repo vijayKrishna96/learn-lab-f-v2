@@ -1,11 +1,22 @@
+// /pages/user/layout.tsx
 import React from 'react'
 
-type Props = {}
+type Props = {
+  children: React.ReactNode
+}
 
-const layout = (props: Props) => {
+const Layout = ({ children }: Props) => {
   return (
-    <div>layout</div>
+    <div>
+      <header>
+        <h1>User Dashboard</h1>
+        {/* You can add navigation links here */}
+      </header>
+      <main>
+        {children} {/* This will render the content of each individual page */}
+      </main>
+    </div>
   )
 }
 
-export default layout
+export default Layout
