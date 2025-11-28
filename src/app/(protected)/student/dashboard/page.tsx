@@ -163,28 +163,34 @@ const Page: React.FC = () => {
   }, []);
 
   // Fetch courses based on selected category
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        let url = ALL_COURSE_API;
+ // Fetch courses based on selected category
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      let url = ALL_COURSE_API;
 
-        // Modify URL to filter by category
-        url =
-          selectedCategory === "all"
-            ? url
-            : `${url}?category=${selectedCategory}`;
+      // Attach query ?category=name
+      url =
+        selectedCategory === "all"
+          ? url
+          : `${url}?category=${selectedCategory}`;
 
-        const response = await axios.get(url);
-        setCourses(response.data);
-      } catch (error) {
-        setError("Failed to load courses");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCourses();
-  }, [selectedCategory]);
+      const response = await axios.get(url);
+
+      // Backend returns: { success, count, courses: [] }
+      setCourses(response.data.courses || []);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to load courses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCourses();
+}, [selectedCategory]);
+
 
   // Fetch instructors - runs on mount
   useEffect(() => {
