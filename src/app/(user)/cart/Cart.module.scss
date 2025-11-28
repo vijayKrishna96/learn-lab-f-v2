@@ -1,14 +1,17 @@
 @import '../../styles/variables'; // import your variables
 
-.cartContainer {
-  padding: $spacing-4xl 0;
-  min-height: 100vh;
+.cartDashboard{
   background: $gradient-bg-light;
-
   @include dark {
     background: $gradient-bg-dark;
   }
+}
 
+.cartContainer {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  padding: $spacing-2xl $spacing-md;
+  min-height: 100vh;
   .heading {
     font-size: $text-3xl;
     font-weight: $font-semibold;

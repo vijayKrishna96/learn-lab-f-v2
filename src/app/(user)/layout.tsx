@@ -8,10 +8,6 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <div>
-      <header>
-        <h1>User Dashboard</h1>
-        {/* You can add navigation links here */}
-      </header>
       <main>
         {children} {/* This will render the content of each individual page */}
       </main>

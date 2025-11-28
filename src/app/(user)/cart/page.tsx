@@ -14,6 +14,7 @@ import styles from "./Cart.module.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { ALL_COURSE_API } from "@/utils/constants/api";
 
 interface Lesson {
   duration: string;
@@ -45,16 +46,50 @@ interface DecodedToken {
 }
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [courses, setCourses] = useState([]); // To store fetched courses
+  const [loading, setLoading] = useState(true); // To track loading state
+  const [error, setError] = useState(null);
 
   const dispatch = useDispatch();
   const userData = useSelector(
-      (state: RootState) => state.user.userData
-    ) as UserData;
+    (state: RootState) => state.user.userData
+  ) as UserData;
 
-    console.log(userData, "userDatataata")
+  console.log(userData, "userDatataata");
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (userData && userData.cart && userData.cart.length > 0) {
+        setLoading(true); // Set loading to true before the request starts
+        try {
+          // Send a POST request with the array of course IDs in the body
+          const response = await axios.post(
+            "http://localhost:4500/courses/cart",
+            {
+              ids: userData.cart,
+            }
+          );
+
+          console.log(response.data, "this is res");
+
+          setCourses(response?.data?.courses); // Assuming the response is an array of courses
+        } catch (err) {
+          console.error("Error fetching courses:", err);
+          setError(err.message || "Something went wrong!");
+        } finally {
+          setLoading(false); // Set loading to false when the request finishes
+        }
+      } else {
+        // If no courses in the cart, stop loading and show an empty state
+        setCourses([]);
+        setLoading(false);
+      }
+    };
+
+    fetchCourses(); // Fetch courses when component mounts or when `userData.cart` changes
+  }, [userData.cart]);
   // const cartItems = useSelector((state) => state.cart.cartItems);
   // const userCourses = useSelector(selectUserCourses);
 
@@ -145,49 +180,54 @@ export default function Page() {
   //   handleSuccess();
   // }, [isProcessingPayment, userId, userRole, dispatch]);
 
-  if (isLoading) {
+  if (loading) {
     return <div className={styles.loadingWrapper}>Loading...</div>;
   }
 
+  console.log(courses, "successs");
+
   return (
-    <div className={styles.cartContainer}>
+    <div className={styles.cartDashboard}>
+      <div className={styles.cartContainer}>
       <h2 className={styles.heading}>Shopping Cart</h2>
       <p className={styles.subHeading}>
-        {/* {filteredItems.length} Course{filteredItems.length > 1 ? "s" : ""} in cart */}
+        Course{courses.count > 1 ? "s" : ""} in cart
       </p>
 
       <div className={styles.gridContainer}>
         {/* ---------------------------- */}
         {/* CART ITEMS */}
         {/* ---------------------------- */}
-        {/* <div className={styles.cartItems}>
-          {filteredItems.map((course: Course) => {
-            const totalMinutes = course.modules
-              ?.flatMap((m) => m.lessons)
-              ?.reduce((sum, l) => sum + parseInt(l.duration, 10), 0);
+        <div className={styles.cartItems}>
+          {courses.length === 0 ? (
+            <p>No items in cart</p>
+          ) : (
+            courses.map((course: Course) => {
+              return (
+                <div className={styles.cartItem} key={course._id}>
+                  <img
+                    src={course.image?.url || "/placeholder.jpg"}
+                    alt={course.title}
+                  />
 
-            const totalHours = (totalMinutes / 60).toFixed(2);
+                  <div className={styles.details}>
+                    <h3>{course.title}</h3>
 
-            return (
-              <div className={styles.cartItem} key={course._id}>
-                <img src={course.image?.url || "/placeholder.jpg"} alt={course.title} />
+                    <p>
+                      By <strong>{course.instructorDetails?.name}</strong>
+                    </p>
 
-                <div className={styles.details}>
-                  <h3>{course.title}</h3>
-                  <p>
-                    {course.averageRating} ⭐️ • {course.modules.length} Modules • {totalHours} Hours
-                  </p>
+                    <button >
+                      Remove from cart
+                    </button>
+                  </div>
 
-                  <button onClick={() => dispatch(removeItem(course._id))}>
-                    Remove from cart
-                  </button>
+                  <p className={styles.price}>₹ {course.price}</p>
                 </div>
-
-                <p className={styles.price}>₹ {course.price}</p>
-              </div>
-            );
-          })}
-        </div> */}
+              );
+            })
+          )}
+        </div>
 
         {/* ---------------------------- */}
         {/* CHECKOUT SECTION */}
@@ -195,8 +235,8 @@ export default function Page() {
         <div className={styles.checkoutSection}>
           <div className={styles.card}>
             <h3>Total:</h3>
-            {/* <p>₹ {filteredItems.reduce((sum, c) => sum + c.price, 0)}</p>
-            <button onClick={makePayment}>Checkout</button> */}
+            <p>₹ {courses.reduce((sum, c) => sum + c.price, 0)}</p>
+            <button >Checkout</button>
           </div>
 
           <div className={styles.promotions}>
@@ -209,6 +249,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
