@@ -1,0 +1,174 @@
+@import '../../../styles/variables'; // import your variables
+
+.cartDashboard{
+  background: $gradient-bg-light;
+  @include dark {
+    background: $gradient-bg-dark;
+  }
+}
+
+.cartContainer {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  padding: $spacing-2xl $spacing-md;
+  min-height: 100vh;
+  .heading {
+    font-size: $text-3xl;
+    font-weight: $font-semibold;
+    margin-bottom: $spacing-md;
+    color: $gray-900;
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+
+  .subHeading {
+    margin-bottom: $spacing-md;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+
+  .gridContainer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: $spacing-md;
+  }
+
+  .cartItems {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  .cartItem {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    border-radius: $radius-md;
+    background: $gray-50;
+    transition: $transition-all;
+
+    @include dark {
+      background: $dark-bg-card;
+    }
+
+    img {
+      width: 208px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: $radius-md;
+    }
+
+    .details {
+      flex: 1;
+
+      h3 {
+        font-size: $text-lg;
+        font-weight: $font-semibold;
+        margin-bottom: $spacing-xs;
+        color: $gray-900;
+
+        @include dark {
+          color: $dark-text-primary;
+        }
+      }
+
+      p {
+        font-size: $text-sm;
+        color: $gray-500;
+
+        @include dark {
+          color: $dark-text-muted;
+        }
+      }
+
+      button {
+        margin-top: $spacing-sm;
+        font-size: $text-sm;
+        color: $primary-500;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .price {
+      font-size: $text-lg;
+      font-weight: $font-semibold;
+      padding: $spacing-md 0;
+      color: $gray-900;
+
+      @include dark {
+        color: $dark-text-primary;
+      }
+    }
+  }
+
+  .checkoutSection {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    .card {
+      @include card;
+
+      h3 {
+        font-size: $text-lg;
+        font-weight: $font-semibold;
+        margin-bottom: $spacing-sm;
+      }
+
+      p {
+        font-size: $text-2xl;
+        font-weight: $font-bold;
+      }
+
+      button {
+        @include button-primary;
+        width: 100%;
+        margin-top: $spacing-md;
+      }
+    }
+
+    .promotions {
+      @include card;
+
+      input {
+        flex: 1;
+        padding: $spacing-sm;
+        border: 1px solid $gray-300;
+        border-radius: $radius-md;
+
+        @include dark {
+          border-color: $dark-border;
+          background: $dark-bg-secondary;
+          color: $dark-text-primary;
+        }
+      }
+
+      button {
+        @include button-primary;
+      }
+    }
+  }
+
+  .loadingWrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $text-xl;
+    color: $primary-500;
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+}

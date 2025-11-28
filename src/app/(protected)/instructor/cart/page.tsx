@@ -189,67 +189,65 @@ export default function Page() {
   return (
     <div className={styles.cartDashboard}>
       <div className={styles.cartContainer}>
-      <h2 className={styles.heading}>Shopping Cart</h2>
-      <p className={styles.subHeading}>
-        Course{courses.count > 1 ? "s" : ""} in cart
-      </p>
+        <h2 className={styles.heading}>Shopping Cart</h2>
+        <p className={styles.subHeading}>
+          {courses.length} Course{courses.length > 1 ? "s" : ""} in cart
+        </p>
 
-      <div className={styles.gridContainer}>
-        {/* ---------------------------- */}
-        {/* CART ITEMS */}
-        {/* ---------------------------- */}
-        <div className={styles.cartItems}>
-          {courses.length === 0 ? (
-            <p>No items in cart</p>
-          ) : (
-            courses.map((course: Course) => {
-              return (
-                <div className={styles.cartItem} key={course._id}>
-                  <img
-                    src={course.image?.url || "/placeholder.jpg"}
-                    alt={course.title}
-                  />
+        <div className={styles.gridContainer}>
+          {/* ---------------------------- */}
+          {/* CART ITEMS */}
+          {/* ---------------------------- */}
+          <div className={styles.cartItems}>
+            {courses.length === 0 ? (
+              <p>No items in cart</p>
+            ) : (
+              courses.map((course: Course) => {
+                return (
+                  <div className={styles.cartItem} key={course._id}>
+                    <img
+                      src={course.image?.url || "/placeholder.jpg"}
+                      alt={course.title}
+                    />
 
-                  <div className={styles.details}>
-                    <h3>{course.title}</h3>
+                    <div className={styles.details}>
+                      <h3>{course.title}</h3>
 
-                    <p>
-                      By <strong>{course.instructorDetails?.name}</strong>
-                    </p>
+                      <p>
+                        By <strong>{course.instructorDetails?.name}</strong>
+                      </p>
 
-                    <button >
-                      Remove from cart
-                    </button>
+                      <button>Remove from cart</button>
+                    </div>
+
+                    <p className={styles.price}>₹ {course.price}</p>
                   </div>
-
-                  <p className={styles.price}>₹ {course.price}</p>
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* ---------------------------- */}
-        {/* CHECKOUT SECTION */}
-        {/* ---------------------------- */}
-        <div className={styles.checkoutSection}>
-          <div className={styles.card}>
-            <h3>Total:</h3>
-            <p>₹ {courses.reduce((sum, c) => sum + c.price, 0)}</p>
-            <button >Checkout</button>
+                );
+              })
+            )}
           </div>
 
-          <div className={styles.promotions}>
-            <h3>Promotions</h3>
+          {/* ---------------------------- */}
+          {/* CHECKOUT SECTION */}
+          {/* ---------------------------- */}
+          <div className={styles.checkoutSection}>
+            <div className={styles.card}>
+              <h3>Total:</h3>
+              <p>₹ {courses.reduce((sum, c) => sum + c.price, 0)}</p>
+              <button>Checkout</button>
+            </div>
 
-            <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
-              <input placeholder="Enter Coupon" />
-              <button>Apply</button>
+            <div className={styles.promotions}>
+              <h3>Promotions</h3>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
+                <input placeholder="Enter Coupon" />
+                <button>Apply</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }
