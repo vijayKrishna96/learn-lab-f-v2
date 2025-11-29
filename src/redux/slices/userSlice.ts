@@ -49,6 +49,9 @@ const userSlice = createSlice({
 export const { setUserData, clearUserData } = userSlice.actions;
 
 // 6️⃣ Selector
+export const selectUserData = (state: RootState) => state.user.userData;
+export const selectUserCart = (state: RootState) => state.user.userData.cart ?? [];
+export const selectUserWishlist = (state: RootState) => state.user.userData.wishlist ?? [];
 export const selectUserCourses = (state: RootState) =>
   state.user.userData.courses ?? [];
 

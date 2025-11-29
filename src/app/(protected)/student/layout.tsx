@@ -13,7 +13,7 @@ export default function Layout({children}: StudentLayoutProps) {
   return (
      <div>
       <StudentHeader />
-      <main>{children}</main>
+      <main className='mt-12'>{children}</main>
     </div>
   )
 }

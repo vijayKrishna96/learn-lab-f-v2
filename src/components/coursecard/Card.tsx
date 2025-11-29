@@ -1,21 +1,24 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "next/navigation";
-import { FaHeart } from "react-icons/fa6";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Link from "next/link";
-// import { addItemToCart } from "../../features/cartSlice";
-// import { addItemToWishlist, removeWishlistItem, selectWishlistItems } from "../../features/wishlistSlice";
-import styles from "./CourseCard.module.scss";
+import { FaHeart } from "react-icons/fa6";
 
-// Define types for the props
+
+
+import styles from "./course-card.module.scss";
+import { addToCartAPI } from "@/services/cartService";
+import { addCartItem } from "@/redux/slices/cartSlice";
+import { addToWishlistAPI, removeFromWishlistAPI } from "@/services/wishlistService";
+import { addWishlistItem, removeWishlistItem } from "@/redux/slices/wishlistSlice";
+import { useSelector } from "react-redux";
+import { selectUserCart, selectUserWishlist, setUserData } from "@/redux/slices/userSlice";
+
 interface CourseCardProps {
-  // role: string;
+  role: string;
   course: {
     _id: string;
-    image: {
-      url: string;
-    };
+    image: { url: string };
     description: string;
     averageRating: number;
     price: number;
@@ -24,33 +27,69 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
-  const params = useParams();
-  const userId = params.userId as string;
   const dispatch = useDispatch();
-  // const wishlistItems = useSelector(selectWishlistItems);
-  // const [isWishlisted, setIsWishlisted] = useState(false);
+  const userCart = useSelector(selectUserCart); // NEW: Get current cart IDs
+  const userWishlist = useSelector(selectUserWishlist); // NEW: Get current wishlist IDs (if using)
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [loadingWish, setLoadingWish] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
-  // Update local state when wishlist items change
-  // useEffect(() => {
-  //   if (wishlistItems && course) {
-  //     const inWishlist = wishlistItems.some((item) => item._id === course._id);
-  //     setIsWishlisted(inWishlist);
-  //   }
-  // }, [wishlistItems, course]);
+  // -----------------------------
+  // Add to Cart
+  // -----------------------------
+  const handleAddToCart = async () => {
+    // NEW: Early exit if already in cart
+    if (userCart.includes(course._id)) return;
 
-  // Handle wishlist toggle
-  // const handleWishlistToggle = () => {
-  //   if (!course || !userId) return;
-  //   if (isWishlisted) {
-  //     dispatch(removeWishlistItem({ courseId: course._id, userId }));
-  //   } else {
-  //     dispatch(addItemToWishlist({ ...course, userId }));
-  //   }
-  // };
+    try {
+      setLoadingCart(true);
+      const res = await addToCartAPI(course._id);
+
+      // Update redux cart with full course
+      dispatch(addCartItem(course));
+
+      // NEW: Optimistically update userData.cart (merge new array)
+      const updatedCart = [...userCart, course._id];
+      dispatch(setUserData({ cart: updatedCart }));
+
+      console.log("Cart updated:", res);
+    } catch (error: any) {
+      console.log(error.response?.data || error.message);
+      // Optional: Rollback - remove from cart.items if added optimistically
+      // dispatch(removeCartItem(course._id)); // If you add this reducer
+    } finally {
+      setLoadingCart(false);
+    }
+  };
+
+  // -----------------------------
+  // Toggle Wishlist
+  // -----------------------------
+  const handleWishlistToggle = async () => {
+    if (loadingWish) return;
+
+    try {
+      setLoadingWish(true);
+
+      if (!isWishlisted) {
+        await addToWishlistAPI(course._id);
+        dispatch(addWishlistItem(course));
+      } else {
+        await removeFromWishlistAPI(course._id);
+        dispatch(removeWishlistItem(course._id));
+      }
+
+      setIsWishlisted(!isWishlisted);
+    } catch (error: any) {
+      console.log(error.response?.data || error.message);
+    } finally {
+      setLoadingWish(false);
+    }
+  };
 
   return (
     <article className={styles.courseCard}>
-      {/* Image Container with Link */}
+
       <Link href={`/${role}/course/${course._id}`} className={styles.imageContainer}>
         <img
           className={styles.courseImage}
@@ -59,26 +98,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
         />
       </Link>
 
-      {/* Wishlist Button */}
       <button
         className={styles.wishlistButton}
-        // onClick={handleWishlistToggle}
+        onClick={handleWishlistToggle}
         aria-label="Add to wishlist"
-        // aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        disabled={loadingWish}
       >
         <FaHeart
-          className={styles.wishlistIcon}
-          // className={`${styles.wishlistIcon} ${isWishlisted ? styles.active : ''}`}
+          className={`${styles.wishlistIcon} ${isWishlisted ? styles.active : ""}`}
         />
       </button>
 
-      {/* Course Content */}
       <div className={styles.courseContent}>
-        <p className={styles.courseDescription}>
-          {course?.description}
-        </p>
+        <p className={styles.courseDescription}>{course?.description}</p>
 
-        {/* Rating and Price */}
         <div className={styles.courseMetaGrid}>
           <span className={styles.metaItem}>
             ⭐ {course?.averageRating?.toFixed(1) || "N/A"}
@@ -88,20 +121,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
           </span>
         </div>
 
-        {/* Divider */}
         <hr className={styles.customLine} />
 
-        {/* Modules Count and Add Button */}
         <div className={styles.courseDetailsGrid}>
           <span className={styles.detailsItem}>
             {course?.modules?.length || 0} Modules
           </span>
+
           <button
             className={styles.addButton}
-            // onClick={() => dispatch(addItemToCart({ ...course, userId }))}
+            onClick={handleAddToCart}
             aria-label="Add to cart"
+            disabled={loadingCart}
           >
-            Add +
+            {loadingCart ? "Adding..." : "Add +"}
           </button>
         </div>
       </div>

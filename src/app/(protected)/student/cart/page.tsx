@@ -1,20 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-// import jwtDecode from "jwt-decode";
-
-// import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-// import { clearCart, removeItem } from "@/redux/features/cartSlice";
-// import { addUserCourse, selectUserCourses } from "@/redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./cart.module.scss";
-// import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { ALL_COURSE_API } from "@/utils/constants/api";
+import { selectUserCart, setUserData } from "@/redux/slices/userSlice";
+import { removeCartItem, setCartItems } from "@/redux/slices/cartSlice";
+import { removeFromCartAPI } from "@/services/cartService";
 
 interface Lesson {
   duration: string;
@@ -30,6 +24,10 @@ interface UserData {
   cart: string[];
 }
 
+interface InstructorDetails {
+  name: string;
+}
+
 interface Course {
   _id: string;
   userId: string;
@@ -38,6 +36,7 @@ interface Course {
   modules: Module[];
   price: number;
   averageRating: number;
+  instructorDetails?: InstructorDetails;
 }
 
 interface DecodedToken {
@@ -46,195 +45,156 @@ interface DecodedToken {
 }
 
 export default function Page() {
-  // const [isLoading, setIsLoading] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [courses, setCourses] = useState([]); // To store fetched courses
-  const [loading, setLoading] = useState(true); // To track loading state
-  const [error, setError] = useState(null);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   const dispatch = useDispatch();
-  const userData = useSelector(
-    (state: RootState) => state.user.userData
-  ) as UserData;
+  const userData = useSelector((state: RootState) => state.user.userData) as UserData | null;
+  const userCart = useSelector(selectUserCart);
+  const cartItems = useSelector((state: RootState) => state.cart.items) as Course[];
 
-  console.log(userData, "userDatataata");
+  // Reusable fetch function
+  const fetchAndPopulateCart = async () => {
+    if (!userData?.cart || userData.cart.length === 0) {
+      setLoading(false);
+      return;
+    }
 
+    try {
+      const response = await axios.post("http://localhost:4500/courses/cart", {
+        ids: userData.cart,
+      });
+
+      console.log(response.data, "Fetched courses");
+      dispatch(setCartItems(response.data.courses || []));
+      setLoading(false);
+    } catch (err: any) {
+      console.error("Error fetching cart courses:", err);
+      setError(err.message || "Failed to load cart");
+      setLoading(false);
+    }
+  };
+
+  // Fetch and populate on mount if empty (handles refresh)
   useEffect(() => {
-    const fetchCourses = async () => {
-      if (userData && userData.cart && userData.cart.length > 0) {
-        setLoading(true); // Set loading to true before the request starts
-        try {
-          
-          const response = await axios.post(
-            "http://localhost:4500/courses/cart",
-            {
-              ids: userData.cart,
-            }
-          );
+    if (cartItems.length > 0) {
+      setLoading(false);
+      return;
+    }
 
-          console.log(response.data, "this is res");
+    fetchAndPopulateCart();
+  }, []); // Only on mount
 
-          setCourses(response?.data?.courses); // Assuming the response is an array of courses
-        } catch (err) {
-          console.error("Error fetching courses:", err);
-          setError(err.message || "Something went wrong!");
-        } finally {
-          setLoading(false); // Set loading to false when the request finishes
+  // Optional: Sync if userCart changes externally
+  useEffect(() => {
+    if (userCart.length !== cartItems.length) {
+      const timer = setTimeout(() => {
+        if (cartItems.length === 0 && userCart.length > 0) {
+          fetchAndPopulateCart();
         }
-      } else {
-        // If no courses in the cart, stop loading and show an empty state
-        setCourses([]);
-        setLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [userCart.length, cartItems.length]);
+
+  // Handle Remove
+  const handleRemoveFromCart = async (courseId: string) => {
+    try {
+      // TODO: Call backend API
+      await removeFromCartAPI(courseId)
+
+      // Optimistically update Redux cart
+      dispatch(removeCartItem(courseId));
+
+      // Optimistically update userData.cart
+      if (userData) {
+        const updatedCart = userCart.filter(id => id !== courseId);
+        dispatch(setUserData({ ...userData, cart: updatedCart }));
       }
-    };
+    } catch (error: any) {
+      console.error("Remove from cart error:", error.response?.data || error.message);
+      setError("Failed to remove item from cart");
+    }
+  };
 
-    fetchCourses(); // Fetch courses when component mounts or when `userData.cart` changes
-  }, [userData.cart]);
-  // const cartItems = useSelector((state) => state.cart.cartItems);
-  // const userCourses = useSelector(selectUserCourses);
-
-  /** -----------------------------------------------
-   *  ✔ Get userId from Redux Persist (preferred)
-   *  ✔ fallback to localStorage if needed
-   ----------------------------------------------- */
-  // const userId =
-  //   useSelector((state) => state.user.userData?._id) ||
-  //   (typeof window !== "undefined" ? localStorage.getItem("userId") : null);
-
-  // const userRole = useSelector((state) => state.user.userData.role);
-
-  // const filteredItems =
-  //   cartItems
-  //     ?.filter((course: Course) => course.userId === userId)
-  //     ?.filter((course: Course) => !userCourses.includes(course._id)) || [];
-
-  //const PK = process.env.NEXT_PUBLIC_STRIPE_PK as string;
-
-  // const makePayment = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const stripe = await loadStripe(PK);
-  //     const returnUrl = `${window.location.origin}/cart`;
-
-  //     const response = await fetch(STRIPE_PAYMENT_API, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ product: filteredItems, returnUrl }),
-  //     });
-
-  //     if (!response.ok) throw new Error("Checkout session creation failed");
-
-  //     const session = await response.json();
-  //     if (!session?.id) throw new Error("Invalid session response");
-
-  //     const result = await stripe?.redirectToCheckout({ sessionId: session.id });
-  //     if (result?.error) throw new Error(result.error.message);
-  //   } catch (err) {
-  //     console.error("Payment error:", err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  /** -----------------------------------------------
-   *  ✔ Handle Stripe Redirect Success
-   ----------------------------------------------- */
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const isSuccess = params.get("success") === "true";
-  //   const token = params.get("token");
-
-  //   if (!isSuccess || !token || isProcessingPayment) return;
-
-  //   const handleSuccess = async () => {
-  //     setIsProcessingPayment(true);
-
-  //     try {
-  //       const decoded: DecodedToken = jwtDecode(token);
-  //       const itemIds = decoded.items || [];
-  //       const instructorIds = decoded.instructorIds || [];
-
-  //       dispatch(addUserCourse(itemIds));
-  //       dispatch(clearCart());
-
-  //       await axios.patch(`${UPDATE_USER_DETAILS}/${userId}`, { courses: itemIds });
-
-  //       for (const courseId of itemIds) {
-  //         await axios.patch(`${UPDATE_COURSE_API}/${courseId}`, { students: userId });
-  //       }
-
-  //       await Promise.all(
-  //         instructorIds.map((id) =>
-  //           axios.patch(`${UPDATE_USER_DETAILS}/${id}`, { students: [userId] })
-  //         )
-  //       );
-
-  //       window.location.href = `/${userRole}/${userId}`;
-  //     } catch (err) {
-  //       console.error("Payment processing error:", err);
-  //     } finally {
-  //       setIsProcessingPayment(false);
-  //     }
-  //   };
-
-  //   handleSuccess();
-  // }, [isProcessingPayment, userId, userRole, dispatch]);
+  // Handle Checkout
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    
+    setIsProcessingPayment(true);
+    try {
+      // TODO: Implement checkout logic
+      console.log("Processing checkout...");
+      // await processPayment();
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      setError("Failed to process checkout");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
 
   if (loading) {
     return <div className={styles.loadingWrapper}>Loading...</div>;
   }
 
-  console.log(courses, "successs");
+  if (error) {
+    return <div className={styles.errorWrapper}>Error: {error}</div>;
+  }
+
+  const totalPrice = cartItems.reduce((sum, course) => sum + course.price, 0);
 
   return (
     <div className={styles.cartDashboard}>
       <div className={styles.cartContainer}>
         <h2 className={styles.heading}>Shopping Cart</h2>
         <p className={styles.subHeading}>
-          {courses.length} Course{courses.length > 1 ? "s" : ""} in cart
+          {cartItems.length} Course{cartItems.length !== 1 ? "s" : ""} in cart
         </p>
 
         <div className={styles.gridContainer}>
-          {/* ---------------------------- */}
           {/* CART ITEMS */}
-          {/* ---------------------------- */}
           <div className={styles.cartItems}>
-            {courses.length === 0 ? (
+            {cartItems.length === 0 ? (
               <p>No items in cart</p>
             ) : (
-              courses.map((course: Course) => {
-                return (
-                  <div className={styles.cartItem} key={course._id}>
-                    <img
-                      src={course.image?.url || "/placeholder.jpg"}
-                      alt={course.title}
-                    />
+              cartItems.map((course: Course) => (
+                <div className={styles.cartItem} key={course._id}>
+                  <img
+                    src={course.image?.url || "/placeholder.jpg"}
+                    alt={course.title}
+                  />
 
-                    <div className={styles.details}>
-                      <h3>{course.title}</h3>
+                  <div className={styles.details}>
+                    <h3>{course.title}</h3>
 
-                      <p>
-                        By <strong>{course.instructorDetails?.name}</strong>
-                      </p>
+                    <p>
+                      By <strong>{course.instructorDetails?.name || "Unknown Instructor"}</strong>
+                    </p>
 
-                      <button>Remove from cart</button>
-                    </div>
-
-                    <p className={styles.price}>₹ {course.price}</p>
+                    <button onClick={() => handleRemoveFromCart(course._id)}>
+                      Remove from cart
+                    </button>
                   </div>
-                );
-              })
+
+                  <p className={styles.price}>₹ {course.price}</p>
+                </div>
+              ))
             )}
           </div>
 
-          {/* ---------------------------- */}
           {/* CHECKOUT SECTION */}
-          {/* ---------------------------- */}
           <div className={styles.checkoutSection}>
             <div className={styles.card}>
               <h3>Total:</h3>
-              <p>₹ {courses.reduce((sum, c) => sum + c.price, 0)}</p>
-              <button>Checkout</button>
+              <p>₹ {totalPrice}</p>
+              <button 
+                onClick={handleCheckout}
+                disabled={isProcessingPayment || cartItems.length === 0}
+              >
+                {isProcessingPayment ? "Processing..." : "Checkout"}
+              </button>
             </div>
 
             <div className={styles.promotions}>
