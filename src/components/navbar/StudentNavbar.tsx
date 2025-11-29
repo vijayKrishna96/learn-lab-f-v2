@@ -73,7 +73,7 @@ const StudentHeader = () => {
 
           {/* 🛒 Cart */}
           <div className="relative text-xl md:text-2xl">
-            <Link href={`/student/cart/${userId}`}>
+            <Link href={`/student/cart`}>
               <FaCartShopping />
             </Link>
             <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">

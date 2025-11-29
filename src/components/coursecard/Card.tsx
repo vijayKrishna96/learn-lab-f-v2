@@ -10,7 +10,7 @@ import styles from "./CourseCard.module.scss";
 
 // Define types for the props
 interface CourseCardProps {
-  role: string;
+  // role: string;
   course: {
     _id: string;
     image: {

@@ -133,7 +133,7 @@ const Page = () => {
             ? ALL_COURSE_API
             : `${ALL_COURSE_API}?category=${selectedCategory}`;
         const response = await axios.get<Course[]>(url);
-        setCourses(response.data);
+        setCourses(response.data.courses);
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {

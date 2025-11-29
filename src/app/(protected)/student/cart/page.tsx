@@ -9,7 +9,7 @@ import axios from "axios";
 // import { clearCart, removeItem } from "@/redux/features/cartSlice";
 // import { addUserCourse, selectUserCourses } from "@/redux/features/userSlice";
 
-import styles from "./Cart.module.scss";
+import styles from "./cart.module.scss";
 // import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -64,7 +64,7 @@ export default function Page() {
       if (userData && userData.cart && userData.cart.length > 0) {
         setLoading(true); // Set loading to true before the request starts
         try {
-          // Send a POST request with the array of course IDs in the body
+          
           const response = await axios.post(
             "http://localhost:4500/courses/cart",
             {

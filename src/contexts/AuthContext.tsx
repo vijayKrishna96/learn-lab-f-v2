@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchFullUserData = async (partialUser: PartialUser): Promise<FullUser | null> => {
     try {
-      console.log("Fetching full user data for:", partialUser.id);
+      // console.log("Fetching full user data for:", partialUser.id);
       const response = await axios.get(`${USER_DETAILS_API}/user/${partialUser.id}`, {
         withCredentials: true,
       });
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         ? response.data[0]
         : response.data;
 
-      console.log("Full User Data fetched:", fullUserData);
+      // console.log("Full User Data fetched:", fullUserData);
       return fullUserData;
     } catch (err) {
       console.error("Failed to fetch full user data:", err);
@@ -135,7 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Valid session - use verified data (fresh from token)
         const verifiedUser: PartialUser = verifyResponse.user;
-        console.log("Verified partial user:", verifiedUser);
+        // console.log("Verified partial user:", verifiedUser);
 
         // Update localStorage if stored doesn't match (e.g., different session)
         if (storedUser && storedUser.id !== verifiedUser.id) {

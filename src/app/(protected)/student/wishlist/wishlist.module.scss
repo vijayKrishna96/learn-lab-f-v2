@@ -1,0 +1,58 @@
+@import "../../../styles/variables";
+
+.wrapper {
+  min-height: 100vh;
+  padding: $spacing-xl;
+  background: $gradient-bg-light;
+
+  @include dark {
+    background: $gradient-bg-dark;
+  }
+}
+
+.container {
+  max-width: $container-xl;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-semibold;
+  margin-top: $spacing-2xl;
+  margin-bottom: $spacing-lg;
+
+  @include gradient-text;
+}
+
+.subtitle {
+  margin-bottom: $spacing-lg;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-xl;
+  margin-top: $spacing-2xl;
+
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include screen-xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.bottomBar {
+  background: black;
+  height: 200px;
+
+  @include dark {
+    background: $dark-bg-secondary;
+  }
+}

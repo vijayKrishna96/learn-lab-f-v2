@@ -49,7 +49,7 @@ const InstructorHeader = () => {
             </Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/instructor/${userId}`}>Home</Link>
+            <Link href={`/instructor/dashboard`}>Home</Link>
           </li>
           <li className="hidden md:block">
             <Link href={`/instructor/studentlist/${userId}`}>Student Directory</Link>
@@ -68,7 +68,7 @@ const InstructorHeader = () => {
 
           {/* 🛒 Cart */}
           <div className="relative text-xl md:text-2xl">
-            <Link href={`/student/cart/${userId}`}>
+            <Link href={`/instructor/cart`}>
               <FaCartShopping />
             </Link>
             <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
@@ -88,7 +88,7 @@ const InstructorHeader = () => {
 
           {/* 👤 Profile */}
           <div className="hidden md:block">
-            <Link href={`/instructor/profile/${userId}`}>
+            <Link href={`/instructor/profile`}>
               <img
                 src="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                 alt="Profile"
