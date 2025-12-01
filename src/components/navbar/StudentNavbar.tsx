@@ -80,6 +80,15 @@ const StudentHeader = () => {
             </span>
           </div>
 
+          <div className="relative text-red-400 text-xl md:text-2xl">
+            <Link href={`/student/wishlist`}>
+              <FaHeart />
+            </Link>
+            <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
+              {/* {userWishlist?.length ?? 0} */}
+            </span>
+          </div>
+
           <div className="hidden md:block">
             <Link href={`/student/profile`}>
               <img
