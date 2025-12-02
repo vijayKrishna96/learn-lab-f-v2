@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa6";
@@ -28,6 +28,7 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
   const dispatch = useDispatch();
+  const userData = useSelector((state: any) => state.user.userData);
   const userCart = useSelector(selectUserCart); // NEW: Get current cart IDs
   const userWishlist = useSelector(selectUserWishlist); // NEW: Get current wishlist IDs (if using)
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -65,27 +66,74 @@ const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
   // -----------------------------
   // Toggle Wishlist
   // -----------------------------
-  const handleWishlistToggle = async () => {
-    if (loadingWish) return;
+  // const handleWishlistToggle = async () => {
+  //   if (loadingWish) return;
 
-    try {
-      setLoadingWish(true);
+  //   try {
+  //     setLoadingWish(true);
 
-      if (!isWishlisted) {
-        await addToWishlistAPI(course._id);
-        dispatch(addWishlistItem(course));
-      } else {
-        await removeFromWishlistAPI(course._id);
-        dispatch(removeWishlistItem(course._id));
-      }
+  //     if (!isWishlisted) {
+  //       await addToWishlistAPI(course._id);
+  //       dispatch(addWishlistItem(course));
+  //     } else {
+  //       await removeFromWishlistAPI(course._id);
+  //       dispatch(removeWishlistItem(course._id));
+  //     }
 
-      setIsWishlisted(!isWishlisted);
-    } catch (error: any) {
-      console.log(error.response?.data || error.message);
-    } finally {
-      setLoadingWish(false);
+  //     setIsWishlisted(!isWishlisted);
+  //   } catch (error: any) {
+  //     console.log(error.response?.data || error.message);
+  //   } finally {
+  //     setLoadingWish(false);
+  //   }
+  // };
+
+  // Check initial wishlist state
+useEffect(() => {
+  setIsWishlisted(userWishlist.includes(course._id));
+}, [userWishlist, course._id]);
+
+const handleWishlistToggle = async () => {
+  if (loadingWish) return;
+
+  try {
+    setLoadingWish(true);
+
+    if (!isWishlisted) {
+      // API call
+      await addToWishlistAPI(course._id);
+
+      // Add full course to redux wishlist slice
+      dispatch(addWishlistItem(course));
+
+      // Update userData
+      dispatch(setUserData({
+        ...userData,
+        wishlist: [...userWishlist, course._id]
+      }));
+
+      setIsWishlisted(true);
+    } 
+    else {
+      await removeFromWishlistAPI(course._id);
+
+      dispatch(removeWishlistItem(course._id));
+
+      dispatch(setUserData({
+        ...userData,
+        wishlist: userWishlist.filter(id => id !== course._id)
+      }));
+
+      setIsWishlisted(false);
     }
-  };
+
+  } catch (error: any) {
+    console.log(error.response?.data || error.message);
+  } finally {
+    setLoadingWish(false);
+  }
+};
+
 
   return (
     <article className={styles.courseCard}>

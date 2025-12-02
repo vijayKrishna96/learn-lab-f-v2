@@ -18,6 +18,7 @@ const StudentHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
   const [userId, setUserId] = useState<string>("");
 
   // const pathname = usePathname(); // ✅ Example: /student/6714c06217f165436c5361ac
@@ -43,6 +44,7 @@ const StudentHeader = () => {
   // const userWishlist = wishlistItems?.filter((item: any) => item.userId === userId);
 
   console.log(cartItems, "cart");
+  console.log(wishlistItems, "wishlist");
 
   return (
     <nav className="shadow-md fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900">
@@ -84,9 +86,11 @@ const StudentHeader = () => {
             <Link href={`/student/wishlist`}>
               <FaHeart />
             </Link>
-            <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
-              {/* {userWishlist?.length ?? 0} */}
-            </span>
+            {wishlistItems?.length > 0 && (
+              <span className="absolute -top-2 -right-2 text-xs bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                {wishlistItems.length}
+              </span>
+            )}
           </div>
 
           <div className="hidden md:block">
