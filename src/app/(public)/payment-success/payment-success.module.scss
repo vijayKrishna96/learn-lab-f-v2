@@ -1,0 +1,418 @@
+@import '../../styles/variables';
+
+.container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gradient-bg-light;
+  padding: $spacing-xl;
+  position: relative;
+  overflow: hidden;
+  
+  @include dark {
+    background: $gradient-bg-dark;
+  }
+
+  // Animated background circles
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: $opacity-light;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  &::before {
+    width: 400px;
+    height: 400px;
+    background: $gradient-primary;
+    top: -100px;
+    left: -100px;
+    animation-delay: -5s;
+  }
+
+  &::after {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, $cyan-400, $blue-400);
+    bottom: -80px;
+    right: -80px;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+}
+
+.content {
+  @include card;
+  max-width: 650px;
+  width: 100%;
+  text-align: center;
+  box-shadow: $shadow-2xl;
+  position: relative;
+  z-index: $z-base;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  
+  @include dark {
+    background: $dark-bg-card;
+    border: 1px solid $dark-border;
+    box-shadow: $shadow-dark-xl;
+  }
+
+  h1 {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    color: $gray-900;
+    margin-bottom: $spacing-md;
+    
+    @include dark {
+      color: $dark-text-primary;
+    }
+
+    @include screen-md {
+      font-size: $text-4xl;
+    }
+  }
+
+  > p {
+    font-size: $text-lg;
+    color: $gray-600;
+    margin-bottom: $spacing-md;
+    line-height: $leading-relaxed;
+    
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 6px solid $gray-200;
+  border-top: 6px solid $primary-500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto $spacing-xl;
+  
+  @include dark {
+    border-color: $dark-bg-tertiary;
+    border-top-color: $primary-400;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.successIcon,
+.errorIcon,
+.pendingIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  color: white;
+  margin: 0 auto $spacing-xl;
+  animation: scaleIn 0.5s ease-out;
+  box-shadow: $shadow-primary-lg;
+  
+  @include dark {
+    box-shadow: $shadow-primary-dark-lg;
+  }
+}
+
+.successIcon {
+  background: linear-gradient(135deg, $success, #059669);
+  
+  @include dark {
+    background: linear-gradient(135deg, #10b981, #047857);
+  }
+}
+
+.errorIcon {
+  background: linear-gradient(135deg, $error, #dc2626);
+  font-size: 60px;
+  font-weight: $font-bold;
+  
+  @include dark {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+  }
+}
+
+.pendingIcon {
+  background: linear-gradient(135deg, $warning, #f59e0b);
+  font-size: 50px;
+  
+  @include dark {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.note {
+  font-style: italic;
+  color: $gray-500;
+  margin-top: $spacing-xl;
+  font-size: $text-sm;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.successDetails {
+  background: linear-gradient(135deg, $primary-50, $purple-50);
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  margin: $spacing-xl 0;
+  border-left: 4px solid $success;
+  
+  @include dark {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
+    border-left-color: $success;
+  }
+
+  p {
+    font-size: $text-base;
+    color: $gray-700;
+    margin-bottom: $spacing-sm;
+    
+    @include dark {
+      color: $dark-text-secondary;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+      font-weight: $font-semibold;
+      color: $primary-600;
+      
+      @include dark {
+        color: $primary-400;
+      }
+    }
+  }
+}
+
+.pendingInfo {
+  text-align: left;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  margin: $spacing-xl 0;
+  border-left: 4px solid $warning;
+  
+  @include dark {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15));
+  }
+
+  > p {
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-md;
+    font-size: $text-lg;
+    
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding-left: $spacing-lg;
+
+    li {
+      margin-bottom: $spacing-sm;
+      color: $gray-600;
+      line-height: $leading-relaxed;
+      
+      @include dark {
+        color: $dark-text-secondary;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+
+  @include screen-md {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  button {
+    padding: $spacing-md $spacing-xl;
+    border: none;
+    border-radius: $radius-full;
+    font-size: $text-base;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    transition: $transition-all;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    &:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.primaryButton {
+  @include button-primary;
+  box-shadow: $shadow-primary;
+  
+  @include dark {
+    box-shadow: $shadow-primary-dark;
+  }
+  
+  &:hover {
+    box-shadow: $shadow-primary-lg;
+    
+    @include dark {
+      box-shadow: $shadow-primary-dark-lg;
+    }
+  }
+}
+
+.secondaryButton {
+  background: linear-gradient(135deg, $success, #059669);
+  color: white;
+  box-shadow: $shadow-lg;
+  
+  @include dark {
+    background: linear-gradient(135deg, #10b981, #047857);
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: $shadow-xl;
+    
+    @include dark {
+      background: linear-gradient(135deg, #059669, #065f46);
+    }
+  }
+}
+
+.outlineButton {
+  background: transparent;
+  color: $primary-500;
+  border: 2px solid $primary-500;
+  box-shadow: none;
+  
+  @include dark {
+    color: $primary-400;
+    border-color: $primary-400;
+  }
+
+  &:hover {
+    background: $primary-500;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: $shadow-primary;
+    
+    @include dark {
+      background: $primary-400;
+      box-shadow: $shadow-primary-dark;
+    }
+  }
+}
+
+// Responsive design
+@include screen-md {
+  .content {
+    padding: $spacing-3xl;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .container {
+    padding: $spacing-lg;
+  }
+
+  .content {
+    padding: $spacing-xl;
+    border-radius: $radius-md;
+  }
+
+  .buttonGroup {
+    button {
+      padding: $spacing-sm $spacing-lg;
+      font-size: $text-sm;
+    }
+  }
+
+  .successIcon,
+  .errorIcon,
+  .pendingIcon {
+    width: 80px;
+    height: 80px;
+    font-size: 40px;
+  }
+
+  .errorIcon {
+    font-size: 50px;
+  }
+
+  .content h1 {
+    font-size: $text-2xl;
+  }
+
+  .content > p {
+    font-size: $text-base;
+  }
+}

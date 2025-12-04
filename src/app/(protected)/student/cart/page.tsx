@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./cart.module.scss";
 import { RootState } from "@/redux/store";
@@ -10,9 +10,7 @@ import { removeCartItem, setCartItems, clearCart } from "@/redux/slices/cartSlic
 import { 
   createCheckoutSessionAPI, 
   fetchCartCoursesAPI, 
-  removeFromCartAPI, 
-  verifyPaymentAPI,
-  pollPaymentStatusAPI 
+  removeFromCartAPI
 } from "@/services/cartService";
 
 interface Course {
@@ -68,16 +66,13 @@ const getSafeRating = (course: Course): number => {
 
 export default function CartPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<string>("");
   
   const initialLoadRef = useRef(false);
-  const verificationAttemptedRef = useRef(false);
 
   const userData = useSelector((state: RootState) => state.user.userData) as UserData | null;
   const userCart = useSelector(selectUserCart);
@@ -124,126 +119,6 @@ export default function CartPage() {
       setLoading(false);
     }
   }, [userData, cartItems.length, fetchCartCourses]);
-
-  // Handle payment verification with retry logic
-  useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-    const paymentSuccess = searchParams.get("payment_success");
-    const canceled = searchParams.get("canceled");
-    
-    if (canceled === "true") {
-      setError("Payment was canceled");
-      setLoading(false);
-      // Clear URL params
-      router.replace("/cart");
-      return;
-    }
-    
-    if (sessionId && paymentSuccess === "true" && !verificationAttemptedRef.current) {
-      verificationAttemptedRef.current = true;
-      handlePaymentVerification(sessionId);
-    }
-  }, [searchParams]);
-
-  // Handle payment verification with polling fallback
-  const handlePaymentVerification = async (sessionId: string) => {
-    if (!userData) {
-      setError("User not authenticated");
-      return;
-    }
-    
-    setLoading(true);
-    setVerificationStatus("Verifying your payment...");
-    setError(null);
-
-    let attempts = 0;
-    const maxAttempts = 5;
-    const retryDelay = 2000;
-
-    const attemptVerification = async (): Promise<boolean> => {
-      try {
-        const result = await verifyPaymentAPI(sessionId);
-
-        if (result.success) {
-          setVerificationStatus("Payment successful! Redirecting...");
-          
-          // Update Redux state
-          dispatch(clearCart());
-          const updatedUserData = {
-            ...userData,
-            cart: [],
-            courses: [...(userData.courses || []), ...(result.courseIds || [])]
-          };
-          dispatch(setUserData(updatedUserData));
-
-          // Redirect to dashboard
-          setTimeout(() => {
-            router.push(`/dashboard?payment=success&courses=${result.courseIds?.join(",") || ""}`);
-          }, 1500);
-
-          return true;
-        }
-        
-        return false;
-      } catch (err: any) {
-        console.error(`Verification attempt ${attempts + 1} failed:`, err);
-        return false;
-      }
-    };
-
-    // Try verification with retries
-    while (attempts < maxAttempts) {
-      attempts++;
-      setVerificationStatus(`Verifying payment... (attempt ${attempts}/${maxAttempts})`);
-      
-      const success = await attemptVerification();
-      if (success) {
-        setLoading(false);
-        return;
-      }
-
-      if (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
-      }
-    }
-
-    // If all attempts fail, try polling payment status
-    setVerificationStatus("Checking payment status with server...");
-    
-    try {
-      const status = await pollPaymentStatusAPI(sessionId);
-      
-      if (status.status === "completed") {
-        setVerificationStatus("Payment confirmed! Redirecting...");
-        
-        dispatch(clearCart());
-        const updatedUserData = {
-          ...userData,
-          cart: [],
-          courses: [...(userData.courses || []), ...status.courseIds]
-        };
-        dispatch(setUserData(updatedUserData));
-
-        setTimeout(() => {
-          router.push(`/dashboard?payment=success&courses=${status.courseIds.join(",")}`);
-        }, 1500);
-      } else if (status.status === "pending") {
-        setError("Payment is still processing. Please check your dashboard in a few minutes.");
-        setTimeout(() => router.push("/dashboard"), 3000);
-      } else {
-        throw new Error("Payment verification failed");
-      }
-    } catch (err: any) {
-      console.error("Payment verification failed completely:", err);
-      setError(
-        "Unable to verify payment. Your payment may still be processing. " +
-        "Please check your email and dashboard. If you were charged but don't see your courses, contact support."
-      );
-      setTimeout(() => router.push("/dashboard"), 5000);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Remove item from cart
   const handleRemoveFromCart = async (courseId: string) => {
@@ -316,7 +191,7 @@ export default function CartPage() {
     return (
       <div className={styles.loadingWrapper}>
         <div className={styles.spinner} />
-        <p>{verificationStatus || "Loading your cart..."}</p>
+        <p>Loading your cart...</p>
       </div>
     );
   }

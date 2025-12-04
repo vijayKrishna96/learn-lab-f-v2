@@ -1,6 +1,8 @@
 // services/cartService.ts
 import axiosInstance from "@/utils/axiosInstance";
 
+
+
 interface Course {
   _id: string;
   title: string;
@@ -113,33 +115,55 @@ export const createCheckoutSessionAPI = async (
  * Verify payment and complete purchase
  * This is called after Stripe redirects back to the site
  */
-export const verifyPaymentAPI = async (
-  sessionId: string
-): Promise<PaymentVerificationResponse> => {
+
+export const verifyPaymentPublicAPI = async (sessionId: string) => {
   try {
-    const response = await axiosInstance.post("/payment/verify", { sessionId });
+    const response = await fetch(`http://localhost:4500/payment/verify-public`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // No Authorization header needed for this endpoint
+      },
+      body: JSON.stringify({ sessionId }),
+      credentials: 'include', // Important: include cookies
+    });
+
+    const data = await response.json();
     
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Payment verification failed");
+    if (!response.ok) {
+      throw new Error(data.message || 'Payment verification failed');
     }
-    
-    return response.data;
+
+    return data;
   } catch (error: any) {
-    console.error("Verify payment error:", error);
+    console.error('Public verification error:', error);
+    throw error;
+  }
+};
+
+// Keep your existing verifyPaymentAPI for authenticated calls
+export const verifyPaymentAPI = async (sessionId: string) => {
+  try {
+    const response = await fetch(`http://localhost:4500/payment/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Authorization header will be added by your auth interceptors
+      },
+      body: JSON.stringify({ sessionId }),
+      credentials: 'include',
+    });
+
+    const data = await response.json();
     
-    // Provide more specific error messages
-    if (error.response?.status === 403) {
-      throw new Error("Unauthorized: This payment does not belong to your account");
+    if (!response.ok) {
+      throw new Error(data.message || 'Payment verification failed');
     }
-    
-    if (error.response?.status === 400) {
-      throw new Error(error.response.data?.message || "Payment was not completed");
-    }
-    
-    throw new Error(
-      error.response?.data?.message || 
-      "Failed to verify payment. Please try again or contact support."
-    );
+
+    return data;
+  } catch (error: any) {
+    console.error('Verification error:', error);
+    throw error;
   }
 };
 
