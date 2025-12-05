@@ -1,4 +1,4 @@
-@import '../../../styles/variables'; // import your variables
+@use '../../../styles/variables' as *;
 
 .cartDashboard{
   background: $gradient-bg-light;
