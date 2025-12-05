@@ -9,7 +9,7 @@ import axios from "axios";
 // import { clearCart, removeItem } from "@/redux/features/cartSlice";
 // import { addUserCourse, selectUserCourses } from "@/redux/features/userSlice";
 
-import styles from "./Cart.module.scss";
+import styles from "./cart.module.scss";
 // import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
