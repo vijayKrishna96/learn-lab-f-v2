@@ -1,0 +1,198 @@
+@import "../../../styles/variables";
+
+.wrapper {
+  padding: 0 $spacing-md;
+  background: $gradient-bg-light;
+
+  @include dark {
+    background: $gradient-bg-dark;
+  }
+
+  @include screen-lg {
+    padding: $spacing-xl $spacing-xl;
+  }
+  .container {
+    min-height: 100vh;
+    max-width: $container-2xl;
+    margin: 0 auto;
+  }
+}
+
+.title {
+  font-size: $text-3xl;
+  font-weight: $font-semibold;
+  margin: $spacing-lg 0;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+
+  @include screen-md {
+    margin: $spacing-2xl 0;
+  }
+}
+
+.loadingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+.emptyState {
+  text-align: center;
+  margin-top: $spacing-4xl;
+}
+
+.emptyStateTitle {
+  font-size: $text-xl;
+  font-weight: $font-medium;
+  margin-bottom: $spacing-md;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.emptyStateText {
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.courseGrid {
+  margin: $spacing-2xl 0;
+  max-width: $container-xl;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+
+  @include screen-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.courseCard {
+  @include card;
+  @include hover-lift;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+}
+
+.courseImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.courseContent {
+  padding: $spacing-md;
+}
+
+.courseTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+
+  @include screen-md {
+    font-size: $text-xl;
+  }
+}
+
+.courseDescription {
+  font-size: $text-sm;
+  margin-top: $spacing-sm;
+  color: $gray-700;
+  line-height: $leading-relaxed;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+
+  @include screen-md {
+    font-size: $text-base;
+  }
+}
+
+.divider {
+  margin: $spacing-md 0;
+  border: none;
+  border-top: 1px solid $gray-200;
+
+  @include dark {
+    border-top-color: $dark-border;
+  }
+}
+
+.courseFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 $spacing-sm;
+  font-size: $text-sm;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+
+  @include screen-md {
+    font-size: $text-base;
+    flex-wrap: nowrap;
+  }
+}
+
+.continueButton {
+  @include button-primary;
+  padding: $spacing-sm $spacing-lg;
+  font-size: $text-sm;
+  box-shadow: $shadow-primary;
+
+  &:hover {
+    box-shadow: $shadow-primary-lg;
+  }
+
+  @include dark {
+    box-shadow: $shadow-primary-dark;
+
+    &:hover {
+      box-shadow: $shadow-primary-dark-lg;
+    }
+  }
+
+  @include screen-md {
+    font-size: $text-base;
+  }
+}
+
+.rating {
+  color: $gray-700;
+  font-weight: $font-medium;
+  white-space: nowrap;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
