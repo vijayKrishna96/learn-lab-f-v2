@@ -1,0 +1,245 @@
+@import '../../../styles/variables';
+
+.container {
+  min-height: 100vh;
+  background: $gray-50;
+  
+  @include dark {
+    background: $dark-bg-primary;
+  }
+}
+
+.content {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  display: flex;
+  height: 100vh;
+  gap: $spacing-md;
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gray-50;
+  
+  p {
+    color: $gray-700;
+    font-size: $text-lg;
+  }
+  
+  @include dark {
+    background: $dark-bg-primary;
+    
+    p {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+// Video Section
+.videoSection {
+  flex: 1;
+  background: white;
+  padding: $spacing-xl;
+  overflow-y: auto;
+  
+  @include dark {
+    background: $dark-bg-primary;
+  }
+}
+
+.videoPlayer {
+  width: 100%;
+  height: auto;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  
+  @include dark {
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+.videoTitle {
+  margin-top: $spacing-lg;
+  font-size: $text-2xl;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.videoDescription {
+  color: $gray-500;
+  margin-top: $spacing-sm;
+  font-size: $text-base;
+  line-height: $leading-relaxed;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+// Modules Section
+.modulesSection {
+  width: 29.333333%;
+  background: $gray-50;
+  padding: $spacing-xl;
+  overflow-y: auto;
+  border-left: 1px solid $gray-200;
+  
+  @include dark {
+    background: $dark-bg-primary;
+    border-left-color: $dark-border;
+  }
+}
+
+.modulesHeading {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  margin-bottom: $spacing-lg;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.moduleWrapper {
+  margin-bottom: $spacing-lg;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-lg;
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  cursor: pointer;
+  transition: $transition-all;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+  
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-md;
+    
+    &:hover {
+      box-shadow: $shadow-dark-xl;
+    }
+  }
+}
+
+.moduleTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.chevronIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: $transition-transform;
+  color: $gray-600;
+  
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+// Lessons
+.lessonList {
+  margin-top: $spacing-sm;
+  margin-left: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.lessonItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+  transition: $transition-colors;
+  
+  &:hover {
+    background: $gray-100;
+  }
+  
+  @include dark {
+    &:hover {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.lessonCheckbox {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: $success;
+  
+  &:focus {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}
+
+.lessonTitle {
+  font-size: $text-base;
+  color: $gray-700;
+  
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+// Responsive Design
+@include screen-lg {
+  .content {
+    gap: $spacing-lg;
+  }
+  
+  .videoSection {
+    padding: $spacing-2xl;
+  }
+  
+  .modulesSection {
+    padding: $spacing-2xl;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .content {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .modulesSection {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid $gray-200;
+    
+    @include dark {
+      border-top-color: $dark-border;
+    }
+  }
+}
