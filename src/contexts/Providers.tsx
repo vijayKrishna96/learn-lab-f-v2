@@ -6,6 +6,7 @@ import ThemeProvider from "./ThemeProvider";
 import { ReactNode } from "react";
 import { AuthProvider } from "./AuthContext";
 import Spinner from "@/components/spinner/Spinner";
+import ToastProvider from "@/components/toast-provider/ToastProvider";
 
 
 
@@ -27,6 +28,7 @@ export function Providers({ children }: ProvidersProps) {
         persistor={persistor}
       >
         <ThemeProvider>
+          <ToastProvider/>
           <AuthProvider>
             {children}
           </AuthProvider>

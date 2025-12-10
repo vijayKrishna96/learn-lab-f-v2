@@ -81,8 +81,8 @@ const Page: React.FC = () => {
   
   const [error, setError] = useState<string | null>(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
-  const [role, setRole] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  // const [role, setRole] = useState<string | null>(null);
+  // const [userId, setUserId] = useState<string | null>(null);
   
   // Check if course is purchased - if courseId is in userCourses array, it's purchased
   const isPurchased = userCourses.some(
