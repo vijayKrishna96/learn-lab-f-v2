@@ -10,6 +10,7 @@ const logoutEndpoint: string = process.env.NEXT_PUBLIC_LOGOUT_USER || '';
 // All Courses
 const allCourseEndpoint: string = process.env.NEXT_PUBLIC_ALL_COURSE || '';
 const allCourseByUserId: string = process.env.NEXT_PUBLIC_GET_COURSEBY_USERID || '';
+const singleCourseById : string = process.env.NEXT_PUBLIC_GET_COURSE || '';
 
 // User
 const userDetailsEndpoint: string = process.env.NEXT_PUBLIC_USER_DETAILS || '';
@@ -45,7 +46,7 @@ export const ALL_USERS_API: string = `${BaseUrl}${allUsersEndpoint}`;
 
 // Course
 export const ALL_COURSE_API: string = `${BaseUrl}${allCourseEndpoint}`;
-export const COURSE_BY_ID_API: string = `${BaseUrl}${allCourseEndpoint}`; // Ensure this is correct; otherwise, modify.
+export const COURSE_BY_ID_API: string = `${BaseUrl}${singleCourseById}`; // Ensure this is correct; otherwise, modify.
 export const BASE_URL_CART: string = `${BaseUrl}${cartApi}`;
 export const ALL_COURSE_BY_USERID: string = `${BaseUrl}${allCourseByUserId}`;
 export const UPDATE_COURSE_API: string = `${BaseUrl}${allCourseEndpoint}`;

@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { CiLock } from "react-icons/ci";
 import { TfiControlForward } from "react-icons/tfi";
 // import { addItemToCart } from "../../features/cartSlice";
-// import { selectUserCourses } from "../../features/userSlice";
 import styles from "./course-page.module.scss";
+import { COURSE_BY_ID_API } from "@/utils/constants/api";
+import { selectPurchasedCourses } from "@/redux/slices/userSlice";
 
 interface Lesson {
   _id: string;
@@ -26,10 +27,25 @@ interface Module {
 
 interface CourseImage {
   url: string;
+  publicId: string;
+}
+
+interface InstructorDetails {
+  _id: string;
+  name: string;
+  email: string;
+  bio?: string;
+}
+
+interface CategoryDetails {
+  _id: string;
+  name: string;
+  description: string;
 }
 
 interface CourseData {
   _id: string;
+  id: string;
   title: string;
   description: string;
   image: CourseImage;
@@ -37,72 +53,65 @@ interface CourseData {
   modules: Module[];
   averageRating?: number;
   reviews: any[];
+  category: string;
+  categoryDetails: CategoryDetails;
+  instructor: string;
+  instructorDetails: InstructorDetails;
+  level: string;
+  language: string;
+  enrollmentCount: number;
+  totalDuration: number;
+  isFree: boolean;
+  status: string;
 }
 
-interface UserData {
-  users: Array<{ role: string }>;
+interface ApiResponse {
+  success: boolean;
+  course: CourseData;
 }
-
-// const COURSE_BY_ID_API = process.env.NEXT_PUBLIC_COURSE_API || "/api/courses";
-// const USER_DETAILS_API = process.env.NEXT_PUBLIC_USER_API || "/api/users";
 
 const Page: React.FC = () => {
-  // const params = useParams();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { courseId } = useParams();
+  
+  const userCourses = useSelector(selectPurchasedCourses) || [];
 
-    const { courseId } = useParams(); // ← correct method
-    console.log(courseId)
-  
-  // const id = params?.id as string;
-  // const userId = params?.userId as string;
-  
-//   const userCourses = useSelector(selectUserCourses) || [];
+  console.log(userCourses)
   
   const [error, setError] = useState<string | null>(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   
-//   const isPurchased = courseData ? userCourses.includes(courseData._id) : false;
+  // Check if course is purchased - if courseId is in userCourses array, it's purchased
+  const isPurchased = userCourses.some(
+  (item) => item.course === courseData?._id || item.course === courseData?.id
+);
 
-  // useEffect(() => {
-  //   const fetchCourseData = async () => {
-  //     try {
-  //       const response = await axios.get<CourseData>(
-  //         `${COURSE_BY_ID_API}/${id}`
-  //       );
-  //       setCourseData(response?.data);
-  //     } catch (err) {
-  //       console.error("Error fetching course:", err);
-  //       setError("Failed to load course");
-  //     }
-  //   };
+
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const response = await axios.get<ApiResponse>(
+          `${COURSE_BY_ID_API}/${courseId}`
+        );
+        // Extract course from the response object
+        setCourseData(response.data.course);
+      } catch (err) {
+        console.error("Error fetching course:", err);
+        setError("Failed to load course");
+      }
+    };
     
-  //   if (id) {
-  //     fetchCourseData();
-  //   }
-  // }, [id]);
+    if (courseId) {
+      fetchCourseData();
+    }
+  }, [courseId]);
 
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       try {
-//         const response = await axios.get<UserData>(
-//           `${USER_DETAILS_API}/${userId}`
-//         );
-//         setRole(response.data.users[0].role);
-//       } catch (error) {
-//         console.error("Error fetching user data:", error);
-//       }
-//     };
-    
-//     if (userId) {
-//       fetchUserData();
-//     }
-//   }, [userId]);
-
-//   useEffect(() => {
-//     window.scrollTo(0, 0);
-//   }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (error) {
     return (
@@ -122,9 +131,8 @@ const Page: React.FC = () => {
 
   const handleUnlockCourse = () => {
     if (courseData && userId && role) {
-      dispatch(
-        addItemToCart({ ...courseData, userId, qty: 1 })
-      );
+      // Uncomment when addItemToCart is imported
+      // dispatch(addItemToCart({ ...courseData, userId, qty: 1 }));
       router.push(`/${role}/cart/${userId}`);
     }
   };
@@ -136,6 +144,22 @@ const Page: React.FC = () => {
         <div className={styles.header}>
           <h1 className={styles.title}>{courseData.title}</h1>
           <p className={styles.description}>{courseData.description}</p>
+          
+          {/* Additional Info */}
+          <div className={styles.headerMeta}>
+            <span className={styles.metaItem}>
+              <strong>Category:</strong> {courseData.categoryDetails?.name}
+            </span>
+            <span className={styles.metaItem}>
+              <strong>Instructor:</strong> {courseData.instructorDetails?.name}
+            </span>
+            <span className={styles.metaItem}>
+              <strong>Level:</strong> {courseData.level}
+            </span>
+            <span className={styles.metaItem}>
+              <strong>Language:</strong> {courseData.language}
+            </span>
+          </div>
         </div>
 
         {/* Image Section */}
@@ -164,36 +188,39 @@ const Page: React.FC = () => {
                 className={styles.unlockButton}
                 onClick={handleUnlockCourse}
               >
-                Unlock and Start Learning
+                {courseData.isFree ? "Enroll for Free" : "Unlock and Start Learning"}
               </button>
             </div>
           )}
         </div>
 
         {/* Course Modules */}
-        <div className={styles.modulesGrid}>
-          {courseData.modules?.map((module) => (
-            <div key={module._id} className={styles.moduleCard}>
-              <h2 className={styles.moduleNumber}>
-                {module.moduleNumber.toString().padStart(2, "0")}
-              </h2>
-              <h3 className={styles.moduleTitle}>{module.title}</h3>
-              <ul className={styles.lessonList}>
-                {module.lessons.map((lesson, lessonIndex) => (
-                  <li
-                    key={lesson._id || lessonIndex}
-                    className={styles.lessonItem}
-                  >
-                    <p className={styles.lessonTitle}>{lesson.title}</p>
-                    <p className={styles.lessonMeta}>
-                      Lesson {(lessonIndex + 1).toString().padStart(2, "0")} •{" "}
-                      {lesson.duration || 45} Min
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className={styles.modulesSection}>
+          <h2 className={styles.sectionTitle}>Course Curriculum</h2>
+          <div className={styles.modulesGrid}>
+            {courseData.modules?.map((module) => (
+              <div key={module._id} className={styles.moduleCard}>
+                <h2 className={styles.moduleNumber}>
+                  Module {module.moduleNumber.toString().padStart(2, "0")}
+                </h2>
+                <h3 className={styles.moduleTitle}>{module.title}</h3>
+                <ul className={styles.lessonList}>
+                  {module.lessons?.map((lesson, lessonIndex) => (
+                    <li
+                      key={lesson._id || lessonIndex}
+                      className={styles.lessonItem}
+                    >
+                      <p className={styles.lessonTitle}>{lesson.title}</p>
+                      <p className={styles.lessonMeta}>
+                        Lesson {(lessonIndex + 1).toString().padStart(2, "0")} •{" "}
+                        {lesson.duration || 45} Min
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Course Info Footer */}
@@ -202,22 +229,39 @@ const Page: React.FC = () => {
             <div className={styles.infoItem}>
               <p className={styles.infoLabel}>Price</p>
               <p className={styles.infoValue}>
-                ₹{courseData.price?.toLocaleString()}
+                {courseData.isFree 
+                  ? "Free" 
+                  : `₹${courseData.price?.toLocaleString()}`
+                }
               </p>
             </div>
             <div className={styles.infoItem}>
               <p className={styles.infoLabel}>Modules</p>
-              <p className={styles.infoValue}>{courseData.modules?.length}</p>
+              <p className={styles.infoValue}>{courseData.modules?.length || 0}</p>
             </div>
             <div className={styles.infoItem}>
               <p className={styles.infoLabel}>Rating</p>
               <p className={styles.infoValue}>
-                {courseData.averageRating || "No ratings yet"}
+                {courseData.averageRating 
+                  ? `${courseData.averageRating.toFixed(1)} ⭐` 
+                  : "No ratings yet"}
               </p>
             </div>
             <div className={styles.infoItem}>
               <p className={styles.infoLabel}>Reviews</p>
-              <p className={styles.infoValue}>{courseData.reviews?.length}</p>
+              <p className={styles.infoValue}>{courseData.reviews?.length || 0}</p>
+            </div>
+            <div className={styles.infoItem}>
+              <p className={styles.infoLabel}>Enrolled</p>
+              <p className={styles.infoValue}>{courseData.enrollmentCount || 0}</p>
+            </div>
+            <div className={styles.infoItem}>
+              <p className={styles.infoLabel}>Duration</p>
+              <p className={styles.infoValue}>
+                {courseData.totalDuration 
+                  ? `${Math.floor(courseData.totalDuration / 60)}h ${courseData.totalDuration % 60}m`
+                  : "N/A"}
+              </p>
             </div>
           </div>
         </div>
