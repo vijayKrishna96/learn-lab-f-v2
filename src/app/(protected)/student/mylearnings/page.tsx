@@ -34,7 +34,7 @@ useEffect(() => {
       const response = await axios.post(`${BASE_URL_API}/courses/by-ids`, {
         ids: courseIDs,       
       });
-
+      console.log(response, "resss")
       setCourses(response.data.courses);   
     } catch (error) {
       console.error('Error fetching courses:', error);

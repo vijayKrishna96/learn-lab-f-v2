@@ -35,6 +35,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
   const [loadingWish, setLoadingWish] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
 
+  console.log(userData, "userData")
+
   // -----------------------------
   // Add to Cart
   // -----------------------------
@@ -138,7 +140,7 @@ const handleWishlistToggle = async () => {
   return (
     <article className={styles.courseCard}>
 
-      <Link href={`/${role}/course/${course._id}`} className={styles.imageContainer}>
+      <Link href={`/${userData.role}/course-page/${course._id}`} className={styles.imageContainer}>
         <img
           className={styles.courseImage}
           src={course?.image?.url}

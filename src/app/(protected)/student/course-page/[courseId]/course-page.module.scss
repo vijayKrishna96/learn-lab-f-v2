@@ -1,0 +1,345 @@
+@import '../../../../styles/variables';
+
+.container {
+  min-height: 100vh;
+  padding: $spacing-xl;
+  background: $gradient-bg-light;
+  
+  @include dark {
+    background: $gradient-bg-dark;
+  }
+}
+
+.content {
+  max-width: $container-2xl;
+  margin: 0 auto;
+  margin-top: $spacing-4xl;
+}
+
+.error,
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-700;
+  }
+  
+  @include dark {
+    p {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+.error p {
+  color: $error;
+  
+  @include dark {
+    color: $error;
+  }
+}
+
+// Header Section
+.header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-xl;
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+  
+  @include screen-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.title {
+  font-size: $text-4xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+  
+  @include screen-lg {
+    font-size: $text-5xl;
+  }
+}
+
+.description {
+  margin-top: $spacing-lg;
+  color: $gray-600;
+  font-size: $text-lg;
+  line-height: $leading-relaxed;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+// Image Section
+.imageWrapper {
+  position: relative;
+  margin-bottom: $spacing-3xl;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-xl;
+  
+  @include dark {
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+.courseImage {
+  width: 100%;
+  height: 40vh;
+  object-fit: cover;
+  border-radius: $radius-lg;
+  transition: $transition-all;
+}
+
+.blurred {
+  filter: blur(8px);
+}
+
+.overlay,
+.overlayLocked {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-lg;
+  color: white;
+}
+
+.overlay {
+  background: transparent;
+}
+
+.overlayLocked {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: $backdrop-blur-sm;
+}
+
+.lockIcon {
+  margin-bottom: $spacing-lg;
+}
+
+.continueButton {
+  background: $info;
+  width: 14rem;
+  height: 3.5rem;
+  border-radius: $radius-md;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  font-weight: $font-semibold;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: $shadow-lg;
+  transition: $transition-all;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: $shadow-xl;
+    background: darken($info, 10%);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.unlockButton {
+  padding: $spacing-md $spacing-xl;
+  background: $info;
+  border-radius: $radius-full;
+  color: white;
+  font-weight: $font-semibold;
+  border: none;
+  cursor: pointer;
+  box-shadow: $shadow-lg;
+  transition: $transition-all;
+  
+  &:hover {
+    background: darken($info, 10%);
+    transform: scale(1.05);
+    box-shadow: $shadow-xl;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Modules Grid
+.modulesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-2xl;
+  
+  @include screen-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.moduleCard {
+  @include card;
+  @include hover-lift;
+}
+
+.moduleNumber {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $info;
+  
+  @include dark {
+    color: $primary-400;
+  }
+}
+
+.moduleTitle {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  margin-top: $spacing-lg;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.lessonList {
+  margin-top: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  list-style: none;
+  padding: 0;
+}
+
+.lessonItem {
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+  transition: $transition-colors;
+  cursor: pointer;
+  
+  &:hover {
+    background: $gray-50;
+  }
+  
+  @include dark {
+    &:hover {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.lessonTitle {
+  font-weight: $font-medium;
+  color: $gray-900;
+  margin-bottom: $spacing-xs;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.lessonMeta {
+  font-size: $text-sm;
+  color: $gray-500;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+// Footer Info
+.footer {
+  @include card;
+  margin-top: $spacing-2xl;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+  
+  @include screen-md {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infoItem {
+  text-align: center;
+  
+  @include screen-md {
+    text-align: left;
+  }
+}
+
+.infoLabel {
+  color: $gray-600;
+  font-size: $text-base;
+  margin-bottom: $spacing-xs;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.infoValue {
+  font-weight: $font-bold;
+  font-size: $text-lg;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $breakpoint-sm) {
+  .container {
+    padding: $spacing-md;
+  }
+  
+  .content {
+    margin-top: $spacing-2xl;
+  }
+  
+  .title {
+    font-size: $text-3xl;
+  }
+  
+  .description {
+    font-size: $text-base;
+  }
+  
+  .courseImage {
+    height: 30vh;
+  }
+  
+  .continueButton {
+    width: 12rem;
+    height: 3rem;
+    font-size: $text-sm;
+  }
+}
