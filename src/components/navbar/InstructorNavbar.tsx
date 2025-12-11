@@ -52,7 +52,7 @@ const InstructorHeader = () => {
             <Link href={`/instructor/dashboard`}>Home</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/instructor/studentlist/${userId}`}>Student Directory</Link>
+            <Link href={`/instructor/students`}>Student Directory</Link>
           </li>
           <li className="hidden md:block">
             <Link href={`/instructor/courses/${userId}`}>My Courses</Link>

@@ -1,0 +1,162 @@
+@import '../../../styles/variables';
+
+.container {
+  margin: 0 auto;
+  max-width: $container-xl;
+  padding: 0 $spacing-2xl;
+  
+  @include screen-lg {
+    padding: 0 $spacing-5xl;
+  }
+}
+
+.instructorCard {
+  @include card;
+  margin: $spacing-lg 0;
+  transition: $transition-all;
+  
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-md;
+  }
+  
+  &:hover {
+    @include hover-lift;
+  }
+}
+
+.instructorName {
+  font-size: $text-xl;
+  font-weight: $font-medium;
+  color: $gray-900;
+  line-height: $leading-tight;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.instructorDetails {
+  color: $gray-600;
+  font-size: $text-base;
+  margin-top: $spacing-xs;
+  
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.tableCard {
+  @include card;
+  margin: $spacing-lg 0;
+  
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+.tableTitle {
+  color: $gray-900;
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.studentName {
+  font-weight: $font-medium;
+  color: $gray-900;
+  font-size: $text-base;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.studentPhone {
+  color: $gray-600;
+  font-size: $text-sm;
+  margin-top: $spacing-xs;
+  
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.emailText {
+  color: $gray-900;
+  font-size: $text-base;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.dateText {
+  color: $gray-900;
+  font-size: $text-base;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.actionButton {
+  min-width: unset !important;
+  padding: $spacing-sm !important;
+  background-color: $gray-200 !important;
+  color: $gray-900 !important;
+  transition: $transition-all !important;
+  box-shadow: $shadow-sm !important;
+  
+  @include dark {
+    background-color: $gray-800 !important;
+    color: $dark-text-primary !important;
+    box-shadow: $shadow-dark-md !important;
+  }
+  
+  &:hover {
+    background-color: $gray-300 !important;
+    transform: scale(1.05);
+    
+    @include dark {
+      background-color: $gray-700 !important;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.actionButtonPrimary {
+  min-width: unset !important;
+  padding: $spacing-sm !important;
+  background-color: $primary-500 !important;
+  color: white !important;
+  transition: $transition-all !important;
+  box-shadow: $shadow-primary !important;
+  
+  @include dark {
+    background-color: $primary-400 !important;
+    box-shadow: $shadow-primary-dark !important;
+  }
+  
+  &:hover {
+    background-color: $primary-600 !important;
+    transform: scale(1.05);
+    box-shadow: $shadow-primary-lg !important;
+    
+    @include dark {
+      background-color: $primary-500 !important;
+      box-shadow: $shadow-primary-dark-lg !important;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}

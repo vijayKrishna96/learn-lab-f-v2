@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/x-data-grid": "^8.21.0",
     "@reduxjs/toolkit": "^2.10.1",
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.1",
