@@ -10,7 +10,7 @@ export default function InstructorLayout({
   return (
     <div>
       <InstructorHeader/>
-      <main style={{ padding: "20px" }}>{children}</main>
+      <main>{children}</main>
     </div>
   );
 }

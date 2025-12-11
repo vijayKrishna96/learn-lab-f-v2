@@ -1,0 +1,732 @@
+@import "../../../styles/variables";
+
+// Root dashboard
+.dashboard {
+  min-height: 100vh;
+  padding: $spacing-3xl $spacing-xl;
+  background: $gradient-bg-light;
+  transition: $transition-all;
+  color: $gray-900;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial;
+
+  @include dark {
+    background: $gradient-bg-dark;
+    color: $dark-text-primary;
+  }
+
+  // Container with max-width
+  &__container {
+    max-width: $container-2xl;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  // Header section
+  &__header {
+    margin-bottom: $spacing-2xl;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    margin: 0 0 $spacing-xs 0;
+    line-height: $leading-tight;
+    @include gradient-text;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: $text-sm;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+    margin-bottom: $spacing-2xl;
+
+    // Tablet: 2 columns
+    @include screen-sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    // Desktop / Large Screens: 4 columns
+    @include screen-lg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  // Main content layout
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-xl;
+  }
+}
+
+// Stat card component
+.statcard {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  min-height: 140px;
+  justify-content: space-between;
+  transition: $transition-all;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__iconwrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-lg;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(79, 70, 229, 0.1);
+    box-shadow: $shadow-sm;
+    transition: $transition-all;
+
+    @include dark {
+      background: rgba(99, 102, 241, 0.15);
+    }
+  }
+
+  &:hover &__iconwrapper {
+    transform: scale(1.1);
+    box-shadow: $shadow-md;
+  }
+
+  &__icon {
+    color: $primary-600;
+
+    @include dark {
+      color: $primary-400;
+    }
+  }
+
+  &__change {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $text-xs;
+    font-weight: $font-medium;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-full;
+    background: rgba(99, 102, 241, 0.1);
+    color: $primary-600;
+
+    @include dark {
+      background: rgba(99, 102, 241, 0.15);
+      color: $primary-400;
+    }
+
+    &--positive {
+      background: rgba($success, 0.1);
+      color: $success;
+
+      @include dark {
+        background: rgba($success, 0.15);
+      }
+    }
+
+    &--negative {
+      background: rgba($error, 0.1);
+      color: $error;
+
+      @include dark {
+        background: rgba($error, 0.15);
+      }
+    }
+
+    svg {
+      vertical-align: middle;
+    }
+
+    span {
+      margin-left: 4px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__value {
+    margin: 0;
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    line-height: 1.2;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+
+  // Color variants
+  &--cyan &__iconwrapper {
+    background: rgba(34, 211, 238, 0.1);
+    @include dark {
+      background: rgba(34, 211, 238, 0.15);
+    }
+  }
+
+  &--cyan &__icon {
+    color: #06b6d4;
+    @include dark {
+      color: #22d3ee;
+    }
+  }
+
+  &--blue &__iconwrapper {
+    background: rgba(96, 165, 250, 0.1);
+    @include dark {
+      background: rgba(96, 165, 250, 0.15);
+    }
+  }
+
+  &--blue &__icon {
+    color: #3b82f6;
+    @include dark {
+      color: #60a5fa;
+    }
+  }
+
+  &--purple &__iconwrapper {
+    background: rgba(167, 139, 250, 0.1);
+    @include dark {
+      background: rgba(167, 139, 250, 0.15);
+    }
+  }
+
+  &--purple &__icon {
+    color: #8b5cf6;
+    @include dark {
+      color: #a78bfa;
+    }
+  }
+
+  &--yellow &__iconwrapper {
+    background: rgba(251, 191, 36, 0.1);
+    @include dark {
+      background: rgba(251, 191, 36, 0.15);
+    }
+  }
+
+  &--yellow &__icon {
+    color: #f59e0b;
+    @include dark {
+      color: #fbbf24;
+    }
+  }
+}
+
+// Chart card component
+.chartcard {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-lg;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-xs 0;
+    font-size: $text-xl;
+    font-weight: $font-bold;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: $text-sm;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+
+  &__legend {
+    display: flex;
+    gap: $spacing-md;
+    align-items: center;
+  }
+
+  &__body {
+    min-height: 300px;
+    margin-top: $spacing-sm;
+  }
+}
+
+// Legend item
+.legenditem {
+  display: inline-flex;
+  gap: $spacing-sm;
+  align-items: center;
+  font-size: $text-sm;
+  color: $gray-700;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+
+  &__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: $radius-full;
+    display: inline-block;
+
+    &--sales {
+      background: $primary-500;
+    }
+
+    &--students {
+      background: $cyan-400;
+    }
+  }
+
+  &__label {
+    font-weight: $font-medium;
+  }
+}
+
+.dashboard-activitycard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+
+  // Tablet: 2 columns
+  @include screen-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // Desktop / Large Screens: 4 columns
+  @include screen-lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Activity card component
+.activitycard {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+
+    @include dark {
+      border-bottom-color: $dark-border;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $text-lg;
+    font-weight: $font-bold;
+  }
+
+  &__viewall {
+    @include button-secondary;
+    padding: $spacing-sm $spacing-md;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+}
+
+// Activity item
+.activityitem {
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  align-items: flex-start;
+  border-radius: $radius-md;
+  transition: $transition-all;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: $shadow-md;
+    background: $gradient-wave-light;
+
+    @include dark {
+      background: $gradient-wave-dark;
+    }
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: $radius-md;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.08);
+    color: $primary-600;
+
+    @include dark {
+      background: rgba(99, 102, 241, 0.12);
+      color: $primary-400;
+    }
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: $spacing-md;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    flex: 1;
+  }
+
+  &__student {
+    margin: 0;
+    font-weight: $font-semibold;
+    font-size: $text-sm;
+    color: $gray-900;
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+
+  &__action {
+    margin: 0;
+    font-size: $text-sm;
+    color: $gray-600;
+
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+
+  &__course {
+    font-weight: $font-semibold;
+    color: $primary-600;
+
+    @include dark {
+      color: $primary-400;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    align-items: flex-end;
+    font-size: $text-xs;
+  }
+
+  &__time {
+    display: inline-flex;
+    gap: $spacing-xs;
+    align-items: center;
+    color: $gray-500;
+
+    @include dark {
+      color: $dark-text-secondary;
+    }
+
+    svg {
+      opacity: 0.8;
+    }
+
+    span {
+      margin-left: 4px;
+    }
+  }
+
+  &__amount {
+    font-weight: $font-bold;
+    font-size: $text-sm;
+    color: $gray-900;
+
+    @include dark {
+      color: $dark-text-primary;
+    }
+  }
+}
+
+/* ---------------------------
+   Reviews & Feedback Teaser
+   --------------------------- */
+.reviews-card {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  min-width: 260px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  &__title {
+    margin: 0;
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+  }
+  &__meta {
+    margin: 0;
+    font-size: $text-xs;
+    color: $gray-500;
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    background: rgba(79, 70, 229, 0.06);
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-lg;
+    font-weight: $font-semibold;
+
+    svg {
+      opacity: 0.95;
+    }
+
+    @include dark {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  }
+  &__score {
+    margin-left: $spacing-xs;
+    font-size: $text-lg;
+  }
+  &__count {
+    margin-left: $spacing-xs;
+    font-size: $text-sm;
+    color: $gray-500;
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    padding-top: $spacing-sm;
+  }
+
+  &__view-all {
+    @include button-secondary;
+    width: 100%;
+  }
+}
+
+/* individual review item */
+.review-item {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: flex-start;
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+  transition: $transition-all;
+  background: transparent;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-sm;
+    background: $gradient-wave-light;
+    @include dark {
+      background: $gradient-wave-dark;
+    }
+  }
+
+  &__left {
+    flex: 0 0 44px;
+  }
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-md;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: $font-semibold;
+    background: rgba(99, 102, 241, 0.06);
+    color: $primary-600;
+    @include dark {
+      background: rgba(255, 255, 255, 0.03);
+      color: $primary-300;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  &__name {
+    font-size: $text-sm;
+    font-weight: $font-semibold;
+  }
+  &__excerpt {
+    margin: 0;
+    font-size: $text-sm;
+    color: $gray-600;
+    @include dark {
+      color: $dark-text-muted;
+    }
+  }
+  &__time {
+    font-size: $text-xs;
+    color: $gray-500;
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+
+  &__rating-wrap {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+  }
+
+  .rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs;
+    border-radius: $radius-md;
+    font-weight: $font-semibold;
+    font-size: $text-sm;
+    background: rgba(255, 255, 255, 0.06);
+
+    svg {
+      opacity: 0.95;
+    }
+
+    &__value {
+      margin-left: 4px;
+    }
+  }
+
+  /* sentiment color-coding */
+  .sentiment--positive .rating-badge {
+    background: rgba($success, 0.08);
+    color: $success;
+  }
+  .sentiment--neutral .rating-badge {
+    background: rgba(96, 165, 250, 0.06);
+    color: $blue-400;
+  }
+  .sentiment--negative .rating-badge {
+    background: rgba($error, 0.06);
+    color: $error;
+  }
+
+  &__actions {
+    margin-top: $spacing-xs;
+  }
+}
+
+/* reply button */
+.reply-button {
+  @include button-secondary;
+  display: inline-flex;
+  gap: $spacing-xs;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $text-sm;
+}
+
+/* small adjustments for responsive layout if you want side-by-side activity + reviews */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+/* if you plan to place activity and reviews side-by-side inside the right column */
+.right-column--horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-lg;
+
+  @include screen-md {
+    grid-template-columns: 1fr;
+  }
+}
