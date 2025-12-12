@@ -1,162 +1,382 @@
 @import '../../../styles/variables';
-
-.container {
-  margin: 0 auto;
-  max-width: $container-xl;
-  padding: 0 $spacing-2xl;
-  
-  @include screen-lg {
-    padding: 0 $spacing-5xl;
-  }
-}
-
-.instructorCard {
-  @include card;
-  margin: $spacing-lg 0;
-  transition: $transition-all;
-  
+.containerWrapper {
+  background: $gradient-bg-light;
   @include dark {
-    background: $dark-bg-card;
-    box-shadow: $shadow-dark-md;
+    background: $gradient-bg-dark;
   }
-  
-  &:hover {
-    @include hover-lift;
+}
+.container {
+  max-width: $container-2xl;
+  margin: 0 auto;
+}
+
+.card {
+  // @include card;
+  overflow: hidden;
+}
+
+.cardHeader {
+  padding: $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid $gray-200;
+
+  @include dark {
+    border-bottom-color: $dark-border;
   }
 }
 
-.instructorName {
-  font-size: $text-xl;
-  font-weight: $font-medium;
+.cardTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
   color: $gray-900;
-  line-height: $leading-tight;
-  
+  margin: 0;
+
   @include dark {
     color: $dark-text-primary;
   }
 }
 
-.instructorDetails {
-  color: $gray-600;
-  font-size: $text-base;
-  margin-top: $spacing-xs;
-  
+.cardDescription {
+  font-size: $text-sm;
+  color: $gray-500;
+  margin: $spacing-xs 0 0 0;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.searchInput {
+  width: 18rem;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $gray-300;
+  border-radius: $radius-sm;
+  font-size: $text-sm;
+  transition: $transition-all;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+
+    &:focus {
+      border-color: $primary-400;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+    }
+  }
+}
+
+.themeSelect {
+  width: 9rem;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $gray-300;
+  border-radius: $radius-sm;
+  font-size: $text-sm;
+  background: white;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  @include dark {
+    background: $gradient-bg-dark;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+  }
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: $radius-sm;
+  border: 1px solid $gray-200;
+  background: white;
+
+  @include dark {
+    background: $gradient-bg-dark;
+    border-color: $dark-border;
+  }
+}
+
+.tableInfoHeader {
+  padding: $spacing-sm $spacing-md;
+  background: $gray-50;
+  border-bottom: 1px solid $gray-200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-bottom-color: $dark-border;
+  }
+}
+
+.tableInfoText {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-500;
+
   @include dark {
     color: $dark-text-secondary;
   }
 }
 
-.tableCard {
-  @include card;
-  margin: $spacing-lg 0;
-  
+.tableHeaderRow {
+  display: grid;
+  grid-template-columns: 74px 500px 500px 200px 180px;
+  background: $gray-50;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-700;
+  border-bottom: 1px solid $gray-200;
+
   @include dark {
-    background: $dark-bg-card;
-    box-shadow: $shadow-dark-md;
+    background: $dark-bg-secondary;
+    color: $dark-text-secondary;
+    border-bottom-color: $dark-border;
   }
 }
 
-.tableTitle {
+.tableHeaderCell {
+  padding: $spacing-sm $spacing-md;
+  cursor: pointer;
+  user-select: none;
+  transition: $transition-colors;
+
+  &:hover {
+    background: $gray-100;
+
+    @include dark {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.sortIcon {
+  margin-left: $spacing-xs;
+  font-size: $text-xs;
+  color: $gray-400;
+}
+
+.tableBody {
+  border-top: 1px solid $gray-200;
+
+  @include dark {
+    border-top-color: $dark-border;
+  }
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 64px 500px 500px 200px 180px;
+  align-items: center;
+  border-bottom: 1px solid $gray-200;
+  transition: $transition-colors;
+
+  &:hover {
+    background: $gray-50;
+
+    @include dark {
+      background: $dark-bg-secondary;
+    }
+  }
+
+  @include dark {
+    border-bottom-color: $dark-border;
+  }
+}
+
+.tableCell {
+  padding: $spacing-sm $spacing-md;
+  font-size: $text-sm;
   color: $gray-900;
-  font-size: $text-xl;
-  font-weight: $font-semibold;
-  
+
   @include dark {
     color: $dark-text-primary;
   }
 }
 
+.studentInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: $radius-full;
+  background: $gradient-primary;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-semibold;
+  font-size: $text-base;
+  flex-shrink: 0;
+}
+
+.studentDetails {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .studentName {
   font-weight: $font-medium;
   color: $gray-900;
-  font-size: $text-base;
-  
+
   @include dark {
     color: $dark-text-primary;
   }
 }
 
 .studentPhone {
-  color: $gray-600;
   font-size: $text-sm;
-  margin-top: $spacing-xs;
-  
+  color: $gray-500;
+
   @include dark {
-    color: $dark-text-secondary;
+    color: $dark-text-muted;
   }
 }
 
-.emailText {
-  color: $gray-900;
-  font-size: $text-base;
+.actionsCell {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.btn {
+  @include button-base;
   
+  &.btnSm {
+    padding: $spacing-xs $spacing-md;
+    font-size: $text-sm;
+  }
+
+  &.btnPrimary {
+    background-color: $primary-500;
+    color: white;
+
+    &:hover {
+      background-color: $primary-600;
+    }
+
+    @include dark {
+      background-color: $primary-400;
+
+      &:hover {
+        background-color: $primary-500;
+      }
+    }
+  }
+
+  &.btnOutline {
+    background-color: white;
+    color: $primary-500;
+    border: 2px solid $primary-500;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+
+    @include dark {
+      background-color: $dark-bg-secondary;
+      color: $primary-400;
+      border-color: $primary-400;
+
+      &:hover {
+        background-color: $dark-bg-tertiary;
+      }
+    }
+  }
+
+  &:disabled {
+    opacity: $opacity-medium;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.pagination {
+  padding: $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid $gray-200;
+
+  @include dark {
+    border-top-color: $dark-border;
+  }
+}
+
+.paginationInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.pageSizeSelect {
+  width: 5rem;
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $gray-300;
+  border-radius: $radius-sm;
+  font-size: $text-sm;
+  background: white;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+  }
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.paginationText {
+  padding: 0 $spacing-xs;
+  font-size: $text-sm;
+  color: $gray-900;
+
   @include dark {
     color: $dark-text-primary;
   }
 }
 
-.dateText {
-  color: $gray-900;
-  font-size: $text-base;
-  
-  @include dark {
-    color: $dark-text-primary;
-  }
-}
+.emptyState {
+  padding: $spacing-lg;
+  text-align: center;
+  font-size: $text-sm;
+  color: $gray-500;
 
-.actionButton {
-  min-width: unset !important;
-  padding: $spacing-sm !important;
-  background-color: $gray-200 !important;
-  color: $gray-900 !important;
-  transition: $transition-all !important;
-  box-shadow: $shadow-sm !important;
-  
   @include dark {
-    background-color: $gray-800 !important;
-    color: $dark-text-primary !important;
-    box-shadow: $shadow-dark-md !important;
-  }
-  
-  &:hover {
-    background-color: $gray-300 !important;
-    transform: scale(1.05);
-    
-    @include dark {
-      background-color: $gray-700 !important;
-    }
-  }
-  
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.actionButtonPrimary {
-  min-width: unset !important;
-  padding: $spacing-sm !important;
-  background-color: $primary-500 !important;
-  color: white !important;
-  transition: $transition-all !important;
-  box-shadow: $shadow-primary !important;
-  
-  @include dark {
-    background-color: $primary-400 !important;
-    box-shadow: $shadow-primary-dark !important;
-  }
-  
-  &:hover {
-    background-color: $primary-600 !important;
-    transform: scale(1.05);
-    box-shadow: $shadow-primary-lg !important;
-    
-    @include dark {
-      background-color: $primary-500 !important;
-      box-shadow: $shadow-primary-dark-lg !important;
-    }
-  }
-  
-  &:active {
-    transform: scale(0.98);
+    color: $dark-text-muted;
   }
 }
