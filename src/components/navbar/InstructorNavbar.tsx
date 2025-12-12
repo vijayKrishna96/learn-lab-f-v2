@@ -17,18 +17,6 @@ import { useSelector } from "react-redux";
 const InstructorHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userId, setUserId] = useState<string>("");
-
-  const pathname = usePathname(); // ✅ Example: /student/6714c06217f165436c5361ac
-
-  // ✅ Extract userId from the pathname
-  useEffect(() => {
-    if (pathname) {
-      const parts = pathname.split("/");
-      const idFromPath = parts[parts.length - 1];
-      setUserId(idFromPath);
-    }
-  }, [pathname]);
 
   // ✅ Redux state
   // const cartItems = useSelector((state: any) => state.cart.cartItems);
@@ -44,7 +32,7 @@ const InstructorHeader = () => {
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-0">
         <ul className="navbar-links flex gap-8 items-center">
           <li className="navbar-logo text-3xl">
-            <Link href={`/student/${userId}`}>
+            <Link href={`/instructor/dashboard`}>
               <SiAlchemy />
             </Link>
           </li>
@@ -55,10 +43,10 @@ const InstructorHeader = () => {
             <Link href={`/instructor/students`}>Student Directory</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/instructor/courses/${userId}`}>My Courses</Link>
+            <Link href={`/instructor/courses`}>My Courses</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/mylearnings/${userId}`}>My Learnings</Link>
+            <Link href={`/student/mylearnings`}>My Learnings</Link>
           </li>
         </ul>
 
@@ -78,7 +66,7 @@ const InstructorHeader = () => {
 
           {/* ❤️ Wishlist */}
           <div className="relative text-red-400 text-xl md:text-2xl">
-            <Link href={`/student/wishlist/${userId}`}>
+            <Link href={`/student/wishlist`}>
               <FaHeart />
             </Link>
             <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
@@ -112,7 +100,7 @@ const InstructorHeader = () => {
           </button>
           <ul className="flex flex-col mt-10 gap-8">
             <li>
-              <Link href={`/student/${userId}`} onClick={() => setIsSidebarOpen(false)}>
+              <Link href={`/student/dashboard`} onClick={() => setIsSidebarOpen(false)}>
                 Home
               </Link>
             </li>
@@ -130,17 +118,17 @@ const InstructorHeader = () => {
               )}
             </li>
             <li>
-              <Link href={`/student/mylearnings/${userId}`} onClick={() => setIsSidebarOpen(false)}>
+              <Link href={`/student/mylearnings`} onClick={() => setIsSidebarOpen(false)}>
                 My Learnings
               </Link>
             </li>
             <li>
-              <Link href={`/student/aboutus/${userId}`} onClick={() => setIsSidebarOpen(false)}>
+              <Link href={`/student/aboutus`} onClick={() => setIsSidebarOpen(false)}>
                 About Us
               </Link>
             </li>
             <li>
-              <Link href={`/student/contact/${userId}`} onClick={() => setIsSidebarOpen(false)}>
+              <Link href={`/student/contact`} onClick={() => setIsSidebarOpen(false)}>
                 Contact
               </Link>
             </li>
