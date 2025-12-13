@@ -97,7 +97,6 @@
   grid-template-columns: 1fr;
   gap: $spacing-2xl;
   margin: $spacing-xl 0;
-  max-width: $container-xl;
   margin-left: auto;
   margin-right: auto;
 
@@ -127,10 +126,10 @@
 
 .actionButton {
   position: absolute;
-  right: $spacing-2xl;
-  padding: $spacing-md;
+  right: $spacing-xl;
+  padding: $spacing-sm;
   border-radius: $radius-full;
-  font-size: $text-3xl;
+  font-size: $text-2xl;
   border: none;
   cursor: pointer;
   transition: $transition-all;
@@ -141,7 +140,7 @@
 }
 
 .editButton {
-  top: $spacing-2xl;
+  top: $spacing-xl;
   background-color: $cyan-400;
   color: $gray-900;
 
@@ -151,7 +150,7 @@
 }
 
 .deleteButton {
-  top: 96px;
+  top: $spacing-5xl;
   background-color: $error;
   color: white;
 
@@ -161,7 +160,7 @@
 }
 
 .viewButton {
-  top: 160px;
+  top: 10rem;
   background-color: $secondary-500;
   color: $gray-900;
 

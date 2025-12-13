@@ -4,18 +4,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { CiEdit } from "react-icons/ci";
-import { SlEye } from "react-icons/sl";
+// import { CiEdit } from "react-icons/ci";
+// import { SlEye } from "sl-react-icons";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
-// import { selectUserCourses } from "../../features/userSlice";
-// import {
-//   ALL_COURSE_API,
-//   ALL_COURSE_BY_USERID,
-// } from "../../Utils/Constants/Api";
 import styles from "./courses.module.scss";
 import { RootState } from "@/redux/store";
 import { ALL_COURSE_BY_USERID } from "@/utils/constants/api";
+import { EditIcon, EyeIcon } from "lucide-react";
 
 interface Course {
   _id: string;
@@ -33,10 +29,6 @@ interface Course {
 
 interface CoursesState {
   all: Course[];
-  // published: Course[];
-  // draft: Course[];
-  // archived: Course[];
-  // MyLearnings: Course[];
 }
 
 type TabType = "all" | "published" | "draft" | "archived" | "MyLearnings";
@@ -45,19 +37,12 @@ const Page: React.FC = () => {
   const [tab, setTab] = useState<TabType>("all");
   const [courses, setCourses] = useState<CoursesState>({
     all: [],
-    // published: [],
-    // draft: [],
-    // archived: [],
-    // MyLearnings: [],
   });
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [allCourses, setAllCourses] = useState<Course[]>([]);
 
   const userId = useSelector((state: RootState) => state.user.userData._id);
-
-  // console.log("User Data in Courses Page:", user);
 
   useEffect(() => {
     const courseList = async () => {
@@ -65,12 +50,10 @@ const Page: React.FC = () => {
         setIsLoading(true);
         const response = await axios.get(`${ALL_COURSE_BY_USERID}/${userId}`);
         console.log("Courses fetched for user:", response);
+        
+        // Fix: Access response.data.data instead of response?.data?.data
         setCourses({
-          all: response?.data?.data || [],
-          // published: response.data.published || [],
-          // draft: response.data.draft || [],
-          // archived: response.data.archived || [],
-          // MyLearnings: myLearnings || [],
+          all: response.data.data || [],
         });
       } catch (error) {
         console.log("Error fetching courses:", error);
@@ -83,28 +66,13 @@ const Page: React.FC = () => {
     }
   }, [userId]);
 
-  useEffect(() => {
-    const allCourses = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(`${ALL_COURSE_API}`);
-        setAllCourses(response.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    allCourses();
-  }, []);
-
   const handleDeleteCourse = async () => {
     if (!selectedCourseId) return;
     try {
-      await axios.delete(`${ALL_COURSE_API}/${selectedCourseId}`);
+      await axios.delete(`${ALL_COURSE_BY_USERID}/${selectedCourseId}`);
       setCourses((prev) => ({
         ...prev,
-        [tab]: prev[tab].filter((course) => course._id !== selectedCourseId),
+        all: prev.all.filter((course) => course._id !== selectedCourseId),
       }));
       setShowPopup(false);
       setSelectedCourseId(null);
@@ -114,9 +82,10 @@ const Page: React.FC = () => {
   };
 
   const renderCourses = () => {
-    
-    return courses ? (
-      courses.map((course) => (
+    const currentCourses = courses.all;
+
+    return currentCourses.length > 0 ? (
+      currentCourses.map((course) => (
         <div key={course._id} className={styles.courseCard}>
           <img
             src={course.image?.url}
@@ -126,7 +95,7 @@ const Page: React.FC = () => {
 
           <Link href={`/instructor/${userId}/mycourse/edit/${course._id}`}>
             <button className={`${styles.actionButton} ${styles.editButton}`}>
-              <CiEdit />
+              <EditIcon />
             </button>
           </Link>
           <button
@@ -140,7 +109,7 @@ const Page: React.FC = () => {
           </button>
           <Link href={`/instructor/${userId}/learning/${course._id}`}>
             <button className={`${styles.actionButton} ${styles.viewButton}`}>
-              <SlEye />
+              <EyeIcon />
             </button>
           </Link>
           <div className={styles.courseContent}>
@@ -155,45 +124,7 @@ const Page: React.FC = () => {
         </div>
       ))
     ) : (
-      <p>No Data available</p>
-    );
-  };
-
-  const renderMyLearnings = () => {
-    return myLearnings.length > 0 ? (
-      <div className={styles.learningsGrid}>
-        {myLearnings.map((course) => (
-          <div key={course._id} className={styles.learningCard}>
-            <img
-              src={course.image.url}
-              alt={course.title}
-              className={styles.learningImage}
-            />
-            <div className={styles.learningContent}>
-              <h4 className={styles.learningTitle}>{course.title}</h4>
-              <p className={styles.learningDescription}>{course.description}</p>
-              <hr className={styles.divider} />
-              <div className={styles.learningFooter}>
-                <Link href={`/instructor/${userId}/learning/${course._id}`}>
-                  <button className={styles.continueButton}>
-                    Continue Learning
-                  </button>
-                </Link>
-                <p>Rating: {course.averageRating}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className={styles.emptyState}>
-        <h2 className={styles.emptyTitle}>
-          Purchase a course and Start Learning
-        </h2>
-        <p className={styles.emptyText}>
-          Explore our catalog and find the perfect course for you.
-        </p>
-      </div>
+      <p>No courses available</p>
     );
   };
 
@@ -222,13 +153,7 @@ const Page: React.FC = () => {
           <span className={styles.loader}></span>
         </div>
       ) : (
-        <>
-          {tab === "MyLearnings" ? (
-            <div>{renderMyLearnings()}</div>
-          ) : (
-            <div className={styles.coursesGrid}>{renderCourses()}</div>
-          )}
-        </>
+        <div className={styles.coursesGrid}>{renderCourses()}</div>
       )}
 
       <Link
