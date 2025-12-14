@@ -158,7 +158,7 @@ const Page: React.FC = () => {
 
       <Link
         className={styles.addButton}
-        href={`/instructor/${userId}/mycourse/add`}
+        href={`/instructor/course/new`}
       >
         +
       </Link>

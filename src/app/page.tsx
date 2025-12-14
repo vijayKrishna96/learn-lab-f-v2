@@ -32,14 +32,12 @@ interface Category {
   name: string;
 }
 
+// types
 interface Course {
-  _id: string;
-  title: string;
-  category: string;
-  image: {
-    url: string;
-  };
-  [key: string]: any;
+  success: boolean;
+  count?: number;
+  courses: Course[];
+  message?: string;
 }
 
 interface User {
@@ -124,24 +122,40 @@ const Page = () => {
   }, []);
 
   // Fetch courses
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const url =
-          selectedCategory === "all"
-            ? ALL_COURSE_API
-            : `${ALL_COURSE_API}?category=${selectedCategory}`;
-        const response = await axios.get<Course[]>(url);
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+
+      const url =
+        selectedCategory === "all"
+          ? ALL_COURSE_API
+          : `${ALL_COURSE_API}?category=${selectedCategory}`;
+
+      const response = await axios.get<Course>(url);
+
+      console.log("Fetched courses:", response);
+
+      if (response.data.success) {
         setCourses(response.data.courses);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      } finally {
-        setLoading(false);
+      } else {
+        setCourses([]);
       }
-    };
-    fetchCourses();
-  }, [selectedCategory]);
+    } catch (error: any) {
+      // Handle 404 "No courses found"
+      if (error.response?.status === 404) {
+        setCourses([]);
+      } else {
+        console.error("Error fetching courses:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCourses();
+}, [selectedCategory]);
+
 
   const floatingIcons = [
     {
