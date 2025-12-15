@@ -51,7 +51,7 @@ interface DecodedToken {
 export default function Page() {
   // const [isLoading, setIsLoading] = useState(false);
   // const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [courses, setCourses] = useState([]); // To store fetched courses
+  const [courses, setCourses] = useState<Course[]>([]); // To store fetched courses
   const [loading, setLoading] = useState(true); // To track loading state
   const [error, setError] = useState<string | null>(null);
 
