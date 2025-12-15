@@ -38,6 +38,9 @@ interface Course {
   modules: Module[];
   price: number;
   averageRating: number;
+  instructorDetails?: {
+    name: string;
+  };
 }
 
 interface DecodedToken {
@@ -47,10 +50,10 @@ interface DecodedToken {
 
 export default function Page() {
   // const [isLoading, setIsLoading] = useState(false);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  // const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [courses, setCourses] = useState([]); // To store fetched courses
   const [loading, setLoading] = useState(true); // To track loading state
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const userData = useSelector(
@@ -77,7 +80,7 @@ export default function Page() {
           setCourses(response?.data?.courses); // Assuming the response is an array of courses
         } catch (err) {
           console.error("Error fetching courses:", err);
-          setError(err.message || "Something went wrong!");
+          setError((err instanceof Error ? err.message : "Something went wrong!") || "Something went wrong!");
         } finally {
           setLoading(false); // Set loading to false when the request finishes
         }
