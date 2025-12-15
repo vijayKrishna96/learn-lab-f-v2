@@ -129,7 +129,7 @@ export default function CartPage() {
       
       dispatch(removeCartItem(courseId));
       const updatedCart = userCart.filter(id => id !== courseId);
-      dispatch(setUserData({ ...userData, cart: updatedCart }));
+      dispatch(setUserData({ ...userData!, cart: updatedCart }));
 
       await removeFromCartAPI(courseId);
     } catch (err: any) {
