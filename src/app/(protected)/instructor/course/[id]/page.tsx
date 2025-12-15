@@ -1,30 +1,21 @@
+"use client";
 
 import CourseForm from "@/components/course-form/CourseForm";
-import { auth } from "@/lib/auth"; // Your auth method
-import { redirect } from "next/navigation";
+import { RootState } from "@/redux/store";
+import { ALL_CATEGORY_API, ADD_NEW_COURSE, UPDATE_COURSE_API } from "@/utils/constants/api";
+import { useSelector } from "react-redux";
 
-interface EditCoursePageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function EditCoursePage({ params }: EditCoursePageProps) {
-//   const session = await auth();
-  
-//   // Redirect to login if not authenticated
-//   if (!session?.user) {
-//     redirect("/login");
-//   }
+export default function Page() {
+  const user = useSelector((state: RootState) => state.user.userData);
 
   return (
     <CourseForm
       mode="edit"
-      courseId={params.id}
-      userId={session.user.id || ""}
-      userName={session.user.name || ""}
-      ALL_CATEGORY_API={process.env.NEXT_PUBLIC_API_URL + "/api/categories"}
-      UPDATE_COURSE_API={process.env.NEXT_PUBLIC_API_URL + "/api/courses"}
+      userId={user?._id || ""}
+      userName={user?.name || ""}
+      ALL_CATEGORY_API={ALL_CATEGORY_API}
+      CREATE_COURSE_API={ADD_NEW_COURSE}
+      UPDATE_COURSE_API={UPDATE_COURSE_API}
     />
   );
 }

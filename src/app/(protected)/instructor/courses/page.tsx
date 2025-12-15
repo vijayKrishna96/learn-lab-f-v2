@@ -93,7 +93,7 @@ const Page: React.FC = () => {
             className={styles.courseImage}
           />
 
-          <Link href={`/instructor/${userId}/mycourse/edit/${course._id}`}>
+          <Link href={`/instructor/course/${course._id}`}>
             <button className={`${styles.actionButton} ${styles.editButton}`}>
               <EditIcon />
             </button>

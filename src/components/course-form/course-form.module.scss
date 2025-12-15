@@ -1,0 +1,363 @@
+@import '../../app/styles/variables';
+
+// Container
+.container {
+  max-width: $container-lg;
+  margin: $spacing-2xl auto;
+  padding: $spacing-xl;
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+// Header
+.header {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  margin-bottom: $spacing-lg;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+// Loading State
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16rem;
+  
+  .loadingText {
+    color: $gray-600;
+    
+    @include dark {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+// Form
+.form {
+  width: 100%;
+}
+
+// Form Section
+.formSection {
+  background: $gray-50;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-xl;
+  
+  @include dark {
+    background: $dark-bg-secondary;
+  }
+}
+
+// Form Group
+.formGroup {
+  margin-bottom: $spacing-lg;
+}
+
+.formGroupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Labels
+.label {
+  display: block;
+  color: $gray-700;
+  font-weight: $font-medium;
+  margin-bottom: $spacing-sm;
+  font-size: $text-base;
+  
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+// Input Base Style
+.input,
+.textarea,
+.select {
+  margin-top: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  width: 100%;
+  border: 1px solid $gray-300;
+  border-radius: $radius-md;
+  font-size: $text-base;
+  transition: $transition-colors;
+  background: white;
+  color: $gray-900;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px $primary-500;
+    border-color: transparent;
+  }
+  
+  @include dark {
+    background: $dark-bg-primary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+    
+    &:focus {
+      box-shadow: 0 0 0 2px $primary-400;
+    }
+  }
+}
+
+.textarea {
+  min-height: 8rem;
+  resize: vertical;
+  
+  &.textareaSmall {
+    min-height: 6rem;
+  }
+}
+
+.inputDisabled {
+  @extend .input;
+  background: $gray-100;
+  cursor: not-allowed;
+  
+  @include dark {
+    background: $dark-bg-tertiary;
+  }
+}
+
+.fileInput {
+  @extend .input;
+  padding: $spacing-sm;
+  cursor: pointer;
+}
+
+// Module Section
+.modulesHeader {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  margin-bottom: $spacing-lg;
+  color: $gray-900;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.moduleContainer {
+  margin-bottom: $spacing-xl;
+  border: 1px solid $gray-200;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+  background: $gray-50;
+  position: relative;
+  
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+  }
+}
+
+.moduleHeader {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  margin-bottom: $spacing-sm;
+  color: $gray-800;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.deleteButton {
+  position: absolute;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  font-size: $text-2xl;
+  color: $error;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+  padding: 0;
+  
+  &:hover {
+    color: darken($error, 10%);
+  }
+  
+  @include dark {
+    color: lighten($error, 10%);
+    
+    &:hover {
+      color: $error;
+    }
+  }
+}
+
+// Lesson Section
+.lessonContainer {
+  margin-bottom: $spacing-lg;
+  padding: $spacing-lg;
+  border: 1px solid $gray-200;
+  border-radius: $radius-md;
+  background: white;
+  box-shadow: $shadow-sm;
+  position: relative;
+  
+  @include dark {
+    background: $dark-bg-card;
+    border-color: $dark-border;
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+.lessonHeader {
+  font-weight: $font-semibold;
+  margin-bottom: $spacing-sm;
+  color: $gray-800;
+  font-size: $text-base;
+  
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.lessonLabel {
+  display: block;
+  color: $gray-600;
+  margin-bottom: $spacing-xs;
+  font-size: $text-sm;
+  
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.lessonFormGroup {
+  margin-bottom: $spacing-sm;
+}
+
+// Buttons
+.addButton {
+  color: $primary-500;
+  background: none;
+  border: none;
+  font-weight: $font-medium;
+  cursor: pointer;
+  margin-top: $spacing-sm;
+  padding: $spacing-xs 0;
+  font-size: $text-base;
+  transition: $transition-colors;
+  
+  &:hover {
+    color: $primary-600;
+  }
+  
+  @include dark {
+    color: $primary-400;
+    
+    &:hover {
+      color: $primary-300;
+    }
+  }
+}
+
+.addModuleButton {
+  @extend .addButton;
+  color: $success;
+  margin-bottom: $spacing-xl;
+  
+  &:hover {
+    color: darken($success, 10%);
+  }
+  
+  @include dark {
+    color: lighten($success, 10%);
+    
+    &:hover {
+      color: $success;
+    }
+  }
+}
+
+// Action Buttons
+.actionButtons {
+  display: flex;
+  gap: $spacing-lg;
+  margin-top: $spacing-xl;
+  
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column;
+  }
+}
+
+.submitButton {
+  @include button-base;
+  background-color: $primary-500;
+  color: white;
+  font-size: $text-base;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-600;
+    box-shadow: $shadow-primary-lg;
+  }
+  
+  &:disabled {
+    background-color: $primary-300;
+    cursor: not-allowed;
+    opacity: $opacity-medium;
+    
+    &:hover {
+      transform: none;
+      box-shadow: $shadow-lg;
+    }
+  }
+  
+  @include dark {
+    background-color: $primary-400;
+    box-shadow: $shadow-primary-dark;
+    
+    &:hover:not(:disabled) {
+      background-color: $primary-500;
+      box-shadow: $shadow-primary-dark-lg;
+    }
+    
+    &:disabled {
+      background-color: $primary-600;
+      opacity: $opacity-medium;
+    }
+  }
+}
+
+.cancelButton {
+  @include button-base;
+  background-color: $gray-300;
+  color: $gray-700;
+  font-size: $text-base;
+  
+  &:hover {
+    background-color: $gray-400;
+  }
+  
+  @include dark {
+    background-color: $dark-bg-tertiary;
+    color: $dark-text-primary;
+    
+    &:hover {
+      background-color: $dark-border;
+    }
+  }
+}

@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { MdDeleteSweep } from "react-icons/md";
 import { toast } from "react-toastify";
 import axios from "axios";
+import styles from "./course-form.module.scss";
 
 interface Lesson {
   title: string;
@@ -47,22 +48,24 @@ interface CourseData {
 
 interface CourseFormProps {
   mode: "add" | "edit";
-  courseId?: string;
   userId: string;
   userName: string;
   ALL_CATEGORY_API: string;
+  CREATE_COURSE_API: string;
   UPDATE_COURSE_API: string;
 }
 
 const CourseForm: React.FC<CourseFormProps> = ({
   mode,
-  courseId,
   userId,
   userName,
   ALL_CATEGORY_API,
+  CREATE_COURSE_API,
   UPDATE_COURSE_API,
 }) => {
   const router = useRouter();
+  const params = useParams();
+  const courseId = params?.id as string | undefined;
 
   // Form state
   const [title, setTitle] = useState("");
@@ -233,69 +236,88 @@ const CourseForm: React.FC<CourseFormProps> = ({
 
     setIsLoading(true);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("category", selectedCategory);
-    formData.append("price", price);
-    formData.append("instructor", userId);
-    formData.append("level", level);
-    formData.append("language", language);
+    try {
+      // Prepare modules data
+      const modulesData = modules.map((module) => ({
+        moduleNumber: module.moduleNumber,
+        title: module.title,
+        lessons: module.lessons.map((lesson) => ({
+          title: lesson.title,
+          duration: lesson.duration,
+        })),
+      }));
 
-    // Optional fields
-    if (promoVideo) formData.append("promoVideo", promoVideo);
-    if (requirements) formData.append("requirements", requirements);
-    if (whatYouWillLearn) formData.append("whatYouWillLearn", whatYouWillLearn);
-    if (tags) {
       const tagsArray = tags
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag);
-      formData.append("tags", JSON.stringify(tagsArray));
-    }
 
-    // Add course image
-    if (courseImage) {
-      formData.append("images", courseImage);
-    }
-
-    // Add lesson images
-    modules.forEach((module) => {
-      module.lessons.forEach((lesson) => {
-        if (lesson.image) {
-          formData.append("images", lesson.image);
-        }
-      });
-    });
-
-    // Prepare modules data
-    const modulesData = modules.map((module) => ({
-      moduleNumber: module.moduleNumber,
-      title: module.title,
-      lessons: module.lessons.map((lesson) => ({
-        title: lesson.title,
-        duration: lesson.duration,
-      })),
-    }));
-
-    formData.append("modules", JSON.stringify(modulesData));
-
-    try {
       if (mode === "edit" && courseId) {
-        await axios.put(`${UPDATE_COURSE_API}/${courseId}`, formData, {
+        // For editing: Send JSON data (without images for now)
+        const updateData = {
+          title,
+          description,
+          category: selectedCategory,
+          price,
+          instructor: userId,
+          level,
+          language,
+          promoVideo: promoVideo || undefined,
+          requirements: requirements || undefined,
+          whatYouWillLearn: whatYouWillLearn || undefined,
+          tags: tagsArray.length > 0 ? tagsArray : undefined,
+          modules: modulesData,
+        };
+
+        await axios.put(`${UPDATE_COURSE_API}/${courseId}`, updateData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         });
         toast.success("Course updated successfully");
       } else {
-        await axios.post(UPDATE_COURSE_API, formData, {
+        // For creating: Use FormData (with images)
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("category", selectedCategory);
+        formData.append("price", price);
+        formData.append("instructor", userId);
+        formData.append("level", level);
+        formData.append("language", language);
+
+        // Optional fields
+        if (promoVideo) formData.append("promoVideo", promoVideo);
+        if (requirements) formData.append("requirements", requirements);
+        if (whatYouWillLearn) formData.append("whatYouWillLearn", whatYouWillLearn);
+        if (tagsArray.length > 0) {
+          formData.append("tags", JSON.stringify(tagsArray));
+        }
+
+        // Add course image
+        if (courseImage) {
+          formData.append("images", courseImage);
+        }
+
+        // Add lesson images
+        modules.forEach((module) => {
+          module.lessons.forEach((lesson) => {
+            if (lesson.image) {
+              formData.append("images", lesson.image);
+            }
+          });
+        });
+
+        formData.append("modules", JSON.stringify(modulesData));
+
+        await axios.post(CREATE_COURSE_API, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         toast.success("Course created successfully");
       }
+      
       router.back();
     } catch (error: any) {
       const errorMessage =
@@ -310,57 +332,51 @@ const CourseForm: React.FC<CourseFormProps> = ({
 
   if (isLoading && mode === "edit") {
     return (
-      <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg m-10">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-600">Loading course data...</p>
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <p className={styles.loadingText}>Loading course data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg m-10">
-      <h2 className="text-2xl font-bold mb-4">
+    <div className={styles.container}>
+      <h2 className={styles.header}>
         {mode === "edit" ? "Edit Course" : "Create a New Course"}
       </h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.formSection}>
           {/* Course Title */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Course Title *
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Course Title *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={styles.input}
               required
             />
           </div>
 
           {/* Course Description */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Course Description *
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Course Description *</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 p-2 w-full border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={styles.textarea}
               required
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className={styles.formGroupGrid}>
             {/* Category Selection */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Category *
-              </label>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Category *</label>
               <select
-                className="mt-1 p-2 border w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={styles.select}
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 required
@@ -375,31 +391,27 @@ const CourseForm: React.FC<CourseFormProps> = ({
             </div>
 
             {/* Price Input */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Price ($) *
-              </label>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Price ($) *</label>
               <input
                 type="number"
                 placeholder="Enter price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={styles.input}
                 required
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className={styles.formGroupGrid}>
             {/* Level */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Level *
-              </label>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Level *</label>
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value as any)}
-                className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={styles.select}
                 required
               >
                 <option value="beginner">Beginner</option>
@@ -409,167 +421,141 @@ const CourseForm: React.FC<CourseFormProps> = ({
             </div>
 
             {/* Language */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Language *
-              </label>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Language *</label>
               <input
                 type="text"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={styles.input}
                 required
               />
             </div>
           </div>
 
           {/* Instructor Info */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Instructor Name
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Instructor Name</label>
             <input
               type="text"
               value={userName}
-              className="mt-1 p-2 w-full border rounded-lg bg-gray-100"
+              className={styles.inputDisabled}
               disabled
             />
           </div>
 
           {/* Promo Video URL */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Promo Video URL
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Promo Video URL</label>
             <input
               type="url"
               value={promoVideo}
               onChange={(e) => setPromoVideo(e.target.value)}
               placeholder="https://youtube.com/..."
-              className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={styles.input}
             />
           </div>
 
           {/* Requirements */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Requirements
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Requirements</label>
             <textarea
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
               placeholder="What students need to know before taking this course"
-              className="mt-1 p-2 w-full border rounded-lg h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`${styles.textarea} ${styles.textareaSmall}`}
             />
           </div>
 
           {/* What You Will Learn */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              What You Will Learn
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>What You Will Learn</label>
             <textarea
               value={whatYouWillLearn}
               onChange={(e) => setWhatYouWillLearn(e.target.value)}
               placeholder="Key learning outcomes"
-              className="mt-1 p-2 w-full border rounded-lg h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`${styles.textarea} ${styles.textareaSmall}`}
             />
           </div>
 
           {/* Tags */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Tags (comma separated)
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Tags (comma separated)</label>
             <input
               type="text"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="javascript, web development, react"
-              className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={styles.input}
             />
           </div>
 
           {/* Course Image Upload */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Course Image
-            </label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Course Image</label>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setCourseImage(e.target.files?.[0] || null)}
-              className="mt-1 p-2 w-full border rounded-lg"
+              className={styles.fileInput}
             />
           </div>
         </div>
 
         {/* Modules and Lessons */}
-        <h3 className="text-xl font-bold mb-4">Course Modules</h3>
+        <h3 className={styles.modulesHeader}>Course Modules</h3>
         {modules.map((module, moduleIndex) => (
-          <div
-            key={moduleIndex}
-            className="mb-6 border p-4 rounded-lg bg-gray-50 relative"
-          >
-            <h3 className="text-lg font-semibold mb-2">
-              Module {module.moduleNumber}
-            </h3>
+          <div key={moduleIndex} className={styles.moduleContainer}>
+            <h3 className={styles.moduleHeader}>Module {module.moduleNumber}</h3>
             <button
               type="button"
-              className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-700"
+              className={styles.deleteButton}
               onClick={() => handleDeleteModule(moduleIndex)}
             >
               <MdDeleteSweep />
             </button>
 
             {/* Module Title */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Module Title *
-              </label>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Module Title *</label>
               <input
                 type="text"
                 value={module.title}
                 onChange={(e) => handleModuleChange(moduleIndex, e.target.value)}
-                className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={styles.input}
                 required
               />
             </div>
 
             {/* Lessons */}
             {module.lessons.map((lesson, lessonIndex) => (
-              <div
-                key={lessonIndex}
-                className="mb-4 p-4 border rounded-lg bg-white shadow-sm relative"
-              >
-                <h4 className="font-semibold mb-2">Lesson {lessonIndex + 1}</h4>
+              <div key={lessonIndex} className={styles.lessonContainer}>
+                <h4 className={styles.lessonHeader}>Lesson {lessonIndex + 1}</h4>
                 <button
                   type="button"
-                  className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-700"
+                  className={styles.deleteButton}
                   onClick={() => handleDeleteLesson(moduleIndex, lessonIndex)}
                 >
                   <MdDeleteSweep />
                 </button>
 
                 {/* Lesson Title */}
-                <div className="mb-2">
-                  <label className="block text-gray-600 mb-1">
-                    Lesson Title *
-                  </label>
+                <div className={styles.lessonFormGroup}>
+                  <label className={styles.lessonLabel}>Lesson Title *</label>
                   <input
                     type="text"
                     value={lesson.title}
                     onChange={(e) =>
                       handleLessonChange(moduleIndex, lessonIndex, "title", e.target.value)
                     }
-                    className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={styles.input}
                     required
                   />
                 </div>
 
                 {/* Lesson Duration */}
-                <div className="mb-2">
-                  <label className="block text-gray-600 mb-1">
+                <div className={styles.lessonFormGroup}>
+                  <label className={styles.lessonLabel}>
                     Duration (e.g., "45 minutes") *
                   </label>
                   <input
@@ -578,14 +564,14 @@ const CourseForm: React.FC<CourseFormProps> = ({
                     onChange={(e) =>
                       handleLessonChange(moduleIndex, lessonIndex, "duration", e.target.value)
                     }
-                    className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={styles.input}
                     required
                   />
                 </div>
 
                 {/* Lesson Image Upload */}
-                <div className="mb-2">
-                  <label className="block text-gray-600 mb-1">Lesson Image</label>
+                <div className={styles.lessonFormGroup}>
+                  <label className={styles.lessonLabel}>Lesson Image</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -596,7 +582,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                         e.target.files?.[0] || null
                       )
                     }
-                    className="mt-1 p-2 w-full border rounded-lg"
+                    className={styles.fileInput}
                   />
                 </div>
               </div>
@@ -606,7 +592,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <button
               type="button"
               onClick={() => handleAddLesson(moduleIndex)}
-              className="text-blue-500 hover:text-blue-700 mt-2 font-medium"
+              className={styles.addButton}
             >
               + Add Lesson
             </button>
@@ -617,17 +603,17 @@ const CourseForm: React.FC<CourseFormProps> = ({
         <button
           type="button"
           onClick={handleAddModule}
-          className="text-green-500 hover:text-green-700 mb-6 font-medium"
+          className={styles.addModuleButton}
         >
           + Add Module
         </button>
 
         {/* Submit Button */}
-        <div className="flex gap-4">
+        <div className={styles.actionButtons}>
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className={styles.submitButton}
           >
             {isLoading
               ? "Processing..."
@@ -638,7 +624,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium transition-colors"
+            className={styles.cancelButton}
           >
             Cancel
           </button>
