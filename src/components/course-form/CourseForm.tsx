@@ -33,8 +33,8 @@ interface CourseData {
   promoVideo?: string;
   level: "beginner" | "intermediate" | "advanced";
   language: string;
-  requirements?: string;
-  whatYouWillLearn?: string;
+  requirements?: string[];
+  whatYouWillLearn?: string[];
   tags?: string[];
   modules: Array<{
     moduleNumber: number;
@@ -126,8 +126,16 @@ const CourseForm: React.FC<CourseFormProps> = ({
           setPromoVideo(courseData.promoVideo || "");
           setLevel(courseData.level || "beginner");
           setLanguage(courseData.language || "English");
-          setRequirements(courseData.requirements || "");
-          setWhatYouWillLearn(courseData.whatYouWillLearn || "");
+          setRequirements(
+            Array.isArray(courseData.requirements)
+              ? courseData.requirements.join("\n")
+              : courseData.requirements || ""
+          );
+          setWhatYouWillLearn(
+            Array.isArray(courseData.whatYouWillLearn)
+              ? courseData.whatYouWillLearn.join("\n")
+              : courseData.whatYouWillLearn || ""
+          );
           setTags(courseData.tags?.join(", ") || "");
 
           if (courseData.modules && courseData.modules.length > 0) {
@@ -252,72 +260,71 @@ const CourseForm: React.FC<CourseFormProps> = ({
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      if (mode === "edit" && courseId) {
-        // For editing: Send JSON data (without images for now)
-        const updateData = {
-          title,
-          description,
-          category: selectedCategory,
-          price,
-          instructor: userId,
-          level,
-          language,
-          promoVideo: promoVideo || undefined,
-          requirements: requirements || undefined,
-          whatYouWillLearn: whatYouWillLearn || undefined,
-          tags: tagsArray.length > 0 ? tagsArray : undefined,
-          modules: modulesData,
-        };
+      const requirementsArray = requirements
+        .split("\n")
+        .map((req) => req.trim())
+        .filter((req) => req);
 
-        await axios.put(`${UPDATE_COURSE_API}/${courseId}`, updateData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        toast.success("Course updated successfully");
-      } else {
-        // For creating: Use FormData (with images)
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("category", selectedCategory);
-        formData.append("price", price);
+      const whatYouWillLearnArray = whatYouWillLearn
+        .split("\n")
+        .map((learn) => learn.trim())
+        .filter((learn) => learn);
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("category", selectedCategory);
+      formData.append("price", price);
+      formData.append("level", level);
+      formData.append("language", language);
+      formData.append("modules", JSON.stringify(modulesData));
+
+      if (tagsArray.length > 0) {
+        formData.append("tags", JSON.stringify(tagsArray));
+      }
+      if (requirementsArray.length > 0) {
+        formData.append("requirements", JSON.stringify(requirementsArray));
+      }
+      if (whatYouWillLearnArray.length > 0) {
+        formData.append("whatYouWillLearn", JSON.stringify(whatYouWillLearnArray));
+      }
+      if (promoVideo) {
+        formData.append("promoVideo", promoVideo);
+      }
+
+      if (mode === "add") {
         formData.append("instructor", userId);
-        formData.append("level", level);
-        formData.append("language", language);
+      }
 
-        // Optional fields
-        if (promoVideo) formData.append("promoVideo", promoVideo);
-        if (requirements) formData.append("requirements", requirements);
-        if (whatYouWillLearn) formData.append("whatYouWillLearn", whatYouWillLearn);
-        if (tagsArray.length > 0) {
-          formData.append("tags", JSON.stringify(tagsArray));
-        }
+      // Add course image
+      if (courseImage) {
+        formData.append("images", courseImage);
+      }
 
-        // Add course image
-        if (courseImage) {
-          formData.append("images", courseImage);
-        }
-
-        // Add lesson images
-        modules.forEach((module) => {
-          module.lessons.forEach((lesson) => {
-            if (lesson.image) {
-              formData.append("images", lesson.image);
-            }
-          });
+      // Add lesson images
+      modules.forEach((module) => {
+        module.lessons.forEach((lesson) => {
+          if (lesson.image) {
+            formData.append("images", lesson.image);
+          }
         });
+      });
 
-        formData.append("modules", JSON.stringify(modulesData));
-
-        await axios.post(CREATE_COURSE_API, formData, {
+      let response;
+      if (mode === "edit" && courseId) {
+        response = await axios.put(`${UPDATE_COURSE_API}/${courseId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        toast.success("Course created successfully");
+      } else {
+        response = await axios.post(CREATE_COURSE_API, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
-      
+      toast.success("Course created successfully");
       router.back();
     } catch (error: any) {
       const errorMessage =
@@ -462,7 +469,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <textarea
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
-              placeholder="What students need to know before taking this course"
+              placeholder="What students need to know before taking this course&#10;Enter one per line"
               className={`${styles.textarea} ${styles.textareaSmall}`}
             />
           </div>
@@ -473,7 +480,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <textarea
               value={whatYouWillLearn}
               onChange={(e) => setWhatYouWillLearn(e.target.value)}
-              placeholder="Key learning outcomes"
+              placeholder="Key learning outcomes&#10;Enter one per line"
               className={`${styles.textarea} ${styles.textareaSmall}`}
             />
           </div>

@@ -50,7 +50,7 @@ export const COURSE_BY_ID_API: string = `${BaseUrl}${singleCourseById}`; // Ensu
 export const BASE_URL_CART: string = `${BaseUrl}${cartApi}`;
 export const ALL_COURSE_BY_USERID: string = `${BaseUrl}${allCourseByUserId}`;
 export const UPDATE_COURSE_API: string = `${BaseUrl}${allCourseEndpoint}`;
-export const ADD_NEW_COURSE: string = `${BaseUrl}${ALL_COURSE_API}`;
+export const ADD_NEW_COURSE: string = `${BaseUrl}${allCourseEndpoint}`;
 
 // Stripe Payment
 export const STRIPE_PAYMENT_API: string = `${BaseUrl}${StripePaymentApi}`;

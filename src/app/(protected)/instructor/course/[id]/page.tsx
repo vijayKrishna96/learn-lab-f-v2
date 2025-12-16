@@ -14,7 +14,6 @@ export default function Page() {
       userId={user?._id || ""}
       userName={user?.name || ""}
       ALL_CATEGORY_API={ALL_CATEGORY_API}
-      CREATE_COURSE_API={ADD_NEW_COURSE}
       UPDATE_COURSE_API={UPDATE_COURSE_API}
     />
   );
