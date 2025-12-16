@@ -24,7 +24,7 @@ interface UserData {
   bio: string;
   expertise: string;
   language: string;
-  profilePicture: string | null;
+  profilePicture: string | File | null;
 }
 
 function Page() {
@@ -79,7 +79,7 @@ function Page() {
       profilePicture: null,
     });
 
-    if (userData.profilePicture) {
+    if (userData.profilePicture && typeof userData.profilePicture === "string") {
       setImagePreview(userData.profilePicture);
     }
   }, [userData]);
@@ -96,7 +96,7 @@ function Page() {
       console.log("🚪 Logout API successful");
 
       // Clear Redux state
-      dispatch(setUserData(null));
+      dispatch(setUserData({}));
 
       // Show success message
       toast.success("Logged out successfully");
@@ -110,7 +110,7 @@ function Page() {
       console.error("Logout error:", error);
       
       // Even if API fails, clear local state for safety
-      dispatch(setUserData(null));
+      dispatch(setUserData({}));
       localStorage.removeItem("user");
       localStorage.removeItem("userFull");
       

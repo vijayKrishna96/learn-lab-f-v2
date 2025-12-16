@@ -193,17 +193,17 @@ useEffect(() => {
 
 
   // Fetch instructors - runs on mount
-  useEffect(() => {
-    const getAllInstructors = async () => {
-      try {
-        const response = await axios.get(`${USER_DETAILS_API}/users`);
-        setInstructors(response.data); // Assuming you need instructors data
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getAllInstructors();
-  }, []);
+  // useEffect(() => {
+  //   const getAllInstructors = async () => {
+  //     try {
+  //       const response = await axios.get(`${USER_DETAILS_API}/users`);
+  //       setInstructors(response.data); // Assuming you need instructors data
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getAllInstructors();
+  // }, []);
 
   // Function to calculate countdown
   const calculateCountdown = (

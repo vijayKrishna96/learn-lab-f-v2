@@ -11,6 +11,7 @@ import { TfiControlForward } from "react-icons/tfi";
 import styles from "./course-page.module.scss";
 import { COURSE_BY_ID_API } from "@/utils/constants/api";
 import { selectPurchasedCourses } from "@/redux/slices/userSlice";
+import { RootState } from "@/redux/store";
 
 interface Lesson {
   _id: string;
@@ -81,6 +82,7 @@ const Page: React.FC = () => {
   
   const [error, setError] = useState<string | null>(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
+  const user = useSelector((state: RootState) => state.user.userData);
   // const [role, setRole] = useState<string | null>(null);
   // const [userId, setUserId] = useState<string | null>(null);
   
@@ -130,10 +132,10 @@ const Page: React.FC = () => {
   }
 
   const handleUnlockCourse = () => {
-    if (courseData && userId && role) {
+    if (courseData && user._id && user.role) {
       // Uncomment when addItemToCart is imported
       // dispatch(addItemToCart({ ...courseData, userId, qty: 1 }));
-      router.push(`/${role}/cart/${userId}`);
+      router.push(`/${user.role}/cart`);
     }
   };
 
@@ -174,7 +176,7 @@ const Page: React.FC = () => {
           
           {isPurchased ? (
             <div className={styles.overlay}>
-              <Link href={`/${role}/${userId}/learning/${courseData._id}`}>
+              <Link href={`/${user.role}/learning/${courseData._id}`}>
                 <button className={styles.continueButton}>
                   Continue Learning
                   <TfiControlForward />
