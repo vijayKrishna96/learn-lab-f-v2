@@ -10,7 +10,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
 import styles from "./courses.module.scss";
 import { RootState } from "@/redux/store";
-import { ALL_COURSE_BY_USERID } from "@/utils/constants/api";
+import { ALL_COURSE_API, ALL_COURSE_BY_USERID } from "@/utils/constants/api";
 import { EditIcon, EyeIcon } from "lucide-react";
 
 interface Course {
@@ -69,7 +69,7 @@ const Page: React.FC = () => {
   const handleDeleteCourse = async () => {
     if (!selectedCourseId) return;
     try {
-      await axios.delete(`${ALL_COURSE_BY_USERID}/${selectedCourseId}`);
+      await axios.delete(`${ALL_COURSE_API}/${selectedCourseId}`);
       setCourses((prev) => ({
         ...prev,
         all: prev.all.filter((course) => course._id !== selectedCourseId),
