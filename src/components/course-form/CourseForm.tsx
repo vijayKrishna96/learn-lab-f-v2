@@ -51,8 +51,8 @@ interface CourseFormProps {
   userId: string;
   userName: string;
   ALL_CATEGORY_API: string;
-  CREATE_COURSE_API: string;
-  UPDATE_COURSE_API: string;
+  CREATE_COURSE_API?: string;
+  UPDATE_COURSE_API?: string;
 }
 
 const CourseForm: React.FC<CourseFormProps> = ({
@@ -95,6 +95,8 @@ const CourseForm: React.FC<CourseFormProps> = ({
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("hadfhka", UPDATE_COURSE_API)
+
   // Fetch categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
@@ -111,54 +113,202 @@ const CourseForm: React.FC<CourseFormProps> = ({
   }, [ALL_CATEGORY_API]);
 
   // Fetch course data if in edit mode
-  useEffect(() => {
-    const fetchCourseData = async () => {
-      if (mode === "edit" && courseId) {
-        setIsLoading(true);
-        try {
-          const response = await axios.get(`${UPDATE_COURSE_API}/${courseId}`);
-          const courseData: CourseData = response.data.course || response.data;
+  // Replace the handleSubmit function with this corrected version:
 
-          setTitle(courseData.title || "");
-          setDescription(courseData.description || "");
-          setSelectedCategory(courseData.category || "");
-          setPrice(courseData.price || "");
-          setPromoVideo(courseData.promoVideo || "");
-          setLevel(courseData.level || "beginner");
-          setLanguage(courseData.language || "English");
-          setRequirements(
-            Array.isArray(courseData.requirements)
-              ? courseData.requirements.join("\n")
-              : courseData.requirements || ""
-          );
-          setWhatYouWillLearn(
-            Array.isArray(courseData.whatYouWillLearn)
-              ? courseData.whatYouWillLearn.join("\n")
-              : courseData.whatYouWillLearn || ""
-          );
-          setTags(courseData.tags?.join(", ") || "");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-          if (courseData.modules && courseData.modules.length > 0) {
-            const formattedModules = courseData.modules.map((module) => ({
-              ...module,
-              lessons: module.lessons.map((lesson) => ({
-                ...lesson,
-                image: null,
-              })),
-            }));
-            setModules(formattedModules);
-          }
-        } catch (error) {
-          console.error("Error fetching course data:", error);
-          toast.error("Failed to load course data");
-        } finally {
-          setIsLoading(false);
+  if (!selectedCategory) {
+    toast.error("Please select a category");
+    return;
+  }
+
+  if (!userId) {
+    toast.error("User not authenticated");
+    return;
+  }
+
+  // Determine if this is an edit or create operation based on courseId
+  const isEditMode = !!courseId;
+
+  // Add validation for required API endpoints
+  if (isEditMode && !UPDATE_COURSE_API) {
+    toast.error("Update API endpoint not configured");
+    return;
+  }
+
+  if (!isEditMode && !CREATE_COURSE_API) {
+    toast.error("Create API endpoint not configured");
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    // Prepare modules data
+    const modulesData = modules.map((module) => ({
+      moduleNumber: module.moduleNumber,
+      title: module.title,
+      lessons: module.lessons.map((lesson) => ({
+        title: lesson.title,
+        duration: lesson.duration,
+      })),
+    }));
+
+    const tagsArray = tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+
+    const requirementsArray = requirements
+      .split("\n")
+      .map((req) => req.trim())
+      .filter((req) => req);
+
+    const whatYouWillLearnArray = whatYouWillLearn
+      .split("\n")
+      .map((learn) => learn.trim())
+      .filter((learn) => learn);
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category", selectedCategory);
+    formData.append("price", price);
+    formData.append("level", level);
+    formData.append("language", language);
+    formData.append("modules", JSON.stringify(modulesData));
+
+    if (tagsArray.length > 0) {
+      formData.append("tags", JSON.stringify(tagsArray));
+    }
+    if (requirementsArray.length > 0) {
+      formData.append("requirements", JSON.stringify(requirementsArray));
+    }
+    if (whatYouWillLearnArray.length > 0) {
+      formData.append("whatYouWillLearn", JSON.stringify(whatYouWillLearnArray));
+    }
+    if (promoVideo) {
+      formData.append("promoVideo", promoVideo);
+    }
+
+    // Only append instructor for new courses
+    if (!isEditMode) {
+      formData.append("instructor", userId);
+    }
+
+    // Add course image only if a new one is selected
+    if (courseImage) {
+      formData.append("images", courseImage);
+    }
+
+    // Add lesson images only if new ones are selected
+    modules.forEach((module, moduleIndex) => {
+      module.lessons.forEach((lesson, lessonIndex) => {
+        if (lesson.image) {
+          formData.append("images", lesson.image);
         }
-      }
-    };
+      });
+    });
 
-    fetchCourseData();
-  }, [mode, courseId, UPDATE_COURSE_API]);
+    let response;
+    if (isEditMode) {
+      // Edit mode: Use UPDATE_COURSE_API with courseId
+      const updateUrl = UPDATE_COURSE_API!.endsWith(courseId!) 
+        ? UPDATE_COURSE_API 
+        : `${UPDATE_COURSE_API}/${courseId}`;
+      
+      response = await axios.put(updateUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success("Course updated successfully");
+    } else {
+      // Create mode: Use CREATE_COURSE_API
+      response = await axios.post(CREATE_COURSE_API!, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success("Course created successfully");
+    }
+
+    // Optional: Log response for debugging
+    console.log("Course submission response:", response.data);
+    
+    router.back();
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      `Error ${isEditMode ? "updating" : "creating"} course`;
+    toast.error(errorMessage);
+    console.error("Course submission error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// Also update the fetch course data useEffect to check courseId instead of mode:
+useEffect(() => {
+  const fetchCourseData = async () => {
+    // If courseId exists in params, we're in edit mode - fetch the course data
+    if (courseId && UPDATE_COURSE_API) {
+      setIsLoading(true);
+      try {
+        // Make sure the endpoint is constructed correctly
+        const fetchUrl = UPDATE_COURSE_API.endsWith(courseId)
+          ? UPDATE_COURSE_API
+          : `${UPDATE_COURSE_API}/${courseId}`;
+        
+        const response = await axios.get(fetchUrl);
+        const courseData: CourseData = response.data.course || response.data;
+
+        setTitle(courseData.title || "");
+        setDescription(courseData.description || "");
+        setSelectedCategory(courseData.category || "");
+        setPrice(courseData.price || "");
+        setPromoVideo(courseData.promoVideo || "");
+        setLevel(courseData.level || "beginner");
+        setLanguage(courseData.language || "English");
+        setRequirements(
+          Array.isArray(courseData.requirements)
+            ? courseData.requirements.join("\n")
+            : courseData.requirements || ""
+        );
+        setWhatYouWillLearn(
+          Array.isArray(courseData.whatYouWillLearn)
+            ? courseData.whatYouWillLearn.join("\n")
+            : courseData.whatYouWillLearn || ""
+        );
+        setTags(courseData.tags?.join(", ") || "");
+
+        if (courseData.modules && courseData.modules.length > 0) {
+          const formattedModules = courseData.modules.map((module) => ({
+            ...module,
+            lessons: module.lessons.map((lesson) => ({
+              ...lesson,
+              image: null, // Don't set existing images as File objects
+            })),
+          }));
+          setModules(formattedModules);
+        }
+      } catch (error) {
+        console.error("Error fetching course data:", error);
+        toast.error("Failed to load course data");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  fetchCourseData();
+}, [courseId, UPDATE_COURSE_API]);
 
   // Module handlers
   const handleAddModule = () => {
@@ -228,114 +378,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
     setModules(newModules);
   };
 
-  // Submit handler
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!selectedCategory) {
-      toast.error("Please select a category");
-      return;
-    }
-
-    if (!userId) {
-      toast.error("User not authenticated");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Prepare modules data
-      const modulesData = modules.map((module) => ({
-        moduleNumber: module.moduleNumber,
-        title: module.title,
-        lessons: module.lessons.map((lesson) => ({
-          title: lesson.title,
-          duration: lesson.duration,
-        })),
-      }));
-
-      const tagsArray = tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag);
-
-      const requirementsArray = requirements
-        .split("\n")
-        .map((req) => req.trim())
-        .filter((req) => req);
-
-      const whatYouWillLearnArray = whatYouWillLearn
-        .split("\n")
-        .map((learn) => learn.trim())
-        .filter((learn) => learn);
-
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("category", selectedCategory);
-      formData.append("price", price);
-      formData.append("level", level);
-      formData.append("language", language);
-      formData.append("modules", JSON.stringify(modulesData));
-
-      if (tagsArray.length > 0) {
-        formData.append("tags", JSON.stringify(tagsArray));
-      }
-      if (requirementsArray.length > 0) {
-        formData.append("requirements", JSON.stringify(requirementsArray));
-      }
-      if (whatYouWillLearnArray.length > 0) {
-        formData.append("whatYouWillLearn", JSON.stringify(whatYouWillLearnArray));
-      }
-      if (promoVideo) {
-        formData.append("promoVideo", promoVideo);
-      }
-
-      if (mode === "add") {
-        formData.append("instructor", userId);
-      }
-
-      // Add course image
-      if (courseImage) {
-        formData.append("images", courseImage);
-      }
-
-      // Add lesson images
-      modules.forEach((module) => {
-        module.lessons.forEach((lesson) => {
-          if (lesson.image) {
-            formData.append("images", lesson.image);
-          }
-        });
-      });
-
-      let response;
-      if (mode === "edit" && courseId) {
-        response = await axios.put(`${UPDATE_COURSE_API}/${courseId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } else {
-        response = await axios.post(CREATE_COURSE_API, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      }
-      toast.success("Course created successfully");
-      router.back();
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        `Error ${mode === "edit" ? "updating" : "creating"} course`;
-      toast.error(errorMessage);
-      console.error("Course submission error:", error.response?.data || error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
 
   if (isLoading && mode === "edit") {
     return (
