@@ -107,7 +107,7 @@ const Page: React.FC = () => {
           >
             <MdOutlineDeleteOutline />
           </button>
-          <Link href={`/instructor/${userId}/learning/${course._id}`}>
+          <Link href={`/instructor/view-course/${course._id}`}>
             <button className={`${styles.actionButton} ${styles.viewButton}`}>
               <EyeIcon />
             </button>

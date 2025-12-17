@@ -95,8 +95,6 @@ const CourseForm: React.FC<CourseFormProps> = ({
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("hadfhka", UPDATE_COURSE_API)
-
   // Fetch categories on mount
   useEffect(() => {
     const fetchCategories = async () => {

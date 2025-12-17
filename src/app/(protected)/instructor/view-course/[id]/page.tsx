@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import styles from "./learnings.module.scss";
+import styles from "./view-course.module.scss";
 import { BASE_URL_API } from "@/utils/constants/api";
 
 interface Lesson {
@@ -45,8 +45,8 @@ const Page: React.FC = () => {
       }
     };
 
-    if (id) fetchCourseData();
-  }, [id]);
+    if (courseId) fetchCourseData();
+  }, [courseId]);
 
   if (!data) {
     return (
