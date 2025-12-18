@@ -45,8 +45,8 @@ const Page: React.FC = () => {
       }
     };
 
-    if (id) fetchCourseData();
-  }, [id]);
+    if (courseId) fetchCourseData();
+  }, [courseId]);
 
   if (!data) {
     return (

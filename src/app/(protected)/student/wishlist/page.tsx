@@ -25,7 +25,8 @@ interface Course {
   _id: string;
   userId: string;
   title: string;
-  image?: { url: string };
+  description: string;
+  image: { url: string };
   modules: Module[];
   price: number;
   averageRating: number;
@@ -150,7 +151,6 @@ export default function Page() {
               <CourseCard
                 key={course._id}
                 course={course}
-                role="user"
                 onRemove={handleRemoveFromWishlist}
               />
             ))}

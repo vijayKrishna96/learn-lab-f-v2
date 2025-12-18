@@ -27,15 +27,17 @@ interface UserData {
   profilePicture: string | null;
 }
 
+interface FormDataType extends Omit<UserData, 'profilePicture'> {
+  profilePicture: File | null;
+}
+
 function Page() {
   const dispatch = useDispatch();
   const userData = useSelector(
     (state: RootState) => state.user.userData
   ) as UserData;
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<
-    UserData & { profilePicture: File | null }
-  >({
+  const [formData, setFormData] = useState<FormDataType>({
     _id: "",
     name: "",
     email: "",
@@ -96,7 +98,7 @@ function Page() {
       console.log("🚪 Logout API successful");
 
       // Clear Redux state
-      dispatch(setUserData(null));
+      dispatch(setUserData({}));
 
       // Show success message
       toast.success("Logged out successfully");
@@ -110,7 +112,7 @@ function Page() {
       console.error("Logout error:", error);
       
       // Even if API fails, clear local state for safety
-      dispatch(setUserData(null));
+      dispatch(setUserData({}));
       localStorage.removeItem("user");
       localStorage.removeItem("userFull");
       

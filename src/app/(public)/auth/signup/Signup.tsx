@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./signup.module.scss";
 import { SIGNUP_API } from "@/utils/constants/api";
+import { TicketCheckIcon } from "lucide-react";
 
 interface SignupProps {
   isOpenn: boolean;
@@ -145,7 +146,7 @@ const Signup: React.FC<SignupProps> = ({ isOpenn, onClosee, onSignupSuccess }) =
           </div>,
           {
             autoClose: 3000,
-            icon: "✅"
+            icon: <TicketCheckIcon/>,
           }
         );
         

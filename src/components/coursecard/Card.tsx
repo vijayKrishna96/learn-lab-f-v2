@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { selectUserCart, selectUserWishlist, setUserData } from "@/redux/slices/userSlice";
 
 interface CourseCardProps {
+  onRemove?: (courseId: string) => void;
   course: {
     _id: string;
     image: { url: string };
