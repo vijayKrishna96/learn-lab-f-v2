@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 import { selectUserCart, selectUserWishlist, setUserData } from "@/redux/slices/userSlice";
 
 interface CourseCardProps {
-  role: string;
   course: {
     _id: string;
     image: { url: string };
@@ -26,7 +25,7 @@ interface CourseCardProps {
   };
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ role, course }) => {
+const CourseCard: React.FC<CourseCardProps> = ({  course }) => {
   const dispatch = useDispatch();
   const userData = useSelector((state: any) => state.user.userData);
   const userCart = useSelector(selectUserCart); // NEW: Get current cart IDs

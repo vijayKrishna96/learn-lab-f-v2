@@ -40,7 +40,10 @@ interface Course {
   _id: string;
   title: string;
   description: string;
-  // Add other course properties as needed
+  image: { url: string };
+  averageRating: number;
+  price: number;
+  modules: Array<any>;
 }
 
 interface Instructor {
