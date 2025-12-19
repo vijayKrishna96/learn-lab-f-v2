@@ -33,10 +33,19 @@ interface Category {
 }
 
 // types
+interface CourseItem {
+  _id: string;
+  title: string;
+  image?: {
+    url: string;
+  };
+  [key: string]: any;
+}
+
 interface Course {
   success: boolean;
   count?: number;
-  courses: Course[];
+  courses: CourseItem[];
   message?: string;
 }
 
@@ -51,7 +60,7 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [typewriterText, setTypewriterText] = useState("");
   const fullText = "Learn new skills online on your time";
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<CourseItem[]>([]);
   const [instructors, setInstructors] = useState<User[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
