@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const verifyResponse = await verifyLogin();
       if (!verifyResponse?.loggedIn || !verifyResponse.user) {
         setUser(null);
-        dispatch(setUserData(null));
+        dispatch(setUserData({}));
         localStorage.removeItem("user");
         localStorage.removeItem("userFull");
         return;
@@ -87,17 +87,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       if (fullUser) {
         setUser(fullUser);
-        dispatch(setUserData(fullUser));
+        dispatch(setUserData(fullUser as any));
         localStorage.setItem("userFull", JSON.stringify(fullUser));
       } else {
         setUser(partialUser);
-        dispatch(setUserData(partialUser));
+        dispatch(setUserData(partialUser as any));
       }
       localStorage.setItem("user", JSON.stringify(partialUser)); // Ensure partial is always fresh
     } catch (err) {
       console.error("Refresh user failed:", err);
       setUser(null);
-      dispatch(setUserData(null));
+      dispatch(setUserData({}));
       localStorage.removeItem("user");
       localStorage.removeItem("userFull");
     }
@@ -122,15 +122,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const verifyResponse = await verifyLogin();
         if (!verifyResponse?.loggedIn || !verifyResponse.user) {
           // No valid session - clear any stale data
-          if (storedUser) {
-            localStorage.removeItem("user");
-            localStorage.removeItem("userFull");
-          }
-          setUser(null);
-          dispatch(setUserData(null));
-          setLoading(false);
-          setInitialLoad(false);
-          return;
+            if (storedUser) {
+              localStorage.removeItem("user");
+              localStorage.removeItem("userFull");
+            }
+            setUser(null);
+            dispatch(setUserData({}));
+            setLoading(false);
+            setInitialLoad(false);
+            return;
         }
 
         // Valid session - use verified data (fresh from token)
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Set verified user immediately (with potential name if in token)
         setUser(verifiedUser);
-        dispatch(setUserData(verifiedUser));
+        dispatch(setUserData(verifiedUser as any));
         localStorage.setItem("user", JSON.stringify(verifiedUser)); // Always keep fresh
 
         setLoading(false);
@@ -154,7 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const fullUser = await fetchFullUserData(verifiedUser);
         if (fullUser) {
           setUser(fullUser);
-          dispatch(setUserData(fullUser));
+          dispatch(setUserData(fullUser as any));
           localStorage.setItem("userFull", JSON.stringify(fullUser));
         }
       } catch (err) {
@@ -163,7 +163,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.removeItem("user");
         localStorage.removeItem("userFull");
         setUser(null);
-        dispatch(setUserData(null));
+        dispatch(setUserData({}));
       } finally {
         setLoading(false);
         setInitialLoad(false);
