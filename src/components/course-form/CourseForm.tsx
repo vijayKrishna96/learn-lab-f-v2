@@ -213,7 +213,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     if (isEditMode) {
       // Edit mode: Use UPDATE_COURSE_API with courseId
       const updateUrl = UPDATE_COURSE_API!.endsWith(courseId!) 
-        ? UPDATE_COURSE_API 
+        ? UPDATE_COURSE_API!
         : `${UPDATE_COURSE_API}/${courseId}`;
       
       response = await axios.put(updateUrl, formData, {
