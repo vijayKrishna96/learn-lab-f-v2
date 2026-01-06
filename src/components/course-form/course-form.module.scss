@@ -1,4 +1,6 @@
 @use '../../app/styles/variables' as *;
+@use "sass:color";
+
 
 // Container
 .container {
@@ -195,12 +197,11 @@
   padding: 0;
   
   &:hover {
-    color: darken($error, 10%);
+    color: color.adjust($error, $lightness: 10%);
   }
   
   @include dark {
-    color: lighten($error, 10%);
-    
+    color: color.adjust($error, $lightness: -10%);
     &:hover {
       color: $error;
     }
@@ -281,11 +282,11 @@
   margin-bottom: $spacing-xl;
   
   &:hover {
-    color: darken($success, 10%);
+    color: color.adjust($success, $lightness: 10%);
   }
   
   @include dark {
-    color: lighten($success, 10%);
+    color: color.adjust($success, $lightness: 10%);
     
     &:hover {
       color: $success;

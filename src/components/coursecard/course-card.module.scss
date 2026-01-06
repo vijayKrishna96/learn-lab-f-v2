@@ -1,4 +1,5 @@
 @use '../../app/styles/variables' as *;
+@use "sass:color";
 
 .courseCard {
   display: flex;

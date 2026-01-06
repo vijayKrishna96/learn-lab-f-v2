@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@use "sass:color";
+
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));

@@ -61,7 +61,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
         console.log("Normalized User Data:", fullUserData);
 
         // Update Redux (Redux Persist auto-saves)
-        dispatch(setUserData(fullUserData));
+        dispatch(setUserData(fullUserData as any));
 
         setIsInitialized(true);
       } catch (error) {
