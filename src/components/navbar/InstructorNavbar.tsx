@@ -13,10 +13,13 @@ import { FaSortDown } from "react-icons/fa";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 import "./style/Navbar.css";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const InstructorHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const user = useSelector((state: RootState) => state.user.userData);
 
   // ✅ Redux state
   // const cartItems = useSelector((state: any) => state.cart.cartItems);
@@ -45,43 +48,27 @@ const InstructorHeader = () => {
           <li className="hidden md:block">
             <Link href={`/instructor/courses`}>My Courses</Link>
           </li>
-          <li className="hidden md:block">
+          {/* <li className="hidden md:block">
             <Link href={`/student/mylearnings`}>My Learnings</Link>
-          </li>
+          </li> */}
         </ul>
 
         <div className="flex gap-4 md:gap-6 items-center">
           {/* ✅ Dark mode toggle */}
           <DarkModeToggle />
 
-          {/* 🛒 Cart */}
-          <div className="relative text-xl md:text-2xl">
-            <Link href={`/instructor/cart`}>
-              <FaCartShopping />
-            </Link>
-            <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
-              {/* {userCart?.length ?? 0} */}
-            </span>
-          </div>
-
-          {/* ❤️ Wishlist */}
-          <div className="relative text-red-400 text-xl md:text-2xl">
-            <Link href={`/student/wishlist`}>
-              <FaHeart />
-            </Link>
-            <span className="absolute -top-2 -right-2 text-xs bg-primarybtn text-white rounded-full w-5 h-5 flex items-center justify-center">
-              {/* {userWishlist?.length ?? 0} */}
-            </span>
-          </div>
+          
 
           {/* 👤 Profile */}
           <div className="hidden md:block">
             <Link href={`/instructor/profile`}>
+             
               <img
-                src="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
+                src={user?.profilePicture || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="h-10 w-10 rounded-full object-cover"
               />
+            
             </Link>
           </div>
 
