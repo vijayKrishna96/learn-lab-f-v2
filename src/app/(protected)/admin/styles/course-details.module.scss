@@ -1,0 +1,496 @@
+@use '../../../styles/variables' as *; 
+
+.coursesContainer {
+  width: 100%;
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: $spacing-lg $spacing-md;
+
+  @include screen-sm {
+    padding: $spacing-lg $spacing-xl;
+  }
+
+  @include screen-lg {
+    padding: $spacing-lg $spacing-2xl;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  @include screen-sm {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+
+  @include screen-sm {
+    font-size: $text-2xl;
+  }
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.filtersWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: $spacing-sm;
+
+  @include screen-md {
+    flex-direction: row;
+    width: auto;
+  }
+}
+
+.filterGroup {
+  flex: 1;
+
+  @include screen-sm {
+    flex: initial;
+  }
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.filterIcon {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  left: $spacing-sm;
+  color: $gray-500;
+  pointer-events: none;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.select {
+  width: 100%;
+  padding: $spacing-sm $spacing-md $spacing-sm $spacing-2xl;
+  border: 1px solid $gray-300;
+  border-radius: $radius-sm;
+  font-size: $text-sm;
+  background: white;
+  color: $gray-900;
+  cursor: pointer;
+  transition: $transition-colors;
+  appearance: none;
+
+  &:hover {
+    border-color: $primary-400;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  @include screen-sm {
+    width: auto;
+  }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    color: $dark-text-primary;
+    border-color: $dark-border;
+
+    &:hover {
+      border-color: $primary-400;
+    }
+
+    &:focus {
+      border-color: $primary-400;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+  }
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @include screen-sm {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xl;
+  }
+
+  @include screen-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.courseCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-md;
+  overflow: hidden;
+  transition: $transition-transform;
+  @include card;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+
+    @include dark {
+      box-shadow: $shadow-dark-xl;
+    }
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  padding-top: 56.25%; // 16:9 aspect ratio
+  overflow: hidden;
+}
+
+.courseImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  @include screen-sm {
+    padding: $spacing-xl;
+  }
+}
+
+.courseTitle {
+  font-weight: $font-bold;
+  font-size: $text-base;
+  margin-bottom: $spacing-md;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: $gray-900;
+
+  @include screen-sm {
+    font-size: $text-lg;
+  }
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.courseStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+  flex-grow: 1;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: $text-sm;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.statLabel {
+  font-weight: $font-normal;
+}
+
+.statValue {
+  font-weight: $font-medium;
+}
+
+.viewButton {
+  width: 100%;
+  background-color: $success;
+  color: white;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-sm;
+  border: none;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  &:hover {
+    background-color: darken($success, 10%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @include screen-sm {
+    font-size: $text-base;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: $z-modal-backdrop;
+  padding: $spacing-md;
+
+  @include dark {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.modalContent {
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-2xl;
+  padding: $spacing-xl;
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: $z-modal;
+
+  @include screen-lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.modalTitle {
+  font-weight: $font-bold;
+  font-size: $text-lg;
+  margin-bottom: $spacing-sm;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.courseDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: $text-sm;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.detailLabel {
+  font-weight: $font-normal;
+}
+
+.detailValue {
+  font-weight: $font-medium;
+}
+
+.sectionTitle {
+  font-weight: $font-bold;
+  font-size: $text-base;
+  margin-bottom: $spacing-sm;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.studentList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.studentRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: $text-sm;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.studentName {
+  font-weight: $font-normal;
+}
+
+.studentEmail {
+  font-weight: $font-normal;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+  position: relative;
+}
+
+.closeButton {
+  color: $error;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: -$spacing-sm;
+  transition: $transition-colors;
+
+  &:hover {
+    color: darken($error, 10%);
+  }
+}
+
+.tableWrapper {
+  overflow-y: auto;
+  max-height: 20rem;
+  border-radius: $radius-sm;
+}
+
+.moduleTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tableHeaderLeft,
+.tableHeaderRight {
+  background-color: $gray-100;
+  padding: $spacing-sm $spacing-md;
+  font-weight: $font-semibold;
+  font-size: $text-sm;
+  color: $gray-900;
+
+  @include dark {
+    background-color: $dark-bg-tertiary;
+    color: $dark-text-primary;
+  }
+}
+
+.tableHeaderLeft {
+  text-align: left;
+}
+
+.tableHeaderRight {
+  text-align: right;
+}
+
+.moduleRow {
+  background-color: $gray-100;
+
+  @include dark {
+    background-color: $dark-bg-tertiary;
+  }
+}
+
+.moduleCell {
+  padding: $spacing-sm $spacing-md;
+  font-weight: $font-semibold;
+  text-align: left;
+  border-bottom: 1px solid $gray-300;
+  color: $gray-900;
+
+  @include dark {
+    border-bottom-color: $dark-border;
+    color: $dark-text-primary;
+  }
+}
+
+.lessonRow {
+  background: white;
+
+  @include dark {
+    background: $dark-bg-card;
+  }
+}
+
+.lessonTitle {
+  padding: $spacing-sm $spacing-md;
+  text-align: left;
+  font-size: $text-sm;
+  color: $gray-700;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.lessonDuration {
+  padding: $spacing-sm $spacing-md;
+  text-align: right;
+  font-size: $text-sm;
+  color: $gray-700;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.moduleSpacing {
+  height: $spacing-md;
+}

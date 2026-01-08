@@ -10,21 +10,25 @@ import {
   Layout,
   LogOut,
 } from "lucide-react";
+
 // import Students from "./Students";
 // import InstructorListTable from "./Instructors";
-import ProductMetricsChart from "../../components/Instructor/Chart";
+// import ProductMetricsChart from "../../components/Instructor/Chart";
+
 import axios from "axios";
-import {
-  ALL_COURSE_API,
-  LOGOUT_API,
-  USER_DETAILS_API,
-} from "../../Utils/Constants/Api";
-import Courses from "./CourseDetails";
+// import {
+//   ALL_COURSE_API,
+//   LOGOUT_API,
+//   USER_DETAILS_API,
+// } from "../../Utils/Constants/Api";
+
+// import Courses from "./CourseDetails";
+
 import { useRouter, useParams } from "next/navigation";
-import DarkMode from "../../components/ui/DarkMode";
+// import DarkMode from "../../components/ui/DarkMode";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../../features/userSlice";
-import styles from "./AdminDashboard.module.scss";
+// import { setUserData } from "../../features/userSlice";
+import styles from "./styles/Dashboard.module.scss";
 
 interface Course {
   id: string;
@@ -57,7 +61,7 @@ interface InboxMessage {
   course: string;
 }
 
-const Page: React.FC = () => {
+const DashboardView: React.FC = () => {
   const [value, setValue] = useState<Date>(new Date());
   const isDarkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
 
@@ -66,7 +70,7 @@ const Page: React.FC = () => {
       {/* Statistics Section */}
       <div className={styles.statsSection}>
         <div className={styles.chartCard}>
-          <ProductMetricsChart />
+          {/* <ProductMetricsChart /> */}
         </div>
       </div>
 
@@ -155,7 +159,7 @@ const InboxView: React.FC = () => {
   );
 };
 
-const AdminDashboard: React.FC = () => {
+const Page: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);

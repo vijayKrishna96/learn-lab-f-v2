@@ -1,0 +1,545 @@
+@use '../../../styles/variables.scss' as *;
+
+.dashboardContainer {
+  display: flex;
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+.sidebar {
+  width: 16rem;
+  box-shadow: $shadow-md;
+  background: white;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+.sidebarHeader {
+  padding: $spacing-lg;
+
+  .logo {
+    font-size: $text-2xl;
+    font-weight: $font-bold;
+    color: $primary-500;
+  }
+}
+
+.sidebarNav {
+  margin-top: $spacing-lg;
+}
+
+.navItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-lg;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-all;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+
+  &:hover {
+    background: $gray-100;
+
+    @include dark {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.navItemActive {
+  background: $primary-50;
+  color: $primary-500;
+  border-left: 4px solid $primary-500;
+
+  @include dark {
+    background: $dark-accent;
+    color: $primary-300;
+  }
+}
+
+.navIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.mainContent {
+  flex: 1;
+  overflow: auto;
+  background: $gray-50;
+
+  @include dark {
+    background: $dark-bg-primary;
+  }
+}
+
+.header {
+  box-shadow: $shadow-sm;
+  background: white;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    box-shadow: $shadow-dark-md;
+  }
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-xl;
+}
+
+.headerTitle {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.darkModeWrapper {
+  border: 2px dashed $error;
+  border-radius: $radius-full;
+}
+
+.notificationButton {
+  padding: $spacing-sm;
+  border-radius: $radius-full;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  &:hover {
+    background: $gray-100;
+
+    @include dark {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.bellIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.profileWrapper {
+  position: relative;
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.profileImage {
+  width: 2rem;
+  height: 2rem;
+  border-radius: $radius-full;
+  background: $primary-500;
+  object-fit: cover;
+}
+
+.profileName {
+  font-weight: $font-medium;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.profileDropdown {
+  position: absolute;
+  right: 0;
+  margin-top: $spacing-sm;
+  width: 16rem;
+  border-radius: $radius-md;
+  box-shadow: $shadow-xl;
+  padding: $spacing-sm 0;
+  z-index: $z-dropdown;
+  background: white;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+.profileInfo {
+  padding: $spacing-md;
+  border-bottom: 1px solid $gray-200;
+  text-align: center;
+
+  @include dark {
+    border-bottom-color: $dark-border;
+  }
+}
+
+.profileDropdownImage {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto;
+  border-radius: $radius-full;
+  border: 1px solid $gray-200;
+  object-fit: cover;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+}
+
+.profileDropdownName {
+  font-weight: $font-medium;
+  margin-top: $spacing-sm;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.profileDropdownEmail {
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.profileActions {
+  padding: $spacing-sm $spacing-md;
+}
+
+.fileInput {
+  width: 100%;
+  display: none;
+}
+
+.chooseButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  color: $primary-500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: $transition-colors;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background: $primary-50;
+
+    @include dark {
+      background: $dark-accent;
+      color: $primary-300;
+    }
+  }
+}
+
+.imageSelectedActions {
+  margin-top: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.updateButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  color: $success;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background: rgba($success, 0.1);
+
+    @include dark {
+      background: rgba($success, 0.2);
+    }
+  }
+}
+
+.chooseAnotherButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  color: $primary-500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background: $primary-50;
+
+    @include dark {
+      background: $dark-accent;
+      color: $primary-300;
+    }
+  }
+}
+
+.logoutButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  color: $error;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background: rgba($error, 0.1);
+
+    @include dark {
+      background: rgba($error, 0.2);
+    }
+  }
+}
+
+.logoutIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.contentArea {
+  padding: $spacing-xl;
+}
+
+// Dashboard View Styles
+.statsSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-lg;
+
+  @include screen-md {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chartCard {
+  @include card;
+}
+
+.progressCalendarGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: $spacing-2xl;
+  gap: $spacing-2xl;
+
+  @include screen-lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.progressCard,
+.calendarCard {
+  @include card;
+}
+
+.cardTitle {
+  font-weight: $font-bold;
+  font-size: $text-lg;
+  margin-bottom: $spacing-lg;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.progressCircleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressCircle {
+  position: relative;
+  width: 14rem;
+  height: 14rem;
+}
+
+.progressSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.progressText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progressPercentage {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.progressLabel {
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.calendarPlaceholder {
+  padding: $spacing-xl;
+  text-align: center;
+  color: $gray-500;
+  background: $gray-50;
+  border-radius: $radius-md;
+
+  @include dark {
+    color: $dark-text-muted;
+    background: $dark-bg-tertiary;
+  }
+}
+
+// Inbox View Styles
+.inboxView {
+  padding: $spacing-xl;
+}
+
+.inboxTitle {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  margin-bottom: $spacing-lg;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.inboxCard {
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+
+  @include dark {
+    background: $dark-bg-secondary;
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+.inboxMessage {
+  padding: $spacing-md;
+  border-bottom: 1px solid $gray-200;
+  transition: $transition-colors;
+
+  @include dark {
+    border-bottom-color: $dark-border;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $gray-50;
+
+    @include dark {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.messageContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.messageTitle {
+  font-weight: $font-medium;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.messageInfo {
+  font-size: $text-sm;
+  color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.messageButton {
+  color: $primary-500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: $transition-colors;
+  padding: $spacing-xs;
+  border-radius: $radius-sm;
+
+  &:hover {
+    color: $primary-600;
+    background: $primary-50;
+
+    @include dark {
+      color: $primary-300;
+      background: $dark-accent;
+    }
+  }
+}
+
+.chevronIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
