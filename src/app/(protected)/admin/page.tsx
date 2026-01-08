@@ -25,15 +25,67 @@ import axios from "axios";
 // import Courses from "./CourseDetails";
 
 import { useRouter, useParams } from "next/navigation";
-// import DarkMode from "../../components/ui/DarkMode";
+
 import { useDispatch, useSelector } from "react-redux";
 // import { setUserData } from "../../features/userSlice";
 import styles from "./styles/Dashboard.module.scss";
+import Courses from "./pages/CourseDetails";
+import Students from "./pages/Students";
+import Instructors from "./pages/Instructors";
+import DarkModeToggle from "@/components/ui/DarkModeToggle";
+
+interface Lesson {
+  _id: string;
+  title: string;
+  duration?: number;
+}
+
+interface Module {
+  _id: string;
+  moduleNumber: number;
+  title: string;
+  lessons: Lesson[];
+}
+
+interface CourseImage {
+  url: string;
+  publicId: string;
+}
+
+interface InstructorDetails {
+  _id: string;
+  name: string;
+  email: string;
+  bio?: string;
+}
+
+interface CategoryDetails {
+  _id: string;
+  name: string;
+  description: string;
+}
+
 
 interface Course {
+ _id: string;
   id: string;
   title: string;
-  // Add other course properties
+  description: string;
+  image: CourseImage;
+  price: number;
+  modules: Module[];
+  averageRating?: number;
+  reviews: any[];
+  category: string;
+  categoryDetails: CategoryDetails;
+  instructor: string;
+  instructorDetails: InstructorDetails;
+  level: string;
+  language: string;
+  enrollmentCount: number;
+  totalDuration: number;
+  isFree: boolean;
+  status: string;
 }
 
 interface UserData {
@@ -63,7 +115,7 @@ interface InboxMessage {
 
 const DashboardView: React.FC = () => {
   const [value, setValue] = useState<Date>(new Date());
-  const isDarkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
+
 
   return (
     <>
@@ -230,13 +282,12 @@ const Page: React.FC = () => {
       case "Dashboard":
         return <DashboardView />;
       case "Courses":
-        return <Courses courses={courseData} />;
+        // return <Courses courses={courseData} />;
+        return <div>course page</div>
       case "Students":
-        // return <Students />;
-        return <div>Students Component (Coming Soon)</div>;
+        return <Students />;
       case "Instructors":
-        // return <InstructorListTable />;
-        return <div>Instructors Component (Coming Soon)</div>;
+        return <Instructors />;
       case "Inbox":
         return <InboxView />;
       default:
@@ -287,8 +338,8 @@ const Page: React.FC = () => {
           <div className={styles.headerContent}>
             <h1 className={styles.headerTitle}>{activeTab}</h1>
             <div className={styles.headerActions}>
-              <div className={styles.darkModeWrapper}>
-                <DarkMode />
+              <div >
+                <DarkModeToggle/>
               </div>
 
               <button className={styles.notificationButton}>
@@ -300,7 +351,7 @@ const Page: React.FC = () => {
                   className={styles.profileButton}
                 >
                   <img
-                    src={newProfilePicture || userData?.profilePicture?.url || ""}
+                    src={newProfilePicture || userData?.profilePicture?.url }
                     alt="Profile"
                     className={styles.profileImage}
                   />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -52,105 +52,76 @@ const Instructors: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [expandedCourses, setExpandedCourses] = useState<{ [key: number]: boolean }>({});
+  const [totalRows, setTotalRows] = useState<number>(0);
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const isDarkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
-  const ALL_USERS_API = '/api/users'; // Update with your actual API endpoint
+  const ALL_USERS_API = '/api/users';
 
-  useEffect(() => {
-    const getAllInstructors = async (page: number, limit: number) => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${ALL_USERS_API}?role=instructor&page=${page + 1}&limit=${limit}`
-        );
-        
-        if (!response?.data?.users) {
-          console.error('No users data received');
-          return;
-        }
-
-        const transformedData: Instructor[] = response.data.users.map((instructor: any) => ({
-          id: instructor._id || instructor.id,
-          name: instructor.name || 'N/A',
-          email: instructor.email || 'N/A',
-          phone: instructor.phone || 'N/A',
-          active: Boolean(instructor.active),
-          courses: Array.isArray(instructor.courses) ? instructor.courses : [],
-          students: instructor.students || [],
-        }));
-
-        setInstructors(transformedData);
-      } catch (error) {
-        console.error('Error fetching instructors:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getAllInstructors(table.getState().pagination.pageIndex, table.getState().pagination.pageSize);
-  }, []);
-
-  const columns: ColumnDef<Instructor>[] = [
-    {
-      accessorKey: 'name',
-      header: 'Name',
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: 'email',
-      header: 'Email',
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: 'phone',
-      header: 'Phone',
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: 'active',
-      header: 'Active',
-      cell: (info) => {
-        const value = info.getValue() as boolean;
-        return (
-          <span className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}>
-            {value ? 'Yes' : 'No'}
-          </span>
-        );
+  const columns = useMemo<ColumnDef<Instructor>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        header: 'Name',
+        cell: (info) => info.getValue(),
       },
-    },
-    {
-      accessorKey: 'courses',
-      header: 'Created Courses',
-      cell: (info) => {
-        const courses = info.getValue() as Course[];
-        return (
-          <div className={styles.coursesList}>
-            {courses.map((course, index) => (
-              <div key={index} className={styles.courseItem}>
-                • {course?.title || 'Untitled Course'}
-              </div>
-            ))}
-          </div>
-        );
+      {
+        accessorKey: 'email',
+        header: 'Email',
+        cell: (info) => info.getValue(),
       },
-    },
-    {
-      id: 'actions',
-      header: 'Actions',
-      cell: (info) => {
-        const instructor = info.row.original;
-        return (
-          <button
-            className={styles.viewButton}
-            onClick={() => setSelectedInstructor(instructor)}
-          >
-            <Eye className={styles.icon} />
-            View Details
-          </button>
-        );
+      {
+        accessorKey: 'phone',
+        header: 'Phone',
+        cell: (info) => info.getValue(),
       },
-    },
-  ];
+      {
+        accessorKey: 'active',
+        header: 'Active',
+        cell: (info) => {
+          const value = info.getValue() as boolean;
+          return (
+            <span className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}>
+              {value ? 'Yes' : 'No'}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: 'courses',
+        header: 'Created Courses',
+        cell: (info) => {
+          const courses = info.getValue() as Course[];
+          return (
+            <div className={styles.coursesList}>
+              {courses.map((course, index) => (
+                <div key={index} className={styles.courseItem}>
+                  • {course?.title || 'Untitled Course'}
+                </div>
+              ))}
+            </div>
+          );
+        },
+      },
+      {
+        id: 'actions',
+        header: 'Actions',
+        cell: (info) => {
+          const instructor = info.row.original;
+          return (
+            <button
+              className={styles.viewButton}
+              onClick={() => setSelectedInstructor(instructor)}
+            >
+              <Eye className={styles.icon} />
+              View Details
+            </button>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   const table = useReactTable({
     data: instructors,
@@ -159,6 +130,10 @@ const Instructors: React.FC = () => {
       sorting,
       columnFilters,
       globalFilter,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 10,
+      },
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -167,13 +142,80 @@ const Instructors: React.FC = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    pageCount: Math.ceil(totalRows / 10),
   });
+
+  useEffect(() => {
+    const getAllInstructors = async () => {
+      try {
+        setLoading(true);
+
+        const page = table.getState().pagination.pageIndex + 1;
+        const limit = table.getState().pagination.pageSize;
+
+        const sort = table.getState().sorting[0];
+        const sortField = sort?.id || 'name';
+        const sortOrder = sort?.desc ? 'desc' : 'asc';
+
+        const response = await axios.get(ALL_USERS_API, {
+          params: {
+            role: 'instructor',
+            page,
+            limit,
+            search: globalFilter || searchValue,
+            sortField,
+            sortOrder,
+          },
+        });
+
+        if (!response?.data?.users) {
+          console.error('No users data received');
+          return;
+        }
+
+        const transformedData: Instructor[] = response.data.users.map(
+          (instructor: any) => ({
+            id: instructor._id,
+            name: instructor.name || 'N/A',
+            email: instructor.email || 'N/A',
+            phone: instructor.phone || 'N/A',
+            active: Boolean(instructor.active),
+            courses: Array.isArray(instructor.courses) ? instructor.courses : [],
+            students: instructor.students || [],
+          })
+        );
+
+        setInstructors(transformedData);
+        setTotalRows(response.data.pagination?.total || 0);
+      } catch (error) {
+        console.error('Error fetching instructors:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getAllInstructors();
+  }, [
+    table.getState().pagination.pageIndex,
+    table.getState().pagination.pageSize,
+    table.getState().sorting,
+    globalFilter,
+  ]);
 
   const toggleCourse = (index: number) => {
     setExpandedCourses((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    setGlobalFilter(value);
   };
 
   return (
@@ -184,8 +226,8 @@ const Instructors: React.FC = () => {
           <input
             type="text"
             placeholder="Search instructors..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            value={searchValue}
+            onChange={handleSearchChange}
             className={styles.searchInput}
           />
         </div>
@@ -204,6 +246,7 @@ const Instructors: React.FC = () => {
                           <div
                             className={styles.headerContent}
                             onClick={header.column.getToggleSortingHandler()}
+                            style={{ cursor: 'pointer' }}
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getIsSorted() === 'asc' && <ChevronUp className={styles.sortIcon} />}
@@ -289,7 +332,7 @@ const Instructors: React.FC = () => {
                 );
 
                 return (
-                  <div key={index} className={styles.accordion}>
+                  <div key={course._id} className={styles.accordion}>
                     <div className={styles.accordionHeader} onClick={() => toggleCourse(index)}>
                       <span>
                         {course.title} ({enrolledStudents.length} students)

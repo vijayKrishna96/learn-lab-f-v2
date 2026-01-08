@@ -2,7 +2,7 @@
 
 import { X, Filter } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import styles from "./Courses.module.scss";
+import styles from "../styles/course-details.module.scss";
 
 // Types
 interface Lesson {

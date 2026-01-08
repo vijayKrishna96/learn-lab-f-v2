@@ -56,37 +56,64 @@ const Students: React.FC = () => {
   };
 
   useEffect(() => {
-    const getAllStudents = async (page: number, limit: number) => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${ALL_USERS_API}?role=student&page=${page + 1}&limit=${limit}`
-        );
-        
-        if (!response?.data?.users) {
-          console.error('No users data received');
-          return;
-        }
+  const getAllStudents = async () => {
+    try {
+      setLoading(true);
 
-        const transformedData: Student[] = response.data.users.map((student: any, index: number) => ({
+      const page = table.getState().pagination.pageIndex + 1; // backend is 1-based
+      const limit = table.getState().pagination.pageSize;
+
+      const sort = table.getState().sorting[0];
+      const sortField = sort?.id || 'name';
+      const sortOrder = sort?.desc ? 'desc' : 'asc';
+
+      const response = await axios.get(ALL_USERS_API, {
+        params: {
+          role: 'student',
+          page,
+          limit,
+          search: searchValue, // from input/state
+          sortField,
+          sortOrder,
+        },
+      });
+
+      if (!response?.data?.users) {
+        console.error('No users data received');
+        return;
+      }
+
+      const transformedData: Student[] = response.data.users.map(
+        (student: any, index: number) => ({
           id: student._id || student.id || `student-${index}`,
           name: student.name || 'N/A',
           email: student.email || 'N/A',
           phone: student.phone || 'N/A',
           active: Boolean(student.active),
           courses: Array.isArray(student.courses) ? student.courses : [],
-        }));
+        })
+      );
 
-        setStudentData(transformedData);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setStudentData(transformedData);
 
-    getAllStudents(table.getState().pagination.pageIndex, table.getState().pagination.pageSize);
-  }, []);
+      // Optional if you maintain total count
+      setTotalRows(response.data.pagination?.total || 0);
+
+    } catch (error) {
+      console.error('Error fetching students:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getAllStudents();
+}, [
+  table.getState().pagination.pageIndex,
+  table.getState().pagination.pageSize,
+  table.getState().sorting,
+  searchValue,
+]);
+
 
   const columns: ColumnDef<Student>[] = [
     {
