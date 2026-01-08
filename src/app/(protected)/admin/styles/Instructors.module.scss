@@ -1,0 +1,494 @@
+@import '../../../styles/variables' ;
+
+.container {
+  padding: $spacing-lg;
+  min-height: 100vh;
+
+  &.dark {
+    .card {
+      background: $dark-bg-card;
+      color: $dark-text-primary;
+    }
+
+    .searchInput {
+      background: $dark-bg-secondary;
+      border-color: $dark-border;
+      color: $dark-text-primary;
+
+      &::placeholder {
+        color: $dark-text-muted;
+      }
+    }
+
+    .table {
+      color: $dark-text-primary;
+    }
+
+    .thead {
+      background: $dark-bg-tertiary;
+      color: $dark-text-primary;
+    }
+
+    .evenRow {
+      background: $dark-bg-secondary;
+    }
+
+    .oddRow {
+      background: $dark-bg-card;
+    }
+
+    .modalOverlay {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal {
+      background: $dark-bg-secondary;
+      color: $dark-text-primary;
+    }
+
+    .modalHeader {
+      background: $dark-bg-tertiary;
+      border-bottom-color: $dark-border;
+    }
+
+    .accordion {
+      background: $dark-bg-card;
+      border-color: $dark-border;
+    }
+
+    .accordionHeader {
+      background: $dark-bg-tertiary;
+
+      &:hover {
+        background: $dark-bg-primary;
+      }
+    }
+
+    .accordionContent {
+      background: $dark-bg-card;
+    }
+
+    .studentItem {
+      background: $dark-bg-tertiary;
+      border-bottom-color: $dark-border;
+    }
+
+    .paginationButton {
+      background: $dark-bg-tertiary;
+      color: $dark-text-primary;
+      border-color: $dark-border;
+
+      &:hover:not(:disabled) {
+        background: $dark-bg-primary;
+      }
+    }
+
+    .modalFooter {
+      background: $dark-bg-tertiary;
+      border-top-color: $dark-border;
+    }
+  }
+}
+
+.card {
+  @include card;
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-xl;
+  overflow: hidden;
+  transition: $transition-all;
+}
+
+.cardHeader {
+  padding: $spacing-xl;
+  border-bottom: 1px solid $gray-200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.title {
+  font-size: $text-3xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0;
+}
+
+.searchInput {
+  padding: $spacing-md $spacing-lg;
+  border: 1px solid $gray-300;
+  border-radius: $radius-md;
+  font-size: $text-base;
+  min-width: 250px;
+  transition: $transition-all;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  &::placeholder {
+    color: $gray-400;
+  }
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thead {
+  background: $gray-50;
+}
+
+.th {
+  padding: $spacing-lg;
+  text-align: left;
+  font-weight: $font-semibold;
+  font-size: $text-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $gray-700;
+  border-bottom: 2px solid $gray-200;
+  cursor: pointer;
+  user-select: none;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.sortIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.tbody {
+  .tr {
+    transition: $transition-colors;
+
+    &:hover {
+      background: $gray-50;
+    }
+  }
+}
+
+.td {
+  padding: $spacing-lg;
+  border-bottom: 1px solid $gray-200;
+  font-size: $text-sm;
+  color: $gray-700;
+}
+
+.evenRow {
+  background: $gray-50;
+}
+
+.oddRow {
+  background: white;
+}
+
+.chip {
+  display: inline-block;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-full;
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chipSuccess {
+  background: rgba(16, 185, 129, 0.1);
+  color: $success;
+}
+
+.chipError {
+  background: rgba(239, 68, 68, 0.1);
+  color: $error;
+}
+
+.coursesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.courseItem {
+  display: flex;
+  align-items: center;
+  font-size: $text-sm;
+  color: $gray-600;
+}
+
+.viewButton {
+  @include button-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-lg;
+  font-size: $text-sm;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
+  border-top: 1px solid $gray-200;
+}
+
+.paginationButton {
+  padding: $spacing-sm $spacing-lg;
+  border: 1px solid $gray-300;
+  border-radius: $radius-md;
+  background: white;
+  color: $gray-700;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: $transition-all;
+
+  &:hover:not(:disabled) {
+    background: $gray-50;
+    border-color: $primary-500;
+    color: $primary-600;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  font-size: $text-sm;
+  color: $gray-600;
+  font-weight: $font-medium;
+}
+
+.loading {
+  padding: $spacing-3xl;
+  text-align: center;
+  font-size: $text-lg;
+  color: $gray-500;
+}
+
+// Modal styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  padding: $spacing-lg;
+  backdrop-filter: $backdrop-blur-sm;
+}
+
+.modal {
+  background: white;
+  border-radius: $radius-lg;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-2xl;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-xl;
+  border-bottom: 1px solid $gray-200;
+  background: $gray-50;
+}
+
+.modalTitle {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: $gray-500;
+  cursor: pointer;
+  border-radius: $radius-sm;
+  transition: $transition-all;
+
+  &:hover {
+    background: $gray-200;
+    color: $gray-700;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-xl;
+}
+
+.detailRow {
+  margin-bottom: $spacing-lg;
+  font-size: $text-base;
+  color: $gray-700;
+
+  strong {
+    font-weight: $font-semibold;
+    color: $gray-900;
+  }
+}
+
+.sectionTitle {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: $spacing-2xl 0 $spacing-lg 0;
+}
+
+.accordion {
+  border: 1px solid $gray-200;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+  overflow: hidden;
+  background: white;
+}
+
+.accordionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-lg;
+  background: $gray-50;
+  cursor: pointer;
+  font-weight: $font-semibold;
+  color: $gray-800;
+  transition: $transition-colors;
+
+  &:hover {
+    background: $gray-100;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: $gray-500;
+  }
+}
+
+.accordionContent {
+  padding: $spacing-md;
+  background: white;
+}
+
+.studentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.studentItem {
+  padding: $spacing-md;
+  background: $gray-50;
+  border-bottom: 1px solid $gray-200;
+  transition: $transition-colors;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $gray-100;
+  }
+}
+
+.studentName {
+  font-weight: $font-semibold;
+  color: $gray-900;
+  margin-bottom: $spacing-xs;
+}
+
+.studentEmail {
+  font-size: $text-sm;
+  color: $gray-600;
+}
+
+.noStudents {
+  text-align: center;
+  color: $gray-500;
+  font-style: italic;
+  padding: $spacing-lg;
+}
+
+.modalFooter {
+  padding: $spacing-lg $spacing-xl;
+  border-top: 1px solid $gray-200;
+  background: $gray-50;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.closeButtonFooter {
+  @include button-secondary;
+  padding: $spacing-sm $spacing-xl;
+  font-size: $text-base;
+}
+
+// Responsive design
+@include screen-md {
+  .cardHeader {
+    flex-direction: row;
+  }
+}
+
+@include screen-sm {
+  .modal {
+    max-width: 95%;
+  }
+}
