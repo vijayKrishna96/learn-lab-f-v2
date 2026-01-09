@@ -6,7 +6,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ border: '2px solid red', padding: '20px' }}>
+    <div>
       <div>{children}</div>
     </div>
   );

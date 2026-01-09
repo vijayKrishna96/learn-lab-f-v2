@@ -12,7 +12,7 @@
   background: white;
 
   @include dark {
-    background: $dark-bg-secondary;
+    background: $gradient-wave-dark;
     box-shadow: $shadow-dark-md;
   }
 }
@@ -29,6 +29,9 @@
 
 .sidebarNav {
   margin-top: $spacing-lg;
+  @include dark {
+      background: transparent;
+    }
 }
 
 .navItem {
@@ -76,7 +79,7 @@
   flex: 1;
   overflow: auto;
   background: $gray-50;
-
+  
   @include dark {
     background: $dark-bg-primary;
   }
@@ -88,7 +91,7 @@
 
   @include dark {
     background: $dark-bg-secondary;
-    box-shadow: $shadow-dark-md;
+   
   }
 }
 
@@ -369,7 +372,7 @@
   gap: $spacing-2xl;
 
   @include screen-lg {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 2fr;
   }
 }
 
@@ -391,14 +394,14 @@
 
 .progressCircleContainer {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .progressCircle {
   position: relative;
-  width: 14rem;
-  height: 14rem;
+  width: 20rem;
+  height: 20rem;
 }
 
 .progressSvg {
@@ -443,6 +446,128 @@
   @include dark {
     color: $dark-text-muted;
     background: $dark-bg-tertiary;
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.calendarNavigation {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.navButton {
+  padding: $spacing-xs $spacing-md;
+  background: $gray-100;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  color: $gray-700;
+  font-size: $text-base;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: $gray-200;
+  }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    color: $dark-text-primary;
+
+    &:hover {
+      background: $dark-bg-tertiary;
+    }
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+}
+
+.weekDay {
+  text-align: center;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $gray-600;
+  padding: $spacing-sm 0;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $text-sm;
+  cursor: pointer;
+  border-radius: $radius-md;
+  transition: background 0.2s ease;
+  color: $gray-700;
+
+  &:not(.emptyDay):hover {
+    background: $gray-100;
+  }
+
+  @include dark {
+    color: $dark-text-primary;
+
+    &:not(.emptyDay):hover {
+      background: $dark-bg-secondary;
+    }
+  }
+}
+
+.emptyDay {
+  cursor: default;
+  pointer-events: none;
+}
+
+.today {
+  background: rgba(79, 70, 229, 0.1);
+  font-weight: $font-bold;
+  color: #4F46E5;
+
+  @include dark {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818CF8;
+  }
+}
+
+.selected {
+  background: #4F46E5;
+  color: white;
+  font-weight: $font-semibold;
+
+  &:hover {
+    background: #4338CA;
+  }
+
+  @include dark {
+    background: #6366F1;
+
+    &:hover {
+      background: #4F46E5;
+    }
+  }
+}
+
+.selectedDate {
+  margin-top: $spacing-lg;
+  font-size: $text-sm;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
   }
 }
 
