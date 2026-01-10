@@ -242,12 +242,17 @@
   cursor: pointer;
   transition: $transition-colors;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: darken($success, 10%);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   @include screen-sm {
@@ -275,7 +280,7 @@
 
 .modalContent {
   background: white;
-  border-radius: $radius-md;
+  border-radius: $radius-lg;
   box-shadow: $shadow-2xl;
   padding: $spacing-xl;
   width: 100%;
@@ -288,7 +293,8 @@
   z-index: $z-modal;
 
   @include screen-lg {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1.2fr;
+    padding: $spacing-2xl;
   }
 
   @include dark {
@@ -300,73 +306,247 @@
 .leftColumn {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-lg;
+  overflow-y: auto;
+  max-height: 80vh;
+
+  @include screen-lg {
+    padding-right: $spacing-md;
+  }
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
+  overflow-y: auto;
+  max-height: 80vh;
+
+  @include screen-lg {
+    padding-left: $spacing-md;
+    border-left: 1px solid $gray-200;
+
+    @include dark {
+      border-left-color: $dark-border;
+    }
+  }
 }
 
 .modalTitle {
   font-weight: $font-bold;
-  font-size: $text-lg;
+  font-size: $text-xl;
   margin-bottom: $spacing-sm;
   color: $gray-900;
+  line-height: $leading-tight;
+
+  @include screen-sm {
+    font-size: $text-2xl;
+  }
 
   @include dark {
     color: $dark-text-primary;
   }
 }
 
+.courseDescription {
+  font-size: $text-sm;
+  color: $gray-600;
+  line-height: $leading-relaxed;
+  margin-bottom: $spacing-md;
+  padding: $spacing-md;
+  background-color: $gray-50;
+  border-radius: $radius-sm;
+  border-left: 3px solid $primary-500;
+
+  @include dark {
+    color: $dark-text-secondary;
+    background-color: $dark-bg-tertiary;
+    border-left-color: $primary-400;
+  }
+}
+
 .courseDetails {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-sm $spacing-md;
+  grid-template-columns: 1fr;
+  gap: $spacing-sm;
   margin-bottom: $spacing-md;
+  padding: $spacing-md;
+  background-color: $gray-50;
+  border-radius: $radius-sm;
+
+  @include screen-sm {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-sm $spacing-md;
+  }
+
+  @include dark {
+    background-color: $dark-bg-tertiary;
+  }
 }
 
 .detailRow {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: $text-sm;
-  color: $gray-600;
+  padding: $spacing-xs 0;
+  gap: $spacing-sm;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $gray-200;
+
+    @include dark {
+      border-bottom-color: $dark-border;
+    }
+  }
+
+  @include screen-sm {
+    border-bottom: none !important;
+  }
+}
+
+.detailLabel {
+  font-weight: $font-medium;
+  color: $gray-700;
+  flex-shrink: 0;
 
   @include dark {
     color: $dark-text-secondary;
   }
 }
 
-.detailLabel {
-  font-weight: $font-normal;
-}
-
 .detailValue {
-  font-weight: $font-medium;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  text-align: right;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
 .sectionTitle {
   font-weight: $font-bold;
-  font-size: $text-base;
+  font-size: $text-lg;
+  margin-top: $spacing-md;
   margin-bottom: $spacing-sm;
   color: $gray-900;
+  padding-bottom: $spacing-xs;
+  border-bottom: 2px solid $primary-500;
 
   @include dark {
     color: $dark-text-primary;
+    border-bottom-color: $primary-400;
   }
 }
 
 .studentList {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-md;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: $spacing-sm;
+  background-color: $gray-50;
+  border-radius: $radius-sm;
+
+  @include dark {
+    background-color: $dark-bg-tertiary;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $gray-100;
+    border-radius: $radius-sm;
+
+    @include dark {
+      background: $dark-bg-secondary;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $gray-400;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $gray-500;
+    }
+
+    @include dark {
+      background: $dark-border;
+
+      &:hover {
+        background: $gray-600;
+      }
+    }
+  }
 }
 
 .studentRow {
+  padding: $spacing-sm;
+  background: white;
+  border-radius: $radius-sm;
+  border: 1px solid $gray-200;
+  transition: $transition-all;
+
+  &:hover {
+    border-color: $primary-400;
+    box-shadow: $shadow-sm;
+  }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+
+    &:hover {
+      border-color: $primary-400;
+      box-shadow: $shadow-dark-md;
+    }
+  }
+}
+
+.studentInfo {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-sm;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    flex: 1;
+  }
+}
+
+.studentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid $gray-200;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+}
+
+.studentName {
+  font-weight: $font-semibold;
   font-size: $text-sm;
+  color: $gray-900;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.studentEmail {
+  font-size: $text-xs;
   color: $gray-600;
 
   @include dark {
@@ -374,12 +554,26 @@
   }
 }
 
-.studentName {
-  font-weight: $font-normal;
+.studentJoined {
+  font-size: $text-xs;
+  color: $gray-500;
+  font-style: italic;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
 }
 
-.studentEmail {
-  font-weight: $font-normal;
+.noData {
+  font-size: $text-sm;
+  color: $gray-500;
+  text-align: center;
+  padding: $spacing-md;
+  font-style: italic;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
 }
 
 .moduleHeader {
@@ -395,21 +589,70 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: $spacing-xs;
   position: absolute;
-  right: 0;
-  top: -$spacing-sm;
-  transition: $transition-colors;
+  right: -$spacing-sm;
+  top: -$spacing-md;
+  transition: $transition-all;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    color: darken($error, 10%);
+    color: white;
+    background-color: $error;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @include screen-lg {
+    right: -$spacing-md;
   }
 }
 
 .tableWrapper {
   overflow-y: auto;
-  max-height: 20rem;
+  max-height: 60vh;
   border-radius: $radius-sm;
+  border: 1px solid $gray-200;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $gray-100;
+    border-radius: $radius-sm;
+
+    @include dark {
+      background: $dark-bg-tertiary;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $gray-400;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $gray-500;
+    }
+
+    @include dark {
+      background: $dark-border;
+
+      &:hover {
+        background: $gray-600;
+      }
+    }
+  }
 }
 
 .moduleTable {
@@ -420,28 +663,32 @@
 
 .tableHeaderLeft,
 .tableHeaderRight {
-  background-color: $gray-100;
-  padding: $spacing-sm $spacing-md;
-  font-weight: $font-semibold;
+  background-color: $primary-600;
+  padding: $spacing-md;
+  font-weight: $font-bold;
   font-size: $text-sm;
-  color: $gray-900;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
 
   @include dark {
-    background-color: $dark-bg-tertiary;
-    color: $dark-text-primary;
+    background-color: $primary-500;
   }
 }
 
 .tableHeaderLeft {
   text-align: left;
+  border-top-left-radius: $radius-sm;
 }
 
 .tableHeaderRight {
   text-align: right;
+  border-top-right-radius: $radius-sm;
 }
 
 .moduleRow {
-  background-color: $gray-100;
+  background-color: $primary-50;
 
   @include dark {
     background-color: $dark-bg-tertiary;
@@ -449,20 +696,41 @@
 }
 
 .moduleCell {
-  padding: $spacing-sm $spacing-md;
-  font-weight: $font-semibold;
+  padding: $spacing-md;
+  font-weight: $font-bold;
+  font-size: $text-sm;
   text-align: left;
-  border-bottom: 1px solid $gray-300;
-  color: $gray-900;
+  border-bottom: 2px solid $primary-200;
+  color: $primary-600;
 
   @include dark {
     border-bottom-color: $dark-border;
-    color: $dark-text-primary;
+    color: $primary-300;
+  }
+}
+
+.lessonCount {
+  font-weight: $font-normal;
+  font-size: $text-xs;
+  color: $primary-500;
+  margin-left: $spacing-xs;
+
+  @include dark {
+    color: $primary-400;
   }
 }
 
 .lessonRow {
   background: white;
+  transition: $transition-colors;
+
+  &:hover {
+    background-color: $gray-50;
+
+    @include dark {
+      background-color: $dark-bg-secondary;
+    }
+  }
 
   @include dark {
     background: $dark-bg-card;
@@ -471,12 +739,15 @@
 
 .lessonTitle {
   padding: $spacing-sm $spacing-md;
+  padding-left: $spacing-xl;
   text-align: left;
   font-size: $text-sm;
   color: $gray-700;
+  border-bottom: 1px solid $gray-100;
 
   @include dark {
     color: $dark-text-secondary;
+    border-bottom-color: $dark-border;
   }
 }
 
@@ -484,13 +755,21 @@
   padding: $spacing-sm $spacing-md;
   text-align: right;
   font-size: $text-sm;
-  color: $gray-700;
+  font-weight: $font-medium;
+  color: $primary-600;
+  border-bottom: 1px solid $gray-100;
 
   @include dark {
-    color: $dark-text-secondary;
+    color: $primary-400;
+    border-bottom-color: $dark-border;
   }
 }
 
 .moduleSpacing {
-  height: $spacing-md;
+  height: $spacing-lg;
+  background-color: $gray-50;
+
+  @include dark {
+    background-color: $dark-bg-secondary;
+  }
 }

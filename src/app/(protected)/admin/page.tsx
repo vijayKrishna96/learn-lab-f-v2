@@ -31,6 +31,7 @@ import Courses from "./pages/CourseDetails";
 import Students from "./pages/Students";
 import Instructors from "./pages/Instructors";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
+import { ALL_COURSE_API } from "@/utils/constants/api";
 
 interface Lesson {
   _id: string;
@@ -390,13 +391,15 @@ const Page: React.FC = () => {
     const GetAllCourses = async () => {
       try {
         const response = await axios.get(ALL_COURSE_API);
-        setCourseData(response?.data);
+        setCourseData(response?.data?.courses || []);
       } catch (error) {
         console.log((error as Error).message);
       }
     };
     GetAllCourses();
   }, []);
+
+  console.log("Course Data:", courseData);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -418,8 +421,7 @@ const Page: React.FC = () => {
       case "Dashboard":
         return <DashboardView />;
       case "Courses":
-        // return <Courses courses={courseData} />;
-        return <div>course page</div>
+        return <Courses courses={courseData} />;
       case "Students":
         return <Students />;
       case "Instructors":

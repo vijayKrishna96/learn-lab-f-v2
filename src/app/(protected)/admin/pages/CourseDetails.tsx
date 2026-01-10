@@ -3,6 +3,8 @@
 import { X, Filter } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/course-details.module.scss";
+import { BASE_URL_API } from "@/utils/constants/api";
+import axios from "axios";
 
 // Types
 interface Lesson {
@@ -11,40 +13,70 @@ interface Lesson {
 }
 
 interface Module {
+  moduleNumber: number;
   title: string;
   lessons: Lesson[];
+  _id: string;
 }
 
-interface CategoryDetails {
+interface Category {
+  _id: string;
   name: string;
+  description?: string;
 }
 
-interface InstructorDetails {
+interface Instructor {
+  _id: string;
   name: string;
   email: string;
+  profilePicture?: string;
+  bio?: string;
 }
 
 interface StudentDetails {
   id: string;
+  _id: string;
   name: string;
   email: string;
+  profilePicture?: string;
+  joined?: string;
 }
 
 interface CourseImage {
   url: string;
+  publicId?: string;
 }
 
 interface Course {
   _id: string;
   title: string;
+  description?: string;
   image: CourseImage;
-  modules: Module[];
-  students: string[];
   price: number;
   averageRating?: number;
-  categoryDetails: CategoryDetails;
-  instructorDetails: InstructorDetails;
-  studentDetails: StudentDetails[];
+  category: Category;
+  instructor: Instructor | null;
+}
+
+interface CourseDetails extends Course {
+  id: string;
+  modules: Module[];
+  students: StudentDetails[];
+  level?: string;
+  language?: string;
+  isFree?: boolean;
+  isPublished?: boolean;
+  status?: string;
+  enrollmentCount?: number;
+  totalDuration?: number;
+  completionPercentage?: number;
+  whatYouWillLearn?: string[];
+  requirements?: string[];
+  tags?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  lastUpdated?: string;
+  publishedAt?: string | null;
 }
 
 interface CoursesProps {
@@ -55,14 +87,19 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
   const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedInstructor, setSelectedInstructor] = useState<string>("all");
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseDetails | null>(null);
+  const [loadingCourseId, setLoadingCourseId] = useState<string | null>(null);
 
   // Extract unique category names and instructor names
   const categories = [
-    ...new Set(courses.map((course) => course.categoryDetails.name)),
+    ...new Set(courses.map((course) => course.category.name)),
   ];
   const instructors = [
-    ...new Set(courses.map((course) => course.instructorDetails.name)),
+    ...new Set(
+      courses
+        .filter((course) => course.instructor !== null)
+        .map((course) => course.instructor!.name)
+    ),
   ];
 
   useEffect(() => {
@@ -70,13 +107,13 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
 
     if (selectedCategory !== "all") {
       result = result.filter(
-        (course) => course.categoryDetails.name === selectedCategory
+        (course) => course.category.name === selectedCategory
       );
     }
 
     if (selectedInstructor !== "all") {
       result = result.filter(
-        (course) => course.instructorDetails.name === selectedInstructor
+        (course) => course.instructor?.name === selectedInstructor
       );
     }
 
@@ -87,8 +124,41 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
     return modules.reduce((total, module) => total + module.lessons.length, 0);
   };
 
-  const handleViewDetailsClick = (course: Course) => {
-    setSelectedCourse(course);
+  const getTotalDuration = (modules: Module[]): number => {
+    return modules.reduce((total, module) => {
+      const moduleDuration = module.lessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+      return total + moduleDuration;
+    }, 0);
+  };
+
+  const formatDate = (dateString?: string | null): string => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const handleViewDetailsClick = async (course: Course) => {
+    setLoadingCourseId(course._id);
+    try {
+      const response = await axios.get(`${BASE_URL_API}/courses/${course._id}`);
+
+      console.log('Fetch response:', response.data);
+      
+      if (!response.data || !response.data.success) {
+        throw new Error('Failed to fetch course details');
+      }
+      
+      // Access the course data from response.data.course
+      setSelectedCourse(response.data.course);
+    } catch (error) {
+      console.error('Error fetching course details:', error);
+      alert('Failed to load course details. Please try again.');
+    } finally {
+      setLoadingCourseId(null);
+    }
   };
 
   const handleCloseModal = () => {
@@ -157,18 +227,14 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
 
               <div className={styles.courseStats}>
                 <div className={styles.statRow}>
-                  <span className={styles.statLabel}>Modules</span>
-                  <span className={styles.statValue}>{course.modules.length}</span>
+                  <span className={styles.statLabel}>Category</span>
+                  <span className={styles.statValue}>{course.category.name}</span>
                 </div>
                 <div className={styles.statRow}>
-                  <span className={styles.statLabel}>Lessons</span>
+                  <span className={styles.statLabel}>Instructor</span>
                   <span className={styles.statValue}>
-                    {getTotalLessons(course.modules)}
+                    {course.instructor?.name || "N/A"}
                   </span>
-                </div>
-                <div className={styles.statRow}>
-                  <span className={styles.statLabel}>Students</span>
-                  <span className={styles.statValue}>{course.students.length}</span>
                 </div>
                 <div className={styles.statRow}>
                   <span className={styles.statLabel}>Price</span>
@@ -185,8 +251,9 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
               <button
                 className={styles.viewButton}
                 onClick={() => handleViewDetailsClick(course)}
+                disabled={loadingCourseId === course._id}
               >
-                View More Details
+                {loadingCourseId === course._id ? "Loading..." : "View More Details"}
               </button>
             </div>
           </div>
@@ -203,55 +270,139 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
             {/* Left Column: Course and Student Details */}
             <div className={styles.leftColumn}>
               <h3 className={styles.modalTitle}>{selectedCourse.title}</h3>
+              
+              {selectedCourse.description && (
+                <p className={styles.courseDescription}>{selectedCourse.description}</p>
+              )}
 
               <div className={styles.courseDetails}>
                 <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Category</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.category.name}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Instructor</span>
                   <span className={styles.detailValue}>
-                    {selectedCourse.instructorDetails.name}
+                    {selectedCourse.instructor?.name || "N/A"}
                   </span>
                 </div>
                 <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Instructor Email</span>
                   <span className={styles.detailValue}>
-                    {selectedCourse.instructorDetails.email}
+                    {selectedCourse.instructor?.email || "N/A"}
                   </span>
                 </div>
                 <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Students</span>
+                  <span className={styles.detailLabel}>Price</span>
                   <span className={styles.detailValue}>
-                    {selectedCourse.studentDetails.length}
+                    {selectedCourse.isFree ? "Free" : `₹${selectedCourse.price}`}
                   </span>
                 </div>
                 <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Modules</span>
+                  <span className={styles.detailLabel}>Level</span>
                   <span className={styles.detailValue}>
-                    {selectedCourse.modules.length}
+                    {selectedCourse.level ? selectedCourse.level.charAt(0).toUpperCase() + selectedCourse.level.slice(1) : "N/A"}
                   </span>
                 </div>
                 <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Lessons</span>
+                  <span className={styles.detailLabel}>Language</span>
                   <span className={styles.detailValue}>
-                    {getTotalLessons(selectedCourse.modules)}
+                    {selectedCourse.language || "N/A"}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Status</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.status ? selectedCourse.status.charAt(0).toUpperCase() + selectedCourse.status.slice(1) : "N/A"}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Published</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.isPublished ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Students Enrolled</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.enrollmentCount || selectedCourse.students?.length || 0}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Total Modules</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.modules?.length || 0}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Total Lessons</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.modules ? getTotalLessons(selectedCourse.modules) : 0}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Total Duration</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.modules ? `${getTotalDuration(selectedCourse.modules)} min` : "N/A"}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Average Rating</span>
+                  <span className={styles.detailValue}>
+                    {selectedCourse.averageRating ? `${selectedCourse.averageRating} / 5` : "No ratings yet"}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Created</span>
+                  <span className={styles.detailValue}>
+                    {formatDate(selectedCourse.createdAt)}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Last Updated</span>
+                  <span className={styles.detailValue}>
+                    {formatDate(selectedCourse.lastUpdated || selectedCourse.updatedAt)}
                   </span>
                 </div>
               </div>
 
-              <h4 className={styles.sectionTitle}>Student Details</h4>
+              <h4 className={styles.sectionTitle}>Enrolled Students</h4>
               <div className={styles.studentList}>
-                {selectedCourse.studentDetails.map((student) => (
-                  <div key={student.id} className={styles.studentRow}>
-                    <span className={styles.studentName}>{student.name}</span>
-                    <span className={styles.studentEmail}>{student.email}</span>
-                  </div>
-                ))}
+                {selectedCourse.students && selectedCourse.students.length > 0 ? (
+                  selectedCourse.students.map((student) => (
+                    <div key={student.id || student._id} className={styles.studentRow}>
+                      <div className={styles.studentInfo}>
+                        {student.profilePicture && (
+                          <img 
+                            src={student.profilePicture} 
+                            alt={student.name}
+                            className={styles.studentAvatar}
+                          />
+                        )}
+                        <div>
+                          <span className={styles.studentName}>{student.name}</span>
+                          <span className={styles.studentEmail}>{student.email}</span>
+                          {student.joined && (
+                            <span className={styles.studentJoined}>
+                              Joined: {formatDate(student.joined)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className={styles.noData}>No students enrolled yet.</p>
+                )}
               </div>
             </div>
 
             {/* Right Column: Module Details */}
             <div className={styles.rightColumn}>
               <div className={styles.moduleHeader}>
-                <h4 className={styles.sectionTitle}>Module Details</h4>
+                <h4 className={styles.sectionTitle}>Course Curriculum</h4>
                 <button
                   className={styles.closeButton}
                   onClick={handleCloseModal}
@@ -264,39 +415,50 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
                 <table className={styles.moduleTable}>
                   <thead>
                     <tr>
-                      <th className={styles.tableHeaderLeft}>Module</th>
+                      <th className={styles.tableHeaderLeft}>Module/Lesson</th>
                       <th className={styles.tableHeaderRight}>Duration</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedCourse.modules.map((module, moduleIndex) => (
-                      <React.Fragment key={moduleIndex}>
-                        {/* Module Header */}
-                        <tr className={styles.moduleRow}>
-                          <td colSpan={2} className={styles.moduleCell}>
-                            {module.title} ({module.lessons.length} Lessons)
-                          </td>
-                        </tr>
-                        {/* Module Lessons */}
-                        {module.lessons.map((lesson, lessonIndex) => (
-                          <tr
-                            key={`${moduleIndex}-${lessonIndex}`}
-                            className={styles.lessonRow}
-                          >
-                            <td className={styles.lessonTitle}>
-                              {lesson.title}
-                            </td>
-                            <td className={styles.lessonDuration}>
-                              {lesson.duration} min
+                    {selectedCourse.modules && selectedCourse.modules.length > 0 ? (
+                      selectedCourse.modules.map((module, moduleIndex) => (
+                        <React.Fragment key={module._id || moduleIndex}>
+                          {/* Module Header */}
+                          <tr className={styles.moduleRow}>
+                            <td colSpan={2} className={styles.moduleCell}>
+                              <strong>Module {module.moduleNumber}:</strong> {module.title.trim()} 
+                              <span className={styles.lessonCount}>
+                                ({module.lessons.length} lesson{module.lessons.length !== 1 ? 's' : ''})
+                              </span>
                             </td>
                           </tr>
-                        ))}
-                        {/* Add space after each module */}
-                        <tr>
-                          <td colSpan={2} className={styles.moduleSpacing}></td>
-                        </tr>
-                      </React.Fragment>
-                    ))}
+                          {/* Module Lessons */}
+                          {module.lessons.map((lesson, lessonIndex) => (
+                            <tr
+                              key={`${module._id}-${lessonIndex}`}
+                              className={styles.lessonRow}
+                            >
+                              <td className={styles.lessonTitle}>
+                                {lessonIndex + 1}. {lesson.title}
+                              </td>
+                              <td className={styles.lessonDuration}>
+                                {lesson.duration} min
+                              </td>
+                            </tr>
+                          ))}
+                          {/* Add space after each module except the last one */}
+                          {moduleIndex < selectedCourse.modules.length - 1 && (
+                            <tr>
+                              <td colSpan={2} className={styles.moduleSpacing}></td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2} className={styles.noData}>No modules available.</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
