@@ -75,9 +75,9 @@ interface Course {
   modules: Module[];
   averageRating?: number;
   reviews: any[];
-  category: string;
+  category: CategoryDetails;
   categoryDetails: CategoryDetails;
-  instructor: string;
+  instructor: InstructorDetails;
   instructorDetails: InstructorDetails;
   level: string;
   language: string;
