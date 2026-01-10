@@ -278,59 +278,9 @@
   }
 }
 
-.modalContent {
-  background: white;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-2xl;
-  padding: $spacing-xl;
-  width: 100%;
-  max-width: 1400px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-2xl;
-  max-height: 90vh;
-  overflow-y: auto;
-  z-index: $z-modal;
 
-  @include screen-lg {
-    grid-template-columns: 1fr 1.2fr;
-    padding: $spacing-2xl;
-  }
 
-  @include dark {
-    background: $dark-bg-card;
-    box-shadow: $shadow-dark-xl;
-  }
-}
 
-.leftColumn {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-  overflow-y: auto;
-  max-height: 80vh;
-
-  @include screen-lg {
-    padding-right: $spacing-md;
-  }
-}
-
-.rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  overflow-y: auto;
-  max-height: 80vh;
-
-  @include screen-lg {
-    padding-left: $spacing-md;
-    border-left: 1px solid $gray-200;
-
-    @include dark {
-      border-left-color: $dark-border;
-    }
-  }
-}
 
 .modalTitle {
   font-weight: $font-bold;
@@ -440,12 +390,114 @@
   }
 }
 
+/* Update .modalContent to use flex column for header + content */
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-2xl;
+  padding: $spacing-xl;
+  width: 100%;
+  max-width: 1400px;
+  gap: $spacing-md;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: $z-modal;
+
+  @include screen-lg {
+    padding: $spacing-2xl;
+  }
+
+  @include dark {
+    background: $dark-bg-card;
+    box-shadow: $shadow-dark-xl;
+  }
+}
+
+/* Add new .modalHeader for sticky title and close */
+.modalHeader {
+  display: flex;
+  justify-content: flex-end;
+  position: sticky;
+  top: 0;
+  right: 0;
+  background: white;
+  z-index: $z-sticky;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $gray-200;
+
+  @include dark {
+    background: $dark-bg-card;
+    border-bottom-color: $dark-border;
+  }
+}
+
+/* Add new .columnsWrapper for the grid */
+.columnsWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+
+  @include screen-lg {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+/* Update .closeButton positioning */
+.closeButton {
+  color: $error;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  transition: $transition-all;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: white;
+    background-color: $error;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Remove max-height and overflow from columns to let modalContent handle scrolling */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  @include screen-lg {
+    padding-right: $spacing-md;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  @include screen-lg {
+    padding-left: $spacing-md;
+    border-left: 1px solid $gray-200;
+
+    @include dark {
+      border-left-color: $dark-border;
+    }
+  }
+}
+
+/* Remove max-height from .studentList to avoid nested scroll; let it expand */
 .studentList {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  max-height: 300px;
-  overflow-y: auto;
   padding: $spacing-sm;
   background-color: $gray-50;
   border-radius: $radius-sm;
@@ -453,36 +505,16 @@
   @include dark {
     background-color: $dark-bg-tertiary;
   }
+}
 
-  // Custom scrollbar
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
+/* Remove max-height from .tableWrapper to avoid nested scroll; let it expand */
+.tableWrapper {
+  overflow-y: auto;
+  border-radius: $radius-sm;
+  border: 1px solid $gray-200;
 
-  &::-webkit-scrollbar-track {
-    background: $gray-100;
-    border-radius: $radius-sm;
-
-    @include dark {
-      background: $dark-bg-secondary;
-    }
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $gray-400;
-    border-radius: $radius-sm;
-
-    &:hover {
-      background: $gray-500;
-    }
-
-    @include dark {
-      background: $dark-border;
-
-      &:hover {
-        background: $gray-600;
-      }
-    }
+  @include dark {
+    border-color: $dark-border;
   }
 }
 
@@ -573,85 +605,6 @@
 
   @include dark {
     color: $dark-text-muted;
-  }
-}
-
-.moduleHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: $spacing-md;
-  position: relative;
-}
-
-.closeButton {
-  color: $error;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: $spacing-xs;
-  position: absolute;
-  right: -$spacing-sm;
-  top: -$spacing-md;
-  transition: $transition-all;
-  border-radius: $radius-sm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    color: white;
-    background-color: $error;
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  @include screen-lg {
-    right: -$spacing-md;
-  }
-}
-
-.tableWrapper {
-  overflow-y: auto;
-  max-height: 60vh;
-  border-radius: $radius-sm;
-  border: 1px solid $gray-200;
-
-  @include dark {
-    border-color: $dark-border;
-  }
-
-  // Custom scrollbar
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $gray-100;
-    border-radius: $radius-sm;
-
-    @include dark {
-      background: $dark-bg-tertiary;
-    }
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $gray-400;
-    border-radius: $radius-sm;
-
-    &:hover {
-      background: $gray-500;
-    }
-
-    @include dark {
-      background: $dark-border;
-
-      &:hover {
-        background: $gray-600;
-      }
-    }
   }
 }
 
