@@ -54,8 +54,11 @@ const Instructors: React.FC = () => {
   const [expandedCourses, setExpandedCourses] = useState<{ [key: number]: boolean }>({});
   const [totalRows, setTotalRows] = useState<number>(0);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(10);
 
-  const isDarkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
+  
+
   const ALL_USERS_API = '/api/users';
 
   const columns = useMemo<ColumnDef<Instructor>[]>(
@@ -126,18 +129,26 @@ const Instructors: React.FC = () => {
   const table = useReactTable({
     data: instructors,
     columns,
+    pageCount: Math.ceil(totalRows / pageSize),
     state: {
       sorting,
       columnFilters,
       globalFilter,
       pagination: {
-        pageIndex: 0,
-        pageSize: 10,
+        pageIndex,
+        pageSize,
       },
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater({ pageIndex, pageSize });
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      }
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -145,7 +156,6 @@ const Instructors: React.FC = () => {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    pageCount: Math.ceil(totalRows / 10),
   });
 
   useEffect(() => {
@@ -153,10 +163,10 @@ const Instructors: React.FC = () => {
       try {
         setLoading(true);
 
-        const page = table.getState().pagination.pageIndex + 1;
-        const limit = table.getState().pagination.pageSize;
+        const page = pageIndex + 1; // backend is 1-based
+        const limit = pageSize;
 
-        const sort = table.getState().sorting[0];
+        const sort = sorting[0];
         const sortField = sort?.id || 'name';
         const sortOrder = sort?.desc ? 'desc' : 'asc';
 
@@ -165,7 +175,7 @@ const Instructors: React.FC = () => {
             role: 'instructor',
             page,
             limit,
-            search: globalFilter || searchValue,
+            search: searchValue,
             sortField,
             sortOrder,
           },
@@ -198,12 +208,7 @@ const Instructors: React.FC = () => {
     };
 
     getAllInstructors();
-  }, [
-    table.getState().pagination.pageIndex,
-    table.getState().pagination.pageSize,
-    table.getState().sorting,
-    globalFilter,
-  ]);
+  }, [pageIndex, pageSize, sorting, searchValue]);
 
   const toggleCourse = (index: number) => {
     setExpandedCourses((prev) => ({
@@ -215,11 +220,11 @@ const Instructors: React.FC = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchValue(value);
-    setGlobalFilter(value);
+    setPageIndex(0); // Reset to first page on search
   };
 
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ''}`}>
+    <div className={`${styles.container} `}>
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h2 className={styles.title}>Instructors</h2>
@@ -282,8 +287,22 @@ const Instructors: React.FC = () => {
             Previous
           </button>
           <span className={styles.pageInfo}>
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            Page {pageIndex + 1} of {table.getPageCount()}
           </span>
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setPageIndex(0);
+            }}
+            className={styles.rowsPerPageSelect}
+          >
+            {[5, 10, 25, 50].map((size) => (
+              <option key={size} value={size}>
+                {size} rows
+              </option>
+            ))}
+          </select>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
