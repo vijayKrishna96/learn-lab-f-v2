@@ -44,9 +44,13 @@ const Students: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [totalRows, setTotalRows] = useState<number>(0);
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(10);
 
-  const isDarkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
-  const ALL_USERS_API = '/api/users'; // Update with your actual API endpoint
+  
+  const ALL_USERS_API = '/api/users';
 
   const toggleExpand = (studentId: string) => {
     setExpandedRows((prev) => ({
@@ -54,66 +58,6 @@ const Students: React.FC = () => {
       [studentId]: !prev[studentId],
     }));
   };
-
-  useEffect(() => {
-  const getAllStudents = async () => {
-    try {
-      setLoading(true);
-
-      const page = table.getState().pagination.pageIndex + 1; // backend is 1-based
-      const limit = table.getState().pagination.pageSize;
-
-      const sort = table.getState().sorting[0];
-      const sortField = sort?.id || 'name';
-      const sortOrder = sort?.desc ? 'desc' : 'asc';
-
-      const response = await axios.get(ALL_USERS_API, {
-        params: {
-          role: 'student',
-          page,
-          limit,
-          search: searchValue, // from input/state
-          sortField,
-          sortOrder,
-        },
-      });
-
-      if (!response?.data?.users) {
-        console.error('No users data received');
-        return;
-      }
-
-      const transformedData: Student[] = response.data.users.map(
-        (student: any, index: number) => ({
-          id: student._id || student.id || `student-${index}`,
-          name: student.name || 'N/A',
-          email: student.email || 'N/A',
-          phone: student.phone || 'N/A',
-          active: Boolean(student.active),
-          courses: Array.isArray(student.courses) ? student.courses : [],
-        })
-      );
-
-      setStudentData(transformedData);
-
-      // Optional if you maintain total count
-      setTotalRows(response.data.pagination?.total || 0);
-
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  getAllStudents();
-}, [
-  table.getState().pagination.pageIndex,
-  table.getState().pagination.pageSize,
-  table.getState().sorting,
-  searchValue,
-]);
-
 
   const columns: ColumnDef<Student>[] = [
     {
@@ -192,30 +136,96 @@ const Students: React.FC = () => {
   const table = useReactTable({
     data: students,
     columns,
+    pageCount: Math.ceil(totalRows / pageSize),
     state: {
       sorting,
       columnFilters,
       globalFilter,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater({ pageIndex, pageSize });
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      }
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    manualSorting: true,
   });
 
+  useEffect(() => {
+    const getAllStudents = async () => {
+      try {
+        setLoading(true);
+
+        const page = pageIndex + 1; // backend is 1-based
+        const limit = pageSize;
+
+        const sort = sorting[0];
+        const sortField = sort?.id || 'name';
+        const sortOrder = sort?.desc ? 'desc' : 'asc';
+
+        const response = await axios.get(ALL_USERS_API, {
+          params: {
+            role: 'student',
+            page,
+            limit,
+            search: searchValue,
+            sortField,
+            sortOrder,
+          },
+        });
+
+        if (!response?.data?.users) {
+          console.error('No users data received');
+          return;
+        }
+
+        const transformedData: Student[] = response.data.users.map(
+          (student: any, index: number) => ({
+            id: student._id || student.id || `student-${index}`,
+            name: student.name || 'N/A',
+            email: student.email || 'N/A',
+            phone: student.phone || 'N/A',
+            active: Boolean(student.active),
+            courses: Array.isArray(student.courses) ? student.courses : [],
+          })
+        );
+
+        setStudentData(transformedData);
+        setTotalRows(response.data.pagination?.total || 0);
+
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getAllStudents();
+  }, [pageIndex, pageSize, sorting, searchValue]);
+
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ''}`}>
+    <div className={`${styles.container} `}>
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h2 className={styles.title}>Students</h2>
           <input
             type="text"
             placeholder="Search students..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className={styles.searchInput}
           />
         </div>
@@ -269,16 +279,19 @@ const Students: React.FC = () => {
             Previous
           </button>
           <span className={styles.pageInfo}>
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            Page {pageIndex + 1} of {table.getPageCount()}
           </span>
           <select
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => table.setPageSize(Number(e.target.value))}
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setPageIndex(0);
+            }}
             className={styles.rowsPerPageSelect}
           >
-            {[5, 10, 25, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize} rows
+            {[5, 10, 25, 50].map((size) => (
+              <option key={size} value={size}>
+                {size} rows
               </option>
             ))}
           </select>
