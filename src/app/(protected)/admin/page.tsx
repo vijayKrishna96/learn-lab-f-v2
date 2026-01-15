@@ -156,7 +156,7 @@ const DashboardView = () => {
     return days;
   };
 
-  const isToday = (day) => {
+  const isToday = (day: number | null): boolean => {
     if (!day) return false;
     const today = new Date();
     return (
