@@ -31,7 +31,7 @@ import Courses from "./pages/CourseDetails";
 import Students from "./pages/Students";
 import Instructors from "./pages/Instructors";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
-import { ALL_COURSE_API } from "@/utils/constants/api";
+import { ALL_COURSE_API, USER_DETAILS_API, LOGOUT_API } from "@/utils/constants/api";
 
 interface Lesson {
   _id: string;
@@ -128,13 +128,13 @@ const DashboardView = () => {
   ];
 
   // Calendar functions
-  const getDaysInMonth = (date) => {
+  const getDaysInMonth = (date: Date): number => {
     const year = date.getFullYear();
     const month = date.getMonth();
     return new Date(year, month + 1, 0).getDate();
   };
 
-  const getFirstDayOfMonth = (date) => {
+  const getFirstDayOfMonth = (date: Date): number => {
     const year = date.getFullYear();
     const month = date.getMonth();
     return new Date(year, month, 1).getDay();
@@ -166,7 +166,7 @@ const DashboardView = () => {
     );
   };
 
-  const isSelected = (day) => {
+  const isSelected = (day: number | null): boolean => {
     if (!day) return false;
     return (
       day === selectedDate.getDate() &&
@@ -175,7 +175,7 @@ const DashboardView = () => {
     );
   };
 
-  const handleDateClick = (day) => {
+  const handleDateClick = (day: number | null): void => {
     if (day) {
       const newDate = new Date(
         currentMonth.getFullYear(),
@@ -438,7 +438,7 @@ const Page: React.FC = () => {
       const response = await axios.post(LOGOUT_API);
       if (response?.data?.success) {
         localStorage.removeItem("token");
-        dispatch(setUserData({}));
+        setUsersData(null);
         router.push("/");
       }
     } catch (error) {
