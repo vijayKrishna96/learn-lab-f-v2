@@ -16,6 +16,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import styles from '../styles/student.module.scss';
+import { ALL_USERS_API } from '@/utils/constants/api';
 
 interface Course {
   _id: string;
@@ -50,7 +51,7 @@ const Students: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(10);
 
   
-  const ALL_USERS_API = '/api/users';
+
 
   const toggleExpand = (studentId: string) => {
     setExpandedRows((prev) => ({
@@ -186,6 +187,8 @@ const Students: React.FC = () => {
             sortOrder,
           },
         });
+
+        console.log('Fetched students response:', response.data);
 
         if (!response?.data?.users) {
           console.error('No users data received');
