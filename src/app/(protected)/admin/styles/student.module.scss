@@ -1,77 +1,31 @@
 @import '../../../styles/variables';
 
+/* =========================
+   CONTAINER
+========================= */
 .container {
   padding: $spacing-lg;
   min-height: 100vh;
+  background: $gray-50;
 
-  &.dark {
-    .card {
-      background: $dark-bg-card;
-      color: $dark-text-primary;
-    }
-
-    .searchInput {
-      background: $dark-bg-secondary;
-      border-color: $dark-border;
-      color: $dark-text-primary;
-
-      &::placeholder {
-        color: $dark-text-muted;
-      }
-    }
-
-    .table {
-      color: $dark-text-primary;
-    }
-
-    .thead {
-      background: $dark-bg-tertiary;
-      color: $dark-text-primary;
-    }
-
-    .evenRow {
-      background: $dark-bg-secondary;
-    }
-
-    .oddRow {
-      background: $dark-bg-card;
-    }
-
-    .paginationButton {
-      background: $dark-bg-tertiary;
-      color: $dark-text-primary;
-      border-color: $dark-border;
-
-      &:hover:not(:disabled) {
-        background: $dark-bg-primary;
-      }
-    }
-
-    .rowsPerPageSelect {
-      background: $dark-bg-tertiary;
-      color: $dark-text-primary;
-      border-color: $dark-border;
-    }
-
-    .expandButton {
-      color: #87CEFA;
-
-      &:hover {
-        color: lighten(#87CEFA, 10%);
-      }
-    }
+  @include dark {
+    background: $dark-bg-primary;
   }
 }
 
+/* =========================
+   CARD
+========================= */
 .card {
   @include card;
-  background: white;
   border-radius: $radius-lg;
   box-shadow: $shadow-xl;
   overflow: hidden;
-  transition: $transition-all;
 }
 
+/* =========================
+   HEADER
+========================= */
 .cardHeader {
   padding: $spacing-xl;
   border-bottom: 1px solid $gray-200;
@@ -80,6 +34,10 @@
   align-items: center;
   flex-wrap: wrap;
   gap: $spacing-md;
+
+  @include dark {
+    border-color: $dark-border;
+  }
 }
 
 .title {
@@ -87,14 +45,22 @@
   font-weight: $font-bold;
   color: $gray-900;
   margin: 0;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
+/* =========================
+   SEARCH INPUT
+========================= */
 .searchInput {
   padding: $spacing-md $spacing-lg;
   border: 1px solid $gray-300;
   border-radius: $radius-md;
   font-size: $text-base;
-  min-width: 250px;
+  background: white;
+  color: $gray-800;
   transition: $transition-all;
 
   &:focus {
@@ -106,23 +72,47 @@
   &::placeholder {
     color: $gray-400;
   }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+
+    &::placeholder {
+      color: $dark-text-muted;
+    }
+  }
 }
 
+/* =========================
+   TABLE
+========================= */
 .tableWrapper {
   overflow-x: auto;
-  position: relative;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  color: $gray-700;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
+/* =========================
+   TABLE HEADER
+========================= */
 .thead {
   background: $gray-50;
   position: sticky;
   top: 0;
   z-index: $z-sticky;
+
+  @include dark {
+    background: $dark-bg-tertiary;
+  }
 }
 
 .th {
@@ -136,6 +126,11 @@
   border-bottom: 2px solid $gray-200;
   cursor: pointer;
   user-select: none;
+
+  @include dark {
+    color: $dark-text-secondary;
+    border-color: $dark-border;
+  }
 }
 
 .headerContent {
@@ -149,15 +144,35 @@
   height: 16px;
 }
 
-.tbody {
-  position: relative;
+/* =========================
+   TABLE BODY
+========================= */
+.tbody tr {
+  transition: $transition-colors;
 
-  tr {
-    transition: $transition-colors;
+  &:hover {
+    background: $gray-100;
 
-    &:hover {
-      background: $gray-100 !important;
-    }
+    @include dark {
+  background: lighten($dark-bg-tertiary, 6%);
+}
+
+  }
+}
+
+.evenRow {
+  background: $gray-50;
+
+  @include dark {
+    background: $dark-bg-secondary;
+  }
+}
+
+.oddRow {
+  background: white;
+
+  @include dark {
+    background: $dark-bg-card;
   }
 }
 
@@ -166,16 +181,16 @@
   border-bottom: 1px solid $gray-200;
   font-size: $text-sm;
   color: $gray-700;
+
+  @include dark {
+    border-color: $dark-border;
+    color: $dark-text-secondary;
+  }
 }
 
-.evenRow {
-  background: $gray-50;
-}
-
-.oddRow {
-  background: white;
-}
-
+/* =========================
+   STATUS CHIP
+========================= */
 .chip {
   display: inline-block;
   padding: $spacing-xs $spacing-md;
@@ -187,15 +202,18 @@
 }
 
 .chipSuccess {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   color: $success;
 }
 
 .chipError {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   color: $error;
 }
 
+/* =========================
+   COURSES LIST
+========================= */
 .coursesList {
   display: flex;
   flex-direction: column;
@@ -204,11 +222,12 @@
 }
 
 .courseItem {
-  display: flex;
-  align-items: center;
   font-size: $text-sm;
   color: $gray-600;
-  line-height: $leading-relaxed;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
 }
 
 .expandButton {
@@ -216,22 +235,24 @@
   align-items: center;
   gap: $spacing-xs;
   margin-top: $spacing-xs;
-  padding: $spacing-xs $spacing-sm;
   background: transparent;
   border: none;
-  color: #0000CD;
+  color: $primary-500;
   font-size: $text-sm;
   font-weight: $font-medium;
   cursor: pointer;
   transition: $transition-colors;
 
   &:hover {
-    color: darken(#0000CD, 10%);
-    background: transparent;
+    color: $primary-600;
   }
 
-  &:focus {
-    outline: none;
+  @include dark {
+    color: $primary-400;
+
+    &:hover {
+      color: $primary-300;
+    }
   }
 }
 
@@ -240,6 +261,9 @@
   height: 16px;
 }
 
+/* =========================
+   PAGINATION
+========================= */
 .pagination {
   display: flex;
   justify-content: center;
@@ -248,6 +272,10 @@
   padding: $spacing-xl;
   border-top: 1px solid $gray-200;
   flex-wrap: wrap;
+
+  @include dark {
+    border-color: $dark-border;
+  }
 }
 
 .paginationButton {
@@ -270,12 +298,27 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+
+    &:hover:not(:disabled) {
+      background: $dark-bg-tertiary;
+      color: $primary-300;
+    }
+  }
 }
 
 .pageInfo {
   font-size: $text-sm;
   color: $gray-600;
   font-weight: $font-medium;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
 }
 
 .rowsPerPageSelect {
@@ -289,49 +332,49 @@
   cursor: pointer;
   transition: $transition-all;
 
+  &:hover {
+    border-color: $primary-500;
+  }
+
   &:focus {
     outline: none;
     border-color: $primary-500;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   }
 
-  &:hover {
-    border-color: $primary-500;
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
   }
 }
 
+/* =========================
+   LOADING
+========================= */
 .loading {
   padding: $spacing-3xl;
   text-align: center;
   font-size: $text-lg;
   color: $gray-500;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
 }
 
-// Responsive design
+/* =========================
+   RESPONSIVE
+========================= */
 @include screen-md {
-  .cardHeader {
-    flex-direction: row;
-  }
-
   .pagination {
     flex-wrap: nowrap;
   }
 }
 
 @include screen-sm {
-  .tableWrapper {
-    overflow-x: auto;
-    max-width: 100%;
-  }
-
   .searchInput {
     min-width: 200px;
   }
 }
 
-// Dark mode hover enhancement
-.container.dark {
-  .tbody tr:hover {
-    background: lighten($dark-bg-tertiary, 5%) !important;
-  }
-}

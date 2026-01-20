@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -11,12 +11,12 @@ import {
   ColumnDef,
   SortingState,
   ColumnFiltersState,
-} from '@tanstack/react-table';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import styles from '../styles/student.module.scss';
-import { ALL_USERS_API } from '@/utils/constants/api';
+} from "@tanstack/react-table";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import styles from "../styles/student.module.scss";
+import { ALL_USERS_API } from "@/utils/constants/api";
 
 interface Course {
   _id: string;
@@ -41,17 +41,16 @@ interface RootState {
 const Students: React.FC = () => {
   const [students, setStudentData] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>({});
+  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>(
+    {},
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>('');
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [totalRows, setTotalRows] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
-
-  
-
 
   const toggleExpand = (studentId: string) => {
     setExpandedRows((prev) => ({
@@ -62,35 +61,37 @@ const Students: React.FC = () => {
 
   const columns: ColumnDef<Student>[] = [
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: "name",
+      header: "Name",
       cell: (info) => info.getValue(),
     },
     {
-      accessorKey: 'email',
-      header: 'Email',
+      accessorKey: "email",
+      header: "Email",
       cell: (info) => info.getValue(),
     },
     {
-      accessorKey: 'phone',
-      header: 'Phone',
+      accessorKey: "phone",
+      header: "Phone",
       cell: (info) => info.getValue(),
     },
     {
-      accessorKey: 'active',
-      header: 'Active',
+      accessorKey: "active",
+      header: "Active",
       cell: (info) => {
         const value = info.getValue() as boolean;
         return (
-          <span className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}>
-            {value ? 'Yes' : 'No'}
+          <span
+            className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}
+          >
+            {value ? "Yes" : "No"}
           </span>
         );
       },
     },
     {
-      accessorKey: 'courses',
-      header: 'Enrolled Courses',
+      accessorKey: "courses",
+      header: "Enrolled Courses",
       cell: (info) => {
         const courses = info.getValue() as Course[];
         const student = info.row.original;
@@ -103,7 +104,7 @@ const Students: React.FC = () => {
           <div className={styles.coursesList}>
             {displayCourses.map((course, index) => (
               <div key={index} className={styles.courseItem}>
-                • {course?.title || 'Untitled Course'}
+                • {course?.title || "Untitled Course"}
               </div>
             ))}
             {hasMore && (
@@ -151,7 +152,7 @@ const Students: React.FC = () => {
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
+      if (typeof updater === "function") {
         const newState = updater({ pageIndex, pageSize });
         setPageIndex(newState.pageIndex);
         setPageSize(newState.pageSize);
@@ -174,12 +175,12 @@ const Students: React.FC = () => {
         const limit = pageSize;
 
         const sort = sorting[0];
-        const sortField = sort?.id || 'name';
-        const sortOrder = sort?.desc ? 'desc' : 'asc';
+        const sortField = sort?.id || "name";
+        const sortOrder = sort?.desc ? "desc" : "asc";
 
         const response = await axios.get(ALL_USERS_API, {
           params: {
-            role: 'student',
+            role: "student",
             page,
             limit,
             search: searchValue,
@@ -188,29 +189,34 @@ const Students: React.FC = () => {
           },
         });
 
-        console.log('Fetched students response:', response.data);
+        console.log("Fetched students response:", response.data);
 
         if (!response?.data?.users) {
-          console.error('No users data received');
+          console.error("No users data received");
           return;
         }
 
         const transformedData: Student[] = response.data.users.map(
-          (student: any, index: number) => ({
-            id: student._id || student.id || `student-${index}`,
-            name: student.name || 'N/A',
-            email: student.email || 'N/A',
-            phone: student.phone || 'N/A',
-            active: Boolean(student.active),
-            courses: Array.isArray(student.courses) ? student.courses : [],
-          })
-        );
+  (student: any, index: number) => ({
+    id: student._id || student.id || `student-${index}`,
+    name: student.name || 'N/A',
+    email: student.email || 'N/A',
+    phone: student.phone || 'N/A',
+    active: Boolean(student.active),
+    courses: Array.isArray(student.purchasedCourseDetails)
+      ? student.purchasedCourseDetails.map((course: any) => ({
+          _id: course._id || course.id,
+          title: course.title || 'Untitled Course',
+        }))
+      : [],
+  })
+);
+
 
         setStudentData(transformedData);
         setTotalRows(response.data.pagination?.total || 0);
-
       } catch (error) {
-        console.error('Error fetching students:', error);
+        console.error("Error fetching students:", error);
       } finally {
         setLoading(false);
       }
@@ -248,9 +254,16 @@ const Students: React.FC = () => {
                             className={styles.headerContent}
                             onClick={header.column.getToggleSortingHandler()}
                           >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {header.column.getIsSorted() === 'asc' && <ChevronUp className={styles.sortIcon} />}
-                            {header.column.getIsSorted() === 'desc' && <ChevronDown className={styles.sortIcon} />}
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                            {header.column.getIsSorted() === "asc" && (
+                              <ChevronUp className={styles.sortIcon} />
+                            )}
+                            {header.column.getIsSorted() === "desc" && (
+                              <ChevronDown className={styles.sortIcon} />
+                            )}
                           </div>
                         )}
                       </th>
@@ -260,10 +273,16 @@ const Students: React.FC = () => {
               </thead>
               <tbody className={styles.tbody}>
                 {table.getRowModel().rows.map((row, index) => (
-                  <tr key={row.id} className={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                  <tr
+                    key={row.id}
+                    className={index % 2 === 0 ? styles.evenRow : styles.oddRow}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className={styles.td}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </td>
                     ))}
                   </tr>
