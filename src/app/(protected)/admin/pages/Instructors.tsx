@@ -16,6 +16,7 @@ import { Eye, ChevronDown, ChevronUp, X } from 'lucide-react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import styles from '../styles/Instructors.module.scss';
+import { ALL_USERS_API } from '@/utils/constants/api';
 
 interface Course {
   _id: string;
@@ -57,9 +58,7 @@ const Instructors: React.FC = () => {
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  
 
-  const ALL_USERS_API = '/api/users';
 
   const columns = useMemo<ColumnDef<Instructor>[]>(
     () => [
@@ -180,6 +179,8 @@ const Instructors: React.FC = () => {
             sortOrder,
           },
         });
+
+        console.log('API Response:', response.data);
 
         if (!response?.data?.users) {
           console.error('No users data received');

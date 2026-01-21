@@ -32,12 +32,6 @@ interface Student {
   courses: Course[];
 }
 
-interface RootState {
-  darkMode: {
-    isDarkMode: boolean;
-  };
-}
-
 const Students: React.FC = () => {
   const [students, setStudentData] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -189,7 +183,7 @@ const Students: React.FC = () => {
           },
         });
 
-        console.log("Fetched students response:", response.data);
+        // console.log("Fetched students response:", response.data);
 
         if (!response?.data?.users) {
           console.error("No users data received");
@@ -197,21 +191,20 @@ const Students: React.FC = () => {
         }
 
         const transformedData: Student[] = response.data.users.map(
-  (student: any, index: number) => ({
-    id: student._id || student.id || `student-${index}`,
-    name: student.name || 'N/A',
-    email: student.email || 'N/A',
-    phone: student.phone || 'N/A',
-    active: Boolean(student.active),
-    courses: Array.isArray(student.purchasedCourseDetails)
-      ? student.purchasedCourseDetails.map((course: any) => ({
-          _id: course._id || course.id,
-          title: course.title || 'Untitled Course',
-        }))
-      : [],
-  })
-);
-
+          (student: any, index: number) => ({
+            id: student._id || student.id || `student-${index}`,
+            name: student.name || "N/A",
+            email: student.email || "N/A",
+            phone: student.phone || "N/A",
+            active: Boolean(student.active),
+            courses: Array.isArray(student.purchasedCourseDetails)
+              ? student.purchasedCourseDetails.map((course: any) => ({
+                  _id: course._id || course.id,
+                  title: course.title || "Untitled Course",
+                }))
+              : [],
+          }),
+        );
 
         setStudentData(transformedData);
         setTotalRows(response.data.pagination?.total || 0);
@@ -224,6 +217,9 @@ const Students: React.FC = () => {
 
     getAllStudents();
   }, [pageIndex, pageSize, sorting, searchValue]);
+
+  
+
 
   return (
     <div className={`${styles.container} `}>

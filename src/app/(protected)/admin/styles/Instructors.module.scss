@@ -1,104 +1,31 @@
-@use'../../../styles/variables' as * ;
+@use '../../../styles/variables' as *;
 
+/* =========================
+   CONTAINER
+========================= */
 .container {
   padding: $spacing-lg;
   min-height: 100vh;
+  background: $gray-50;
 
-  &.dark {
-    .card {
-      background: $dark-bg-card;
-      color: $dark-text-primary;
-    }
-
-    .searchInput {
-      background: $dark-bg-secondary;
-      border-color: $dark-border;
-      color: $dark-text-primary;
-
-      &::placeholder {
-        color: $dark-text-muted;
-      }
-    }
-
-    .table {
-      color: $dark-text-primary;
-    }
-
-    .thead {
-      background: $dark-bg-tertiary;
-      color: $dark-text-primary;
-    }
-
-    .evenRow {
-      background: $dark-bg-secondary;
-    }
-
-    .oddRow {
-      background: $dark-bg-card;
-    }
-
-    .modalOverlay {
-      background: rgba(0, 0, 0, 0.8);
-    }
-
-    .modal {
-      background: $dark-bg-secondary;
-      color: $dark-text-primary;
-    }
-
-    .modalHeader {
-      background: $dark-bg-tertiary;
-      border-bottom-color: $dark-border;
-    }
-
-    .accordion {
-      background: $dark-bg-card;
-      border-color: $dark-border;
-    }
-
-    .accordionHeader {
-      background: $dark-bg-tertiary;
-
-      &:hover {
-        background: $dark-bg-primary;
-      }
-    }
-
-    .accordionContent {
-      background: $dark-bg-card;
-    }
-
-    .studentItem {
-      background: $dark-bg-tertiary;
-      border-bottom-color: $dark-border;
-    }
-
-    .paginationButton {
-      background: $dark-bg-tertiary;
-      color: $dark-text-primary;
-      border-color: $dark-border;
-
-      &:hover:not(:disabled) {
-        background: $dark-bg-primary;
-      }
-    }
-
-    .modalFooter {
-      background: $dark-bg-tertiary;
-      border-top-color: $dark-border;
-    }
+  @include dark {
+    background: $dark-bg-primary;
   }
 }
 
+/* =========================
+   CARD
+========================= */
 .card {
   @include card;
-  background: white;
   border-radius: $radius-lg;
   box-shadow: $shadow-xl;
   overflow: hidden;
-  transition: $transition-all;
 }
 
+/* =========================
+   HEADER
+========================= */
 .cardHeader {
   padding: $spacing-xl;
   border-bottom: 1px solid $gray-200;
@@ -107,6 +34,10 @@
   align-items: center;
   flex-wrap: wrap;
   gap: $spacing-md;
+
+  @include dark {
+    border-color: $dark-border;
+  }
 }
 
 .title {
@@ -114,14 +45,22 @@
   font-weight: $font-bold;
   color: $gray-900;
   margin: 0;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
+/* =========================
+   SEARCH INPUT
+========================= */
 .searchInput {
   padding: $spacing-md $spacing-lg;
   border: 1px solid $gray-300;
   border-radius: $radius-md;
   font-size: $text-base;
-  min-width: 250px;
+  background: white;
+  color: $gray-800;
   transition: $transition-all;
 
   &:focus {
@@ -133,8 +72,21 @@
   &::placeholder {
     color: $gray-400;
   }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+
+    &::placeholder {
+      color: $dark-text-muted;
+    }
+  }
 }
 
+/* =========================
+   TABLE
+========================= */
 .tableWrapper {
   overflow-x: auto;
 }
@@ -142,10 +94,25 @@
 .table {
   width: 100%;
   border-collapse: collapse;
+  color: $gray-700;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
 }
 
+/* =========================
+   TABLE HEADER
+========================= */
 .thead {
   background: $gray-50;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+
+  @include dark {
+    background: $dark-bg-tertiary;
+  }
 }
 
 .th {
@@ -159,6 +126,11 @@
   border-bottom: 2px solid $gray-200;
   cursor: pointer;
   user-select: none;
+
+  @include dark {
+    color: $dark-text-secondary;
+    border-color: $dark-border;
+  }
 }
 
 .headerContent {
@@ -172,13 +144,35 @@
   height: 16px;
 }
 
-.tbody {
-  .tr {
-    transition: $transition-colors;
+/* =========================
+   TABLE BODY
+========================= */
+.tbody tr {
+  transition: $transition-colors;
 
-    &:hover {
-      background: $gray-50;
-    }
+  &:hover {
+    background: $gray-100;
+
+    @include dark {
+  background: lighten($dark-bg-tertiary, 6%);
+}
+
+  }
+}
+
+.evenRow {
+  background: $gray-50;
+
+  @include dark {
+    background: $dark-bg-secondary;
+  }
+}
+
+.oddRow {
+  background: white;
+
+  @include dark {
+    background: $dark-bg-card;
   }
 }
 
@@ -187,16 +181,16 @@
   border-bottom: 1px solid $gray-200;
   font-size: $text-sm;
   color: $gray-700;
+
+  @include dark {
+    border-color: $dark-border;
+    color: $dark-text-secondary;
+  }
 }
 
-.evenRow {
-  background: $gray-50;
-}
-
-.oddRow {
-  background: white;
-}
-
+/* =========================
+   STATUS CHIP
+========================= */
 .chip {
   display: inline-block;
   padding: $spacing-xs $spacing-md;
@@ -208,42 +202,68 @@
 }
 
 .chipSuccess {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   color: $success;
 }
 
 .chipError {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   color: $error;
 }
 
+/* =========================
+   COURSES LIST
+========================= */
 .coursesList {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  padding: $spacing-sm 0;
 }
 
 .courseItem {
-  display: flex;
-  align-items: center;
   font-size: $text-sm;
   color: $gray-600;
+
+  @include dark {
+    color: $dark-text-secondary;
+  }
 }
 
-.viewButton {
-  @include button-primary;
+.expandButton {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-sm $spacing-lg;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+  background: transparent;
+  border: none;
+  color: $primary-500;
   font-size: $text-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: $transition-colors;
+
+  &:hover {
+    color: $primary-600;
+  }
+
+  @include dark {
+    color: $primary-400;
+
+    &:hover {
+      color: $primary-300;
+    }
+  }
 }
 
-.icon {
+.expandIcon {
   width: 16px;
   height: 16px;
 }
 
+/* =========================
+   PAGINATION
+========================= */
 .pagination {
   display: flex;
   justify-content: center;
@@ -251,6 +271,11 @@
   gap: $spacing-lg;
   padding: $spacing-xl;
   border-top: 1px solid $gray-200;
+  flex-wrap: wrap;
+
+  @include dark {
+    border-color: $dark-border;
+  }
 }
 
 .paginationButton {
@@ -273,222 +298,83 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+
+    &:hover:not(:disabled) {
+      background: $dark-bg-tertiary;
+      color: $primary-300;
+    }
+  }
 }
 
 .pageInfo {
   font-size: $text-sm;
   color: $gray-600;
   font-weight: $font-medium;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
 }
 
+.rowsPerPageSelect {
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $gray-300;
+  border-radius: $radius-md;
+  background: white;
+  color: $gray-700;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: $transition-all;
+
+  &:hover {
+    border-color: $primary-500;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  @include dark {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+    color: $dark-text-primary;
+  }
+}
+
+/* =========================
+   LOADING
+========================= */
 .loading {
   padding: $spacing-3xl;
   text-align: center;
   font-size: $text-lg;
   color: $gray-500;
-}
 
-// Modal styles
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: $z-modal;
-  padding: $spacing-lg;
-  backdrop-filter: $backdrop-blur-sm;
-}
-
-.modal {
-  background: white;
-  border-radius: $radius-lg;
-  max-width: 800px;
-  width: 100%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: $shadow-2xl;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  @include dark {
+    color: $dark-text-muted;
   }
 }
 
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-xl;
-  border-bottom: 1px solid $gray-200;
-  background: $gray-50;
-}
-
-.modalTitle {
-  font-size: $text-2xl;
-  font-weight: $font-bold;
-  color: $gray-900;
-  margin: 0;
-}
-
-.closeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  color: $gray-500;
-  cursor: pointer;
-  border-radius: $radius-sm;
-  transition: $transition-all;
-
-  &:hover {
-    background: $gray-200;
-    color: $gray-700;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-}
-
-.modalContent {
-  flex: 1;
-  overflow-y: auto;
-  padding: $spacing-xl;
-}
-
-.detailRow {
-  margin-bottom: $spacing-lg;
-  font-size: $text-base;
-  color: $gray-700;
-
-  strong {
-    font-weight: $font-semibold;
-    color: $gray-900;
-  }
-}
-
-.sectionTitle {
-  font-size: $text-xl;
-  font-weight: $font-bold;
-  color: $gray-900;
-  margin: $spacing-2xl 0 $spacing-lg 0;
-}
-
-.accordion {
-  border: 1px solid $gray-200;
-  border-radius: $radius-md;
-  margin-bottom: $spacing-md;
-  overflow: hidden;
-  background: white;
-}
-
-.accordionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-lg;
-  background: $gray-50;
-  cursor: pointer;
-  font-weight: $font-semibold;
-  color: $gray-800;
-  transition: $transition-colors;
-
-  &:hover {
-    background: $gray-100;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-    color: $gray-500;
-  }
-}
-
-.accordionContent {
-  padding: $spacing-md;
-  background: white;
-}
-
-.studentList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.studentItem {
-  padding: $spacing-md;
-  background: $gray-50;
-  border-bottom: 1px solid $gray-200;
-  transition: $transition-colors;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: $gray-100;
-  }
-}
-
-.studentName {
-  font-weight: $font-semibold;
-  color: $gray-900;
-  margin-bottom: $spacing-xs;
-}
-
-.studentEmail {
-  font-size: $text-sm;
-  color: $gray-600;
-}
-
-.noStudents {
-  text-align: center;
-  color: $gray-500;
-  font-style: italic;
-  padding: $spacing-lg;
-}
-
-.modalFooter {
-  padding: $spacing-lg $spacing-xl;
-  border-top: 1px solid $gray-200;
-  background: $gray-50;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.closeButtonFooter {
-  @include button-secondary;
-  padding: $spacing-sm $spacing-xl;
-  font-size: $text-base;
-}
-
-// Responsive design
+/* =========================
+   RESPONSIVE
+========================= */
 @include screen-md {
-  .cardHeader {
-    flex-direction: row;
+  .pagination {
+    flex-wrap: nowrap;
   }
 }
 
 @include screen-sm {
-  .modal {
-    max-width: 95%;
+  .searchInput {
+    min-width: 200px;
   }
 }
+
