@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -11,12 +11,12 @@ import {
   ColumnDef,
   SortingState,
   ColumnFiltersState,
-} from '@tanstack/react-table';
-import { Eye, ChevronDown, ChevronUp, X } from 'lucide-react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import styles from '../styles/Instructors.module.scss';
-import { ALL_USERS_API } from '@/utils/constants/api';
+} from "@tanstack/react-table";
+import { Eye, ChevronDown, ChevronUp, X } from "lucide-react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import styles from "../styles/Instructors.module.scss";
+import { ALL_USERS_API } from "@/utils/constants/api";
 
 interface Course {
   _id: string;
@@ -48,57 +48,60 @@ interface RootState {
 const Instructors: React.FC = () => {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<Instructor | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>('');
-  const [expandedCourses, setExpandedCourses] = useState<{ [key: number]: boolean }>({});
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [expandedCourses, setExpandedCourses] = useState<{
+    [key: number]: boolean;
+  }>({});
   const [totalRows, setTotalRows] = useState<number>(0);
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<string>("");
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
-
-
 
   const columns = useMemo<ColumnDef<Instructor>[]>(
     () => [
       {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: "name",
+        header: "Name",
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'email',
-        header: 'Email',
+        accessorKey: "email",
+        header: "Email",
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'phone',
-        header: 'Phone',
+        accessorKey: "phone",
+        header: "Phone",
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'active',
-        header: 'Active',
+        accessorKey: "active",
+        header: "Active",
         cell: (info) => {
           const value = info.getValue() as boolean;
           return (
-            <span className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}>
-              {value ? 'Yes' : 'No'}
+            <span
+              className={`${styles.chip} ${value ? styles.chipSuccess : styles.chipError}`}
+            >
+              {value ? "Yes" : "No"}
             </span>
           );
         },
       },
       {
-        accessorKey: 'courses',
-        header: 'Created Courses',
+        accessorKey: "courses",
+        header: "Created Courses",
         cell: (info) => {
           const courses = info.getValue() as Course[];
           return (
             <div className={styles.coursesList}>
               {courses.map((course, index) => (
                 <div key={index} className={styles.courseItem}>
-                  • {course?.title || 'Untitled Course'}
+                  • {course?.title || "Untitled Course"}
                 </div>
               ))}
             </div>
@@ -106,14 +109,17 @@ const Instructors: React.FC = () => {
         },
       },
       {
-        id: 'actions',
-        header: 'Actions',
+        id: "actions",
+        header: "Actions",
         cell: (info) => {
           const instructor = info.row.original;
           return (
             <button
               className={styles.viewButton}
-              onClick={() => setSelectedInstructor(instructor)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedInstructor(instructor);
+              }}
             >
               <Eye className={styles.icon} />
               View Details
@@ -122,7 +128,7 @@ const Instructors: React.FC = () => {
         },
       },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -142,7 +148,7 @@ const Instructors: React.FC = () => {
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
+      if (typeof updater === "function") {
         const newState = updater({ pageIndex, pageSize });
         setPageIndex(newState.pageIndex);
         setPageSize(newState.pageSize);
@@ -162,16 +168,16 @@ const Instructors: React.FC = () => {
       try {
         setLoading(true);
 
-        const page = pageIndex + 1; // backend is 1-based
+        const page = pageIndex + 1;
         const limit = pageSize;
 
         const sort = sorting[0];
-        const sortField = sort?.id || 'name';
-        const sortOrder = sort?.desc ? 'desc' : 'asc';
+        const sortField = sort?.id || "name";
+        const sortOrder = sort?.desc ? "desc" : "asc";
 
         const response = await axios.get(ALL_USERS_API, {
           params: {
-            role: 'instructor',
+            role: "instructor",
             page,
             limit,
             search: searchValue,
@@ -180,29 +186,31 @@ const Instructors: React.FC = () => {
           },
         });
 
-        console.log('API Response:', response.data);
+        console.log("API Response:", response.data);
 
         if (!response?.data?.users) {
-          console.error('No users data received');
+          console.error("No users data received");
           return;
         }
 
         const transformedData: Instructor[] = response.data.users.map(
           (instructor: any) => ({
             id: instructor._id,
-            name: instructor.name || 'N/A',
-            email: instructor.email || 'N/A',
-            phone: instructor.phone || 'N/A',
+            name: instructor.name || "N/A",
+            email: instructor.email || "N/A",
+            phone: instructor.phone || "N/A",
             active: Boolean(instructor.active),
-            courses: Array.isArray(instructor.courses) ? instructor.courses : [],
+            courses: Array.isArray(instructor.courses)
+              ? instructor.courses
+              : [],
             students: instructor.students || [],
-          })
+          }),
         );
 
         setInstructors(transformedData);
         setTotalRows(response.data.pagination?.total || 0);
       } catch (error) {
-        console.error('Error fetching instructors:', error);
+        console.error("Error fetching instructors:", error);
       } finally {
         setLoading(false);
       }
@@ -221,7 +229,7 @@ const Instructors: React.FC = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchValue(value);
-    setPageIndex(0); // Reset to first page on search
+    setPageIndex(0);
   };
 
   return (
@@ -252,11 +260,18 @@ const Instructors: React.FC = () => {
                           <div
                             className={styles.headerContent}
                             onClick={header.column.getToggleSortingHandler()}
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: "pointer" }}
                           >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {header.column.getIsSorted() === 'asc' && <ChevronUp className={styles.sortIcon} />}
-                            {header.column.getIsSorted() === 'desc' && <ChevronDown className={styles.sortIcon} />}
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                            {header.column.getIsSorted() === "asc" && (
+                              <ChevronUp className={styles.sortIcon} />
+                            )}
+                            {header.column.getIsSorted() === "desc" && (
+                              <ChevronDown className={styles.sortIcon} />
+                            )}
                           </div>
                         )}
                       </th>
@@ -266,10 +281,16 @@ const Instructors: React.FC = () => {
               </thead>
               <tbody className={styles.tbody}>
                 {table.getRowModel().rows.map((row, index) => (
-                  <tr key={row.id} className={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                  <tr
+                    key={row.id}
+                    className={index % 2 === 0 ? styles.evenRow : styles.oddRow}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className={styles.td}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -315,13 +336,23 @@ const Instructors: React.FC = () => {
       </div>
 
       {selectedInstructor && (
-        <div className={styles.modalOverlay} onClick={() => setSelectedInstructor(null)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setSelectedInstructor(null);
+            }
+          }}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3 className={styles.modalTitle}>
                 Instructor Details: {selectedInstructor.name}
               </h3>
-              <button className={styles.closeButton} onClick={() => setSelectedInstructor(null)}>
+              <button
+                className={styles.closeButton}
+                onClick={() => setSelectedInstructor(null)}
+              >
                 <X />
               </button>
             </div>
@@ -334,26 +365,33 @@ const Instructors: React.FC = () => {
                 <strong>Phone:</strong> {selectedInstructor.phone}
               </div>
               <div className={styles.detailRow}>
-                <strong>Status:</strong>{' '}
+                <strong>Status:</strong>{" "}
                 <span
                   className={`${styles.chip} ${
-                    selectedInstructor.active ? styles.chipSuccess : styles.chipError
+                    selectedInstructor.active
+                      ? styles.chipSuccess
+                      : styles.chipError
                   }`}
                 >
-                  {selectedInstructor.active ? 'Active' : 'Inactive'}
+                  {selectedInstructor.active ? "Active" : "Inactive"}
                 </span>
               </div>
 
-              <h4 className={styles.sectionTitle}>Courses and Enrolled Students</h4>
+              <h4 className={styles.sectionTitle}>
+                Courses and Enrolled Students
+              </h4>
 
               {selectedInstructor.courses.map((course, index) => {
-                const enrolledStudents = selectedInstructor.students.filter((student) =>
-                  student.courses.includes(course._id)
+                const enrolledStudents = selectedInstructor.students.filter(
+                  (student) => student.courses && Array.isArray(student.courses) && student.courses.includes(course._id),
                 );
 
                 return (
                   <div key={course._id} className={styles.accordion}>
-                    <div className={styles.accordionHeader} onClick={() => toggleCourse(index)}>
+                    <div
+                      className={styles.accordionHeader}
+                      onClick={() => toggleCourse(index)}
+                    >
                       <span>
                         {course.title} ({enrolledStudents.length} students)
                       </span>
@@ -365,14 +403,23 @@ const Instructors: React.FC = () => {
                         {enrolledStudents.length > 0 ? (
                           <ul className={styles.studentList}>
                             {enrolledStudents.map((student, studentIndex) => (
-                              <li key={studentIndex} className={styles.studentItem}>
-                                <div className={styles.studentName}>{student.name}</div>
-                                <div className={styles.studentEmail}>{student.email}</div>
+                              <li
+                                key={studentIndex}
+                                className={styles.studentItem}
+                              >
+                                <div className={styles.studentName}>
+                                  {student.name}
+                                </div>
+                                <div className={styles.studentEmail}>
+                                  {student.email}
+                                </div>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <p className={styles.noStudents}>No students enrolled</p>
+                          <p className={styles.noStudents}>
+                            No students enrolled
+                          </p>
                         )}
                       </div>
                     )}
@@ -382,7 +429,10 @@ const Instructors: React.FC = () => {
             </div>
 
             <div className={styles.modalFooter}>
-              <button className={styles.closeButtonFooter} onClick={() => setSelectedInstructor(null)}>
+              <button
+                className={styles.closeButtonFooter}
+                onClick={() => setSelectedInstructor(null)}
+              >
                 Close
               </button>
             </div>

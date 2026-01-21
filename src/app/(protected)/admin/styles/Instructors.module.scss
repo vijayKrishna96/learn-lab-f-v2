@@ -154,9 +154,8 @@
     background: $gray-100;
 
     @include dark {
-  background: lighten($dark-bg-tertiary, 6%);
-}
-
+      background: lighten($dark-bg-tertiary, 6%);
+    }
   }
 }
 
@@ -230,35 +229,340 @@
   }
 }
 
-.expandButton {
+/* =========================
+   VIEW BUTTON
+========================= */
+.viewButton {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-xs;
-  margin-top: $spacing-xs;
-  background: transparent;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: $primary-500;
+  color: white;
   border: none;
-  color: $primary-500;
+  border-radius: $radius-md;
   font-size: $text-sm;
   font-weight: $font-medium;
   cursor: pointer;
-  transition: $transition-colors;
+  transition: $transition-all;
 
   &:hover {
-    color: $primary-600;
+    background: $primary-600;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   @include dark {
-    color: $primary-400;
+    background: $primary-600;
 
     &:hover {
-      color: $primary-300;
+      background: $primary-500;
     }
   }
 }
 
-.expandIcon {
+.icon {
   width: 16px;
   height: 16px;
+}
+
+/* =========================
+   MODAL
+========================= */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  padding: $spacing-lg;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-2xl;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  @include dark {
+    background: $dark-bg-secondary;
+  }
+}
+
+.modalHeader {
+  padding: $spacing-xl;
+  border-bottom: 1px solid $gray-200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+}
+
+.modalTitle {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: $gray-500;
+  cursor: pointer;
+  padding: $spacing-sm;
+  border-radius: $radius-md;
+  transition: $transition-all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $gray-100;
+    color: $gray-700;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  @include dark {
+    color: $dark-text-muted;
+
+    &:hover {
+      background: $dark-bg-tertiary;
+      color: $dark-text-primary;
+    }
+  }
+}
+
+.modalContent {
+  padding: $spacing-xl;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.detailRow {
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $gray-200;
+  font-size: $text-base;
+  color: $gray-700;
+
+  strong {
+    color: $gray-900;
+    font-weight: $font-semibold;
+    margin-right: $spacing-sm;
+  }
+
+  @include dark {
+    border-color: $dark-border;
+    color: $dark-text-secondary;
+
+    strong {
+      color: $dark-text-primary;
+    }
+  }
+}
+
+.sectionTitle {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin-top: $spacing-xl;
+  margin-bottom: $spacing-lg;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+/* =========================
+   ACCORDION
+========================= */
+.accordion {
+  border: 1px solid $gray-200;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+  overflow: hidden;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+}
+
+.accordionHeader {
+  padding: $spacing-md $spacing-lg;
+  background: $gray-50;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: $transition-all;
+  user-select: none;
+
+  &:hover {
+    background: $gray-100;
+  }
+
+  span {
+    font-weight: $font-medium;
+    color: $gray-900;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: $gray-600;
+  }
+
+  @include dark {
+    background: $dark-bg-tertiary;
+
+    &:hover {
+      background: lighten($dark-bg-tertiary, 5%);
+    }
+
+    span {
+      color: $dark-text-primary;
+    }
+
+    svg {
+      color: $dark-text-muted;
+    }
+  }
+}
+
+.accordionContent {
+  padding: $spacing-lg;
+  background: white;
+
+  @include dark {
+    background: $dark-bg-card;
+  }
+}
+
+/* =========================
+   STUDENT LIST
+========================= */
+.studentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.studentItem {
+  padding: $spacing-md;
+  border-bottom: 1px solid $gray-200;
+  transition: $transition-colors;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $gray-50;
+  }
+
+  @include dark {
+    border-color: $dark-border;
+
+    &:hover {
+      background: $dark-bg-secondary;
+    }
+  }
+}
+
+.studentName {
+  font-weight: $font-medium;
+  color: $gray-900;
+  margin-bottom: $spacing-xs;
+
+  @include dark {
+    color: $dark-text-primary;
+  }
+}
+
+.studentEmail {
+  font-size: $text-sm;
+  color: $gray-600;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+.noStudents {
+  text-align: center;
+  color: $gray-500;
+  font-style: italic;
+  padding: $spacing-lg;
+  margin: 0;
+
+  @include dark {
+    color: $dark-text-muted;
+  }
+}
+
+/* =========================
+   MODAL FOOTER
+========================= */
+.modalFooter {
+  padding: $spacing-lg $spacing-xl;
+  border-top: 1px solid $gray-200;
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+
+  @include dark {
+    border-color: $dark-border;
+  }
+}
+
+.closeButtonFooter {
+  padding: $spacing-sm $spacing-xl;
+  background: $gray-600;
+  color: white;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $text-base;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: $transition-all;
+
+  &:hover {
+    background: $gray-700;
+  }
+
+  @include dark {
+    background: $gray-700;
+
+    &:hover {
+      background: $gray-600;
+    }
+  }
 }
 
 /* =========================
@@ -370,11 +674,28 @@
   .pagination {
     flex-wrap: nowrap;
   }
+
+  .modal {
+    max-width: 600px;
+  }
 }
 
 @include screen-sm {
   .searchInput {
     min-width: 200px;
   }
-}
 
+  .modalOverlay {
+    padding: $spacing-sm;
+  }
+
+  .modal {
+    max-height: 95vh;
+  }
+
+  .modalHeader,
+  .modalContent,
+  .modalFooter {
+    padding: $spacing-lg;
+  }
+}
