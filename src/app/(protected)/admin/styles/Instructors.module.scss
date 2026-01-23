@@ -154,7 +154,7 @@
     background: $gray-100;
 
     @include dark {
-      background: lighten($dark-bg-tertiary, 6%);
+      background: color.adjust($dark-bg-tertiary, $lightness: 6%);
     }
   }
 }
@@ -442,7 +442,7 @@
     background: $dark-bg-tertiary;
 
     &:hover {
-      background: lighten($dark-bg-tertiary, 5%);
+      background: color.adjust($dark-bg-tertiary, $lightness: 6%);
     }
 
     span {
