@@ -14,7 +14,7 @@ import styles from "./cart.module.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { ALL_CART_ITEMS} from "@/utils/constants/api";
+import { CART_ITEMS_API } from "@/utils/constants/api";
 
 interface Lesson {
   duration: string;
@@ -69,7 +69,7 @@ export default function Page() {
         try {
           // Send a POST request with the array of course IDs in the body
           const response = await axios.post(
-            ALL_CART_ITEMS,
+             CART_ITEMS_API,
             {
               ids: userData.cart,
             }
