@@ -404,7 +404,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`${USER_DETAILS_API}/user/${userId}`);
+        const response = await axios.get(`${USER_DETAILS_API}/${userId}`);
         setUsersData(response?.data[0]);
       } catch (error) {
         console.error("Error fetching user details:", error);

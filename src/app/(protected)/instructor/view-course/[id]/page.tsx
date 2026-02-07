@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styles from "./view-course.module.scss";
-import { BASE_URL_API } from "@/utils/constants/api";
+import { BASE_URL_API, COURSE_BY_ID_API } from "@/utils/constants/api";
 
 interface Lesson {
   _id: string;
@@ -36,7 +36,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL_API}/courses/${courseId}`);
+        const response = await axios.get(`${COURSE_BY_ID_API}/${courseId}`);
     
         // FIX: Access course object properly
         setData(response.data.course);

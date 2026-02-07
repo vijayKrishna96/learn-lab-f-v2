@@ -3,7 +3,7 @@
 import { X, Filter } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/course-details.module.scss";
-import { BASE_URL_API } from "@/utils/constants/api";
+import {COURSE_BY_ID_API } from "@/utils/constants/api";
 import axios from "axios";
 
 // Types
@@ -148,7 +148,7 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
   const handleViewDetailsClick = async (course: Course) => {
     setLoadingCourseId(course._id);
     try {
-      const response = await axios.get(`${BASE_URL_API}/courses/${course._id}`);
+      const response = await axios.get(`${COURSE_BY_ID_API}/${course._id}`);
 
       console.log("Fetch response:", response.data);
 

@@ -24,6 +24,9 @@ const AllCategoryEndpoint: string = process.env.NEXT_PUBLIC_ALL_CATEGORY || '';
 // Cart
 const cartApi: string = process.env.NEXT_PUBLIC_CARTITEMS || '';
 
+// Wishlist
+const wishlistApi: string = process.env.NEXT_PUBLIC_WISHLIST || '';
+
 // Stripe Payment
 const StripePaymentApi: string = process.env.NEXT_PUBLIC_STRIPE_PAYMENT || '';
 
@@ -47,7 +50,8 @@ export const ALL_USERS_API: string = `${BaseUrl}${allUsersEndpoint}`;
 // Course
 export const ALL_COURSE_API: string = `${BaseUrl}${allCourseEndpoint}`;
 export const COURSE_BY_ID_API: string = `${BaseUrl}${singleCourseById}`; // Ensure this is correct; otherwise, modify.
-export const BASE_URL_CART: string = `${BaseUrl}${cartApi}`;
+export const CART_ITEMS_API: string = `${BaseUrl}${cartApi}`;
+export const WISHLIST_API: string = `${BaseUrl}${wishlistApi}`;
 export const ALL_COURSE_BY_USERID: string = `${BaseUrl}${allCourseByUserId}`;
 export const UPDATE_COURSE_API: string = `${BaseUrl}${allCourseEndpoint}`;
 export const ADD_NEW_COURSE: string = `${BaseUrl}${allCourseEndpoint}`;

@@ -12,6 +12,7 @@ import { setUserData } from "@/redux/slices/userSlice";
 import { setWishlistItems } from "@/redux/slices/wishlistSlice";
 import { removeFromWishlistAPI } from "@/services/wishlistService";
 import { removeWishlistItem } from "@/redux/slices/wishlistSlice";
+import { WISHLIST_API } from "@/utils/constants/api";
 
 interface Module {
   // Define the Module interface here if necessary
@@ -57,7 +58,7 @@ export default function Page() {
     }
 
     try {
-      const response = await axios.post("http://localhost:4500/courses/wishlist", {
+      const response = await axios.post(WISHLIST_API, {
         ids: userData.wishlist,
       });
 
