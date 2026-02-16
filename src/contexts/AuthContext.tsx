@@ -1,12 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { verifyLogin } from "@/services/userApi";
 import { useDispatch } from "react-redux";
 import { setUserData } from "@/redux/slices/userSlice";
 import axios from "axios";
 import { USER_DETAILS_API } from "@/utils/constants/api";
 import Spinner from "@/components/spinner/Spinner";
+import { verify } from "@/services/userApi";
 
 interface PartialUser {
   id: string;
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshUser = async () => {
     try {
-      const verifyResponse = await verifyLogin();
+      const verifyResponse = await verify();
       if (!verifyResponse?.loggedIn || !verifyResponse.user) {
         setUser(null);
         dispatch(setUserData({}));
@@ -119,7 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         // Always verify the session via backend (ensures tokens are valid)
-        const verifyResponse = await verifyLogin();
+        const verifyResponse = await verify();
         if (!verifyResponse?.loggedIn || !verifyResponse.user) {
           // No valid session - clear any stale data
             if (storedUser) {

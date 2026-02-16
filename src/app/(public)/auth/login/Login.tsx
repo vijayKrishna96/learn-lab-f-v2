@@ -5,10 +5,11 @@ import { IoCloseCircle } from "react-icons/io5";
 import Loader from "../../../../components/spinner/Spinner";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { userLogin } from "@/services/userApi";
+
 
 import "../styles/theme.css";
 import { useAuth } from "@/contexts/AuthContext";
+import { login } from "@/services/userApi";
 
 interface LoginProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
 
     try {
       // Call login API - this sets httpOnly cookies automatically
-      const response = await userLogin({ email, password });
+      const response = await login({ email, password });
       console.log("Login response:", response);
 
       if (!response?.success || !response?.user) {
