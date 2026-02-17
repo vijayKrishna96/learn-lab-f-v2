@@ -10,8 +10,9 @@ export function proxy(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value;
   const path = req.nextUrl.pathname;
 
-  console.log("🛡️ Middleware - Path:", path);
-  console.log("🛡️ Middleware - Has Token:", !!token);
+  console.log("All cookies:", req.cookies.getAll());
+  console.log("Token found:", !!token);
+  console.log("Path:", path);
 
   // Public routes (allow without token)
   const publicPaths = [

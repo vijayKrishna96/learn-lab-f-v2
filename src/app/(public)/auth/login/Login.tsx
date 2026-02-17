@@ -5,8 +5,6 @@ import { IoCloseCircle } from "react-icons/io5";
 import Loader from "../../../../components/spinner/Spinner";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
-
 import "../styles/theme.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { login } from "@/services/userApi";
@@ -67,23 +65,23 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
 
       console.log("Redirecting to:", redirectPath);
 
-      // Refresh user context (this will fetch full user data and update Redux)
-      await refreshUser();
+     
+      // console.log("User refreshed, now navigating...");
 
-      console.log("User refreshed, now navigating...");
+      // // Give the browser time to persist the cookie before navigating
+      // await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Use window.location for hard navigation to ensure route guards pick up the new auth state
+
       window.location.href = redirectPath;
-
     } catch (err: any) {
       console.error("Login error:", err);
-      
+
       // Extract error message from various possible error formats
       const message =
         err?.response?.data?.message ||
         err?.message ||
         "Login failed. Please try again.";
-      
+
       toast.error(message);
       setLoading(false);
     }

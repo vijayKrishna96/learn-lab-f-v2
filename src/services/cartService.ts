@@ -1,7 +1,6 @@
 // services/cartService.ts
 import axiosInstance from "@/utils/axiosInstance";
-
-
+import axios from "axios";
 
 interface Course {
   _id: string;
@@ -65,13 +64,31 @@ export const fetchCartCoursesAPI = async (courseIds: string[]): Promise<Course[]
 /**
  * Add item to cart
  */
+// export const addToCartAPI = async (courseId: string): Promise<void> => {
+//   try {
+//     const res = await axiosInstance.post(`/cart/add/${courseId}`);
+//     return res.data;
+//   } catch (error: any) {
+//     console.error("Add to cart error:", error);
+//     throw new Error(error.response?.data?.message || "Failed to add item to cart");
+//   }
+// };
 export const addToCartAPI = async (courseId: string): Promise<void> => {
   try {
-    const res = await axiosInstance.post(`/cart/add/${courseId}`);
+    const res = await axios.post(
+      `https://learnlab-backend.onrender.com/cart/add/${courseId}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+
     return res.data;
   } catch (error: any) {
     console.error("Add to cart error:", error);
-    throw new Error(error.response?.data?.message || "Failed to add item to cart");
+    throw new Error(
+      error.response?.data?.message || "Failed to add item to cart"
+    );
   }
 };
 

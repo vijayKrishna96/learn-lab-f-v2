@@ -10,9 +10,10 @@ import style from "./profile.module.scss";
 import { UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { userLogout } from "@/services/userApi"; // Import the correct logout function
+
 import { toast } from "react-toastify";
 import Spinner from "@/components/spinner/Spinner";
+import { logout } from "@/services/userApi";
 
 
 interface UserData {
@@ -93,7 +94,7 @@ function Page() {
 
       // Call the proper logout API from userApi.ts
       // This will clear httpOnly cookies on the backend
-      await userLogout();
+      await logout();
 
       console.log("🚪 Logout API successful");
 

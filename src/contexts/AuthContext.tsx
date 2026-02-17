@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchFullUserData = async (partialUser: PartialUser): Promise<FullUser | null> => {
     try {
       // console.log("Fetching full user data for:", partialUser.id);
-      const response = await axios.get(`${USER_DETAILS_API}/user/${partialUser.id}`, {
+      const response = await axios.get(`${USER_DETAILS_API}/${partialUser.id}`, {
         withCredentials: true,
       });
 

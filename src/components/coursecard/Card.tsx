@@ -35,7 +35,6 @@ const CourseCard: React.FC<CourseCardProps> = ({  course }) => {
   const [loadingWish, setLoadingWish] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
 
-  console.log(userData, "userData")
 
   // -----------------------------
   // Add to Cart
